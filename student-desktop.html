@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniChat 학생 포털 — 데스크톱</title>
+<link rel="stylesheet" href="unichat-brand.css">
+<style>
+  :root{
+    --ink:#1b2230;--ink2:#5a6678;--line:#cbd2d9;--line2:#e8ecf1;
+    --bg:#f5f7fa;--panel:#fff;--brand:#1f4ba8;--brand2:#2f6fd6;
+    --accent:#0b6b5e;--warn:#b42318;--soft:#f5f8fc;
+    --bubble-me:#1f4ba8;--bubble-me-tx:#fff;--bubble-you:#eef1f5;--bubble-you-tx:#1b2230;
+    --mono:"JetBrains Mono",monospace;--sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px;padding-top:40px}
+  .wf-flag{background:repeating-linear-gradient(45deg,#fff6e6,#fff6e6 12px,#ffedcc 12px,#ffedcc 24px);border-bottom:1px solid #e8c97a;padding:6px 16px;font-size:12px;color:#7a5b16;text-align:center}
+  .wf-flag b{color:#5a4310}
+  .ix{font-size:10.5px;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;font-family:var(--mono)}
+
+  .scn{position:fixed;top:0;left:0;right:0;z-index:50;background:#121720}
+  .scn-in{max-width:1160px;margin:0 auto;padding:8px 16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .scn-in .lab{font-size:11.5px;color:#dfe6f2;font-family:var(--mono)}
+  .scn button{font-size:12px;border:1px solid #4a5a75;background:#1b2436;color:#cdd8e4;border-radius:999px;padding:4px 11px;cursor:pointer}
+  .scn button.on{background:var(--brand2);color:#fff;border-color:var(--brand2)}
+  .landing-back{margin-left:auto;font-size:12px;font-weight:700;color:#fff;text-decoration:none;border:1px solid #71809a;border-radius:999px;padding:4px 11px;white-space:nowrap}
+  .landing-back:hover{background:#26334a}
+
+  /* GNB */
+  header{background:#fff;border-bottom:1px solid var(--line2);position:sticky;top:40px;z-index:10}
+  .gnb{max-width:1160px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:12px}
+  .student-brand{margin-right:20px}
+  nav.menu{display:flex;gap:3px;flex:1}
+  nav.menu button{border:0;background:none;padding:8px 10px;font-size:14px;font-weight:780;color:#667085;cursor:pointer;border-radius:8px;font-family:var(--sans);position:relative}
+  nav.menu button:hover{background:#eef3ff;color:#1d4ed8}
+  nav.menu button.on{color:#1d4ed8;background:#eef3ff}
+  nav.menu button .nbdg{position:absolute;top:3px;right:4px;background:var(--warn);color:#fff;font-size:9px;font-weight:800;border-radius:999px;min-width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px}
+  .lang{font-size:12px;border:1px solid #d7e0ee;border-radius:999px;padding:5px 10px;color:var(--ink2);cursor:pointer}
+  .lang b{color:#1d4ed8}
+  .student-profile-menu{position:relative}
+  .userchip{display:flex;align-items:center;gap:7px;border:1px solid #d7e0ee;border-radius:999px;background:#fff;padding:3px 9px 3px 4px;font:800 12.5px var(--sans);color:#10223f;cursor:pointer}
+  .userchip .av{width:28px;height:28px;border-radius:50%;background:#edf3ff;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .student-profile-dropdown{position:absolute;top:calc(100% + 8px);right:0;z-index:20;width:218px;padding:7px;border:1px solid #dce5f1;border-radius:13px;background:#fff;box-shadow:0 18px 42px rgba(16,34,63,.16)}
+  .student-profile-dropdown[hidden]{display:none}
+  .student-profile-summary{display:grid;gap:2px;padding:9px 10px 10px;border-bottom:1px solid var(--line2)}
+  .student-profile-summary strong{font-size:12px;color:#10223f}.student-profile-summary span{font-size:11px;color:var(--ink2)}
+  .student-profile-dropdown button{display:flex;align-items:center;width:100%;min-height:35px;padding:0 9px;border:0;border-radius:8px;background:transparent;font:700 12px var(--sans);color:#344054;text-align:left;cursor:pointer}
+  .student-profile-dropdown button:hover{background:#f3f6fb;color:#1d4ed8}
+  .student-profile-dropdown .logout{margin-top:3px;border-top:1px solid var(--line2);border-radius:0;color:var(--warn)}
+
+  .wrap{max-width:1160px;margin:0 auto;padding:26px 24px 60px}
+  .page{display:none}
+  .page.show{display:block}
+  h2.vt{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+  .lead{font-size:13.5px;color:var(--ink2);margin-bottom:20px}
+
+  /* ST-0 가입 */
+  .authcard{max-width:460px;margin:10px auto;background:#fff;border:1px solid var(--line2);border-radius:16px;padding:30px;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+  .authcard h2{font-size:20px;font-weight:800;margin-bottom:4px}
+  .authcard .sub{font-size:13px;color:var(--ink2);margin-bottom:20px}
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+  .field label{font-size:12px;color:var(--ink2);font-weight:600}
+  .field label .req{color:var(--warn)}
+  .field input,.field select{border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;font-family:var(--sans);background:#fff}
+  .field .hint{font-size:11px;color:#8b96a5}
+  .verify-email-row,.verify-code-row{display:flex;gap:8px}
+  .verify-email-row input,.verify-code-row input{min-width:0;flex:1}
+  .verify-email-row button,.verify-code-row button{border:1px solid var(--brand);border-radius:9px;background:#fff;color:var(--brand);padding:0 12px;font:700 11.5px var(--sans);cursor:pointer;white-space:nowrap}
+  .verify-panel{border:1px solid var(--line2);border-radius:10px;background:#f8fafc;padding:11px;margin:-4px 0 13px}
+  .auth-status{margin-top:8px;border-radius:7px;padding:8px 10px;font-size:11.5px;line-height:1.45;background:#eef1f5;color:var(--ink2)}
+  .auth-status.success{background:#e7f6ec;color:#1a7f43}.auth-status.error{background:#fef3f2;color:var(--warn)}.auth-status.pending{background:#fff8e6;color:#8a6100}
+  .verify-panel .text-link{margin-top:8px;font-size:11.5px}
+  .btn:disabled{cursor:not-allowed;opacity:.45}
+  .consent{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink2);margin:4px 0 16px}
+  .btn{border-radius:10px;padding:12px 18px;font-size:14.5px;font-weight:700;cursor:pointer;border:1px solid transparent}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+  .btn-full{width:100%}
+  .auth-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:-2px 0 15px;font-size:12px;color:var(--ink2)}
+  .auth-row label{display:flex;align-items:center;gap:6px}
+  .text-link{border:0;background:none;color:var(--brand);font:inherit;font-weight:700;cursor:pointer;padding:0}
+  .auth-divider{display:flex;align-items:center;gap:12px;color:#9aa4b2;font-size:11px;margin:16px 0}
+  .auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line2);flex:1}
+
+  /* ST-1 대학 찾기 */
+  .findbar{display:flex;gap:10px;margin-bottom:12px}
+  .findbar input{flex:1;max-width:480px;border:1px solid var(--line);border-radius:999px;padding:11px 18px;font-size:14px;background:#fff}
+  .chips{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap}
+  .chip{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;color:var(--ink2);cursor:pointer}
+  .chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .ugrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+  .ucard{background:#fff;border:1px solid var(--line2);border-radius:14px;padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:10px;transition:box-shadow .15s}
+  .ucard:hover{box-shadow:0 4px 14px rgba(16,24,40,.1)}
+  .ucard .top{display:flex;gap:11px;align-items:center}
+  .ucard .ulogo{width:48px;height:48px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+  .ucard .un{font-weight:800;font-size:15px;display:flex;align-items:center;gap:6px}
+  /* 대학 카드 상담 상태 도트는 현재 비노출입니다. 필요 시 아래 스타일을 복구합니다.
+  .ucard .un .live{width:7px;height:7px;border-radius:50%;background:#1a7f43}
+  .ucard .un .live.off{background:#aeb6c4}
+  */
+  .ucard .un .live{display:none}
+  .ucard .um{font-size:12px;color:var(--ink2)}
+  .badges{display:flex;gap:5px;flex-wrap:wrap}
+  .rbadge{font-size:10.5px;border-radius:999px;padding:2px 9px;font-weight:700;background:#e7f6ec;color:#1a7f43}
+  .rbadge.slow{background:#fff4e5;color:#9a5b00}
+  .tbadge{font-size:10.5px;border-radius:999px;padding:2px 9px;font-weight:600;background:var(--soft);color:var(--brand)}
+  .ucard .cta{font-size:12.5px;font-weight:700;color:var(--brand);border:1px solid var(--brand);border-radius:999px;padding:8px;background:#fff;cursor:pointer;text-align:center;margin-top:auto}
+  .ucard .cta.cont{background:var(--brand);color:#fff}
+  .nofind{background:linear-gradient(120deg,#eef3fb,#e3ecfa);border:1px dashed #b7c9e8;border-radius:14px;padding:18px 22px;display:flex;align-items:center;gap:16px}
+  .nofind b{font-size:14px;display:block}
+  .nofind p{font-size:12px;color:var(--ink2)}
+  .nofind button{margin-left:auto;font-size:13px;font-weight:700;color:#fff;background:var(--brand);border:none;border-radius:999px;padding:9px 20px;cursor:pointer;white-space:nowrap}
+
+  /* ST-2/3 메신저 2패널 */
+  .msgr{display:grid;grid-template-columns:330px 1fr;height:calc(100vh - 230px);min-height:520px;background:#fff;border:1px solid var(--line2);border-radius:14px;overflow:hidden}
+  .clist{border-right:1px solid var(--line2);overflow-y:auto}
+  .clist .hd{padding:15px 16px 9px;font-weight:800;font-size:15px}
+  .citem{padding:12px 16px;border-bottom:1px solid var(--line2);display:flex;gap:10px;cursor:pointer}
+  .citem:hover{background:#f7faff}
+  .citem.act{background:#eef3fb;border-left:3px solid var(--brand);padding-left:13px}
+  .citem .ulogo{width:42px;height:42px;border-radius:11px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+  .citem .cb{flex:1;min-width:0}
+  .citem .r1{display:flex;justify-content:space-between;gap:6px}
+  .citem .nm{font-weight:700;font-size:13px}
+  .citem .tm{font-size:10px;color:#aeb6c4;font-family:var(--mono);white-space:nowrap}
+  .citem .prev{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .citem .r2{display:flex;align-items:center;gap:6px;margin-top:5px}
+  .stchip{font-size:9.5px;border-radius:999px;padding:2px 8px;font-weight:700}
+  .st-wait{background:#fff4e5;color:#9a5b00}.st-live{background:#e7edf6;color:var(--brand)}.st-done{background:#eef1f5;color:#5a6678}
+  .citem .unread{margin-left:auto;background:var(--warn);color:#fff;font-size:10px;font-weight:800;border-radius:999px;min-width:17px;height:17px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+
+  .conv{display:flex;flex-direction:column;background:#f7f9fb}
+  .chat-hd{background:#fff;border-bottom:1px solid var(--line2);padding:12px 18px;display:flex;align-items:center;gap:11px}
+  .chat-hd .ulogo{width:38px;height:38px;border-radius:11px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:18px}
+  .chat-hd .tt b{font-size:14.5px;display:block}
+  .chat-hd .tt small{font-size:11px;color:var(--ink2)}
+  .chat-hd .st{margin-left:auto}
+  .thread{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
+  .day{text-align:center;font-size:11px;color:var(--ink2)}
+  .msg{display:flex;gap:8px;max-width:62%}
+  .msg .av{width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0}
+  .msg .bub{background:var(--bubble-you);color:var(--bubble-you-tx);padding:9px 13px;border-radius:14px 14px 14px 4px;font-size:13.5px}
+  .msg .meta{font-size:10px;color:#aeb6c4;margin-top:3px}
+  .msg.me{align-self:flex-end;flex-direction:row-reverse}
+  .msg.me .bub{background:var(--bubble-me);color:var(--bubble-me-tx);border-radius:14px 14px 4px 14px}
+  .msg.me .meta{text-align:right}
+  .msg.sys{align-self:center;max-width:100%}
+  .msg.sys .bub{background:#e7edf6;color:var(--brand);font-size:11.5px;border-radius:10px}
+  .doccard{border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 11px;display:flex;gap:9px;align-items:center;margin-top:3px;background:rgba(255,255,255,.12)}
+  .msg:not(.me) .doccard{border-color:var(--line2);background:#fff}
+  .doccard .di{font-size:19px}
+  .doccard .dn{font-size:12.5px;font-weight:700;line-height:1.3}
+  .doccard .dm{font-size:10.5px;opacity:.75}
+  .composer{border-top:1px solid var(--line2);background:#fff;padding:11px 16px;display:flex;gap:9px;align-items:center;position:relative}
+  .composer .att{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink2);flex-shrink:0;font-size:15px}
+  .composer input{flex:1;border:1px solid var(--line);border-radius:999px;padding:10px 16px;font-size:13.5px}
+  .composer .send{width:38px;height:38px;border-radius:50%;background:var(--brand);border:none;color:#fff;cursor:pointer;flex-shrink:0}
+  .attmenu{display:none;position:absolute;bottom:58px;left:14px;background:#fff;border:1px solid var(--line2);border-radius:12px;box-shadow:0 8px 24px rgba(16,24,40,.16);overflow:hidden;z-index:9}
+  .attmenu.show{display:block}
+  .attmenu button{display:flex;flex-direction:column;width:220px;border:none;background:#fff;padding:12px 15px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);text-align:left;gap:1px}
+  .attmenu button:hover{background:var(--soft)}
+  .attmenu button small{font-size:10.5px;color:var(--ink2);font-weight:500}
+
+  /* ST-4 문서 */
+  .docwrap{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+  .doc-cat{font-size:11.5px;color:var(--ink2);font-weight:700;margin:16px 0 8px;text-transform:uppercase;letter-spacing:.4px}
+  .doc-cat:first-of-type{margin-top:0}
+  .dcard{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:center}
+  .dcard .di{width:42px;height:42px;border-radius:11px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+  .dcard .db{flex:1;min-width:0}
+  .dcard .dn{font-size:13.5px;font-weight:700}
+  .dcard .dm{font-size:11px;color:var(--ink2);margin-top:1px}
+  .dcard .sent{font-size:10.5px;color:var(--brand);font-weight:700;margin-top:4px}
+  .dcard .vch{font-size:10.5px;background:var(--soft);color:var(--brand);border-radius:999px;padding:2px 8px;font-weight:700}
+  .upl{border:1.5px dashed var(--line);border-radius:12px;padding:22px;text-align:center;font-size:13px;color:var(--ink2);cursor:pointer;margin-top:14px;background:#fff}
+  .upl:hover{border-color:var(--brand);color:var(--brand);background:var(--soft)}
+  .upl small{display:block;font-size:11px;color:#aeb6c4;margin-top:4px}
+  .upload-summary{background:var(--soft);border-radius:9px;padding:10px 13px;margin-bottom:13px;font-size:12px;color:var(--ink2)}
+  .sidebox{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:16px}
+  .sidebox h4{font-size:12px;color:var(--ink2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px}
+  .sidebox .row{font-size:12px;padding:7px 0;border-bottom:1px dashed var(--line2);display:flex;justify-content:space-between}
+  .sidebox .row:last-child{border-bottom:0}
+  .sidebox .row b{color:var(--brand)}
+
+  /* ST-5 마이 */
+  .mygrid{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+  .prof{background:#fff;border:1px solid var(--line2);border-radius:14px;padding:20px;display:flex;gap:14px;align-items:center;margin-bottom:14px}
+  .prof .pav{width:58px;height:58px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:27px}
+  .prof b{font-size:16px;display:block}
+  .prof small{font-size:12px;color:var(--ink2);display:block;margin-top:2px}
+  .stat4{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+  .stat{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:14px 16px}
+  .stat b{font-size:21px;font-variant-numeric:tabular-nums}
+  .stat small{display:block;font-size:11px;color:var(--ink2);margin-top:2px}
+  .sect{font-size:11.5px;color:var(--ink2);font-weight:700;margin:16px 0 8px;text-transform:uppercase;letter-spacing:.4px}
+  .noti{background:#fff;border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+  .noti .ni{padding:12px 15px;border-bottom:1px solid var(--line2);font-size:12.5px;display:flex;gap:9px;align-items:flex-start}
+  .noti .ni:last-child{border-bottom:0}
+  .noti .ni small{display:block;font-size:10.5px;color:#aeb6c4;margin-top:2px}
+  .setrow{background:#fff;border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+  .setrow .si{padding:13px 15px;border-bottom:1px solid var(--line2);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  .setrow .si:last-child{border-bottom:0}
+  .setrow .si small{color:var(--ink2);font-size:12px}
+
+  /* 모달 */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:100;align-items:center;justify-content:center}
+  .modal-overlay.show{display:flex}
+  .modal-box{background:#fff;border-radius:14px;width:440px;max-height:76vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(16,24,40,.3)}
+  .modal-hd{padding:15px 20px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:8px}
+  .modal-hd b{font-size:15px}
+  .modal-hd button{margin-left:auto;border:none;background:none;font-size:17px;cursor:pointer;color:var(--ink2)}
+  .modal-bd{padding:16px 20px 20px;overflow-y:auto}
+  .pickitem{display:flex;gap:11px;align-items:center;border:1px solid var(--line2);border-radius:11px;padding:11px 13px;margin-bottom:8px;cursor:pointer}
+  .pickitem:hover{background:var(--soft);border-color:var(--brand)}
+  .pickitem .di{font-size:18px}
+  .pickitem .dn{font-size:13px;font-weight:700}
+  .pickitem .dm{font-size:10.5px;color:var(--ink2)}
+  .mergehint{background:var(--soft);border-radius:9px;padding:10px 13px;font-size:12px;color:var(--brand);margin:-2px 0 13px}
+
+  /* ===== 모바일·태블릿 반응형 ===== */
+  .mobile-chat-back{display:none}
+  @media (max-width:760px){
+    body{padding-top:36px;font-size:13px;overflow-x:hidden}
+    .scn{overflow-x:auto}.scn-in{min-width:max-content;padding:7px 12px;flex-wrap:nowrap}.scn-in .lab{font-size:10px}.scn button,.landing-back{font-size:10.5px;padding:4px 8px}
+    .wf-flag{padding:5px 10px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    header{top:36px}.gnb{padding:10px 14px;gap:8px;overflow-x:auto}.student-brand{margin-right:4px;flex-shrink:0}.student-brand .unichat-brand-name{font-size:16px}nav.menu{gap:0;flex:0 0 auto}nav.menu button{padding:7px 8px;font-size:12px;white-space:nowrap}.lang{display:none}.userchip{padding:3px;border-radius:50%;flex-shrink:0}.userchip .user-name{display:none}
+    .wrap{padding:18px 14px 40px}.lead{font-size:12.5px;margin-bottom:15px}h2.vt{font-size:19px}.authcard{margin:0 auto;padding:22px 18px;border-radius:14px}.findbar input{max-width:none;padding:10px 14px}.chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:3px;margin-bottom:14px}.chip{white-space:nowrap;font-size:11.5px;padding:6px 11px}.ugrid{grid-template-columns:1fr;gap:10px}.ucard{padding:14px}.nofind{padding:15px;align-items:flex-start;flex-direction:column;gap:11px}.nofind button{margin-left:0;width:100%}
+    .msgr{height:calc(100vh - 168px);min-height:520px;grid-template-columns:1fr;border-radius:12px}.msgr .clist{border-right:0}.msgr .conv{display:none}.msgr.show-conversation .clist{display:none}.msgr.show-conversation .conv{display:flex}.mobile-chat-back{display:inline-grid;place-items:center;width:30px;height:30px;border:0;border-radius:8px;background:#eef3fb;color:var(--brand);font-size:18px;cursor:pointer;flex-shrink:0}.chat-hd{padding:10px 12px;gap:8px}.chat-hd .tt{min-width:0}.chat-hd .tt b,.chat-hd .tt small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chat-hd .st{margin-left:auto}.thread{padding:14px}.composer{padding:9px 10px}.msg .bub{max-width:calc(100vw - 102px)}
+    .docwrap,.mygrid{grid-template-columns:1fr;gap:12px}.sidebox{order:2}.stat4{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:12px}.prof{padding:16px}.setrow .si{padding:12px;gap:12px}.modal-overlay{padding:14px}.modal-box{width:100%;max-height:82vh}.modal-hd{padding:14px 16px}.modal-bd{padding:14px 16px 18px}.verify-email-row,.verify-code-row{gap:6px}.verify-email-row button,.verify-code-row button{padding:0 9px;font-size:10.5px}
+  }
+  @media (max-width:390px){
+    nav.menu button{padding:7px 6px;font-size:11px}.student-brand .unichat-brand-name{font-size:14px}.wrap{padding-inline:11px}.stat4{grid-template-columns:1fr 1fr}.msgr{height:calc(100vh - 158px)}
+  }
+</style>
+</head>
+<body>
+  <div class="scn">
+    <div class="scn-in">
+      <span class="lab">ST 시나리오</span>
+      <button data-p="pSignup">ST-0 가입</button>
+      <button type="button" onclick="window.location.href='university-explore.html'">공개 대학 탐색</button>
+      <button data-p="pChats">ST-2/3 내 상담·채팅</button>
+      <button data-p="pDocs">ST-4 문서</button>
+      <button data-p="pMy">ST-5 마이</button>
+      <span class="lab">인증 상태</span>
+      <button data-auth-state="pending">대기</button>
+      <button data-auth-state="success">성공</button>
+      <button data-auth-state="failure">실패</button>
+      <button data-auth-state="expired">만료</button>
+      <span class="lab">상담 상태</span>
+      <button data-chat-state="대기">대기</button>
+      <button data-chat-state="진행중">진행</button>
+      <button data-chat-state="종료">종료</button>
+      <a class="landing-back" href="university-explore.html">← 대학 탐색</a>
+    </div>
+  </div>
+  <div class="wf-flag"><b>WIREFRAME</b> · 학생 포털(유학생) 데스크톱 목업 — 페르소나: 나팟 수크사이 🇹🇭 (방콕, KST-2) · 모바일 버전: 06_사용자_상담_목업.html</div>
+
+  <header id="appHeader" style="display:none">
+    <div class="gnb">
+      <a class="unichat-brand student-brand" href="기업용_배너_포함.html" aria-label="UniChat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">UniChat</span></a>
+      <nav class="menu">
+        <button type="button" onclick="window.location.href='university-explore.html'">대학 탐색</button>
+        <button data-p="pChats">상담하기<span class="nbdg">2</span></button>
+      </nav>
+      <span class="lang" onclick="toggleLang(this)"><b>한국어</b> / EN</span>
+      <div class="student-profile-menu" id="desktopProfileMenu">
+        <button class="userchip" id="desktopProfileTrigger" type="button" aria-haspopup="menu" aria-expanded="false" onclick="toggleDesktopProfileMenu()"><span class="av">🇹🇭</span>NAPAT<span aria-hidden="true">⌄</span></button>
+        <div class="student-profile-dropdown" id="desktopProfileDropdown" role="menu" hidden>
+          <div class="student-profile-summary"><strong>NAPAT SUKSAI</strong><span>napat@example.com</span></div>
+          <button type="button" role="menuitem" onclick="showPage('pDocs');closeDesktopProfileMenu()">문서 보관함</button>
+          <button type="button" role="menuitem" onclick="showPage('pMy');closeDesktopProfileMenu()">마이페이지</button>
+          <button class="logout" type="button" role="menuitem" onclick="logoutDesktopStudent()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- 학생 로그인 (초기 화면) -->
+    <div class="page show" id="pLogin">
+      <div class="authcard">
+        <span class="ix">STUDENT LOGIN</span>
+        <h2 style="margin-top:10px">로그인</h2>
+        <div class="sub">대학 상담을 이어서 확인하세요</div>
+        <div class="field"><label>이메일</label><input type="email" placeholder="you@example.com" value="napat@example.com"></div>
+        <div class="field"><label>비밀번호</label><input type="password" placeholder="비밀번호를 입력하세요" value="password123"></div>
+        <div class="auth-row"><label><input type="checkbox" checked> 로그인 유지</label><button class="text-link" type="button">비밀번호 찾기</button></div>
+        <button class="btn btn-primary btn-full" onclick="loginDesktopStudent()">로그인</button>
+        <div class="auth-divider">또는</div>
+        <button class="btn btn-ghost btn-full" onclick="showPage('pSignup')">회원가입</button>
+      </div>
+    </div>
+
+    <!-- ST-0 가입 -->
+    <div class="page" id="pSignup">
+      <div class="authcard">
+        <span class="ix">ST-0</span>
+        <h2 style="margin-top:10px">회원가입</h2>
+        <div class="sub">한국 유학, 대학과 직접 이야기하며 준비하세요</div>
+        <div class="field"><label>이메일 <span class="req">*</span></label><div class="verify-email-row"><input id="desktopSignupEmail" type="email" placeholder="you@example.com" value="napat@example.com"><button type="button" onclick="sendDesktopVerificationCode()">인증 코드 발송</button></div><span class="hint">목업 인증 코드는 123456입니다</span></div>
+        <div class="verify-panel" aria-live="polite">
+          <div class="verify-code-row"><input id="desktopVerificationCode" inputmode="numeric" maxlength="6" placeholder="6자리 인증 코드"><button id="desktopVerifyButton" type="button" onclick="verifyDesktopEmail()">인증 확인</button></div>
+          <div class="auth-status" id="desktopAuthStatus">이메일 인증 전입니다. 인증을 완료해야 회원가입할 수 있습니다.</div>
+          <button class="text-link" type="button" onclick="sendDesktopVerificationCode()">인증 코드 재발송</button>
+        </div>
+        <div class="field"><label>비밀번호 <span class="req">*</span></label><input type="password" placeholder="8자 이상"></div>
+        <div class="field"><label for="signupCountry">국가 <span class="req">*</span></label><select id="signupCountry" onchange="updateSignupCities()"><option value="베트남">🇻🇳 베트남</option><option value="태국" selected>🇹🇭 태국</option><option value="중국">🇨🇳 중국</option><option value="우즈베키스탄">🇺🇿 우즈베키스탄</option><option value="몽골">🇲🇳 몽골</option></select></div>
+        <div class="field"><label for="signupCity">도시 <span class="req">*</span></label><select id="signupCity"><option>방콕</option><option>치앙마이</option><option>콘깬</option></select><span class="hint">선택한 국가의 도시만 표시됩니다</span></div>
+        <div class="field"><label>고등학교 <span class="req">*</span></label><input placeholder="학교명 검색" value="방콕 제1고등학교"><span class="hint">재학 중 또는 출신 학교</span></div>
+        <div class="field"><label>TOPIK / 한국어 수준 <span style="font-weight:500;color:var(--ink2)">(선택)</span></label><select><option>TOPIK 4급</option><option>TOPIK 1급</option><option>TOPIK 2급</option><option>TOPIK 3급 이상</option><option>미입력</option></select><span class="hint">미입력도 가능하며, 상담 시 대학에 기본 프로필로 표시됩니다.</span></div>
+        <div class="field"><label>이름 (선택)</label><input placeholder="영문 이름 권장" value="NAPAT SUKSAI"></div>
+        <div class="field"><label>희망 전공·입학 시기 (선택)</label><select><option>컴퓨터공학 · 2027년 3월</option></select></div>
+        <label class="consent"><input type="checkbox" checked> 개인정보 수집·이용 및 상담 상대 대학에 국가·도시·TOPIK·고등학교 기본 프로필 제공에 동의합니다 <span class="req">*</span></label>
+        <button class="btn btn-primary btn-full" id="desktopSignupSubmit" disabled onclick="completeDesktopSignup()">회원가입</button>
+        <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--ink2)">이미 계정이 있나요? <button class="text-link" onclick="showPage('pLogin')">로그인</button></div>
+      </div>
+    </div>
+
+    <!-- ST-1 대학 찾기 -->
+    <div class="page" id="pFind">
+      <span class="ix">ST-1</span>
+      <h2 class="vt" style="margin-top:8px">대학 찾기</h2>
+      <div class="lead">한국 유학을 준비 중이라면, 대학과 직접 채팅으로 물어보세요</div>
+      <div class="findbar"><input placeholder="교명 검색 (국문/영문)"></div>
+      <div class="chips">
+        <span class="chip on" data-field="전체">전체</span><span class="chip" data-field="요양보호">요양보호</span><span class="chip" data-field="육성형전문기술">육성형전문기술</span><span class="chip" data-field="뿌리산업">뿌리산업</span><span class="chip" data-field="기타">기타</span>
+      </div>
+      <div class="ugrid" id="studentUniversityGridDesktop" aria-live="polite"></div>
+      <div class="nofind">
+        <div><b>찾는 대학이 없나요?</b><p>등록을 요청하면 대학이 등록될 때 알려드려요</p></div>
+        <button onclick="openModal('reqModal')">대학 등록 요청</button>
+      </div>
+    </div>
+
+    <!-- ST-2/3 내 상담 (2패널 메신저) -->
+    <div class="page" id="pChats">
+      <span class="ix">ST-2 / ST-3</span>
+      <h2 class="vt" style="margin-top:8px">내 상담</h2>
+      <div class="lead">대학별 대화는 하나의 채널로 계속 이어져요</div>
+      <div class="msgr">
+        <div class="clist">
+          <div class="citem act" onclick="selectConv(this,'서정대학교','진행중')">
+            <div class="ulogo">🏛️</div>
+            <div class="cb">
+              <div class="r1"><span class="nm">서정대학교</span><span class="tm">방금</span></div>
+              <div class="prev">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div>
+              <div class="r2"><span class="stchip st-live">진행중</span><span class="unread">2</span></div>
+            </div>
+          </div>
+          <div class="citem" onclick="selectConv(this,'한양여자대학교','대기')">
+            <div class="ulogo">🎓</div>
+            <div class="cb">
+              <div class="r1"><span class="nm">한양여자대학교</span><span class="tm">1시간 전</span></div>
+              <div class="prev">장학금 관련해서 문의드립니다</div>
+              <div class="r2"><span class="stchip st-wait">대기</span></div>
+            </div>
+          </div>
+          <div class="citem" onclick="selectConv(this,'연성대학교','종료')">
+            <div class="ulogo">🏫</div>
+            <div class="cb">
+              <div class="r1"><span class="nm">연성대학교</span><span class="tm">6월 30일</span></div>
+              <div class="prev">상담이 종료되었습니다.</div>
+              <div class="r2"><span class="stchip st-done">종료</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="conv">
+          <div class="chat-hd">
+            <button class="mobile-chat-back" type="button" onclick="showMobileConversationList()" aria-label="상담 목록으로 돌아가기">‹</button>
+            <div class="ulogo">🏛️</div>
+            <div class="tt">
+              <b id="chatUniv">서정대학교</b>
+              <small>이수진 입학팀 · <span style="color:#1a7f43">●</span> 운영중 · 운영 09:00–18:00 KST (내 시간 07:00–16:00)</small>
+            </div>
+            <span class="stchip st-live st" id="chatSt">진행중</span>
+          </div>
+          <div class="thread" id="thread">
+            <div class="day">오늘</div>
+            <div class="msg sys"><div class="bub">입학 상담이 시작되었어요 · 프로필(🇹🇭 태국 · 방콕 제1고)이 대학에 전달되었습니다</div></div>
+            <div class="msg"><div class="av">서정</div><div><div class="bub">Napat님 안녕하세요! 입학팀 이수진입니다. 2027년 3월 학부 입학을 준비하시는군요 😊</div><div class="meta">10:02</div></div></div>
+            <div class="msg me"><div><div class="bub">네! 컴퓨터공학과 지원 조건이 궁금해요. Do you have English materials?</div><div class="meta">읽음 · 10:03</div></div></div>
+            <div class="msg"><div class="av">서정</div><div><div class="bub">물론이죠. 우선 최근 성적증명서를 보내주시면 지원 가능 여부를 확인해드릴게요.</div><div class="meta">10:05</div></div></div>
+            <div class="msg me"><div><div class="bub">📎 문서 보관함에서 전송
+              <div class="doccard"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일 업로드</div></div></div>
+            </div><div class="meta">읽음 · 10:06</div></div></div>
+            <div class="msg"><div class="av">서정</div><div><div class="bub">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div><div class="meta">10:08</div></div></div>
+          </div>
+          <div class="composer">
+            <div class="attmenu" id="attMenu">
+              <button onclick="closeAtt()">💾 내 기기에서<small>사진·파일 직접 선택</small></button>
+              <button onclick="closeAtt();openModal('docPick')">🗂️ 문서 보관함에서<small>올려둔 서류를 바로 전송</small></button>
+            </div>
+            <button class="att" onclick="toggleAtt()">📎</button>
+            <input placeholder="메시지를 입력하세요" id="chatInput">
+            <button class="send" onclick="sendMsg()">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ST-4 문서 보관함 -->
+    <div class="page" id="pDocs">
+      <span class="ix">ST-4</span>
+      <h2 class="vt" style="margin-top:8px">문서 보관함</h2>
+      <div class="lead">한 번 올려두면 여러 대학 상담에서 재사용할 수 있어요</div>
+      <div class="docwrap">
+        <div>
+          <div id="desktopDocList">
+            <div class="doc-group" data-category="성적증명서">
+              <div class="doc-cat">성적증명서</div>
+              <div class="dcard"><div class="di">📄</div><div class="db"><div class="dn">성적증명서_2026.pdf</div><div class="dm">6월 28일 업로드 · 840KB</div><div class="sent">서정대학교에 전송됨 (v2)</div></div><span class="vch">v2</span></div>
+            </div>
+            <div class="doc-group" data-category="어학성적">
+              <div class="doc-cat">어학성적</div>
+              <div class="dcard"><div class="di">🗣️</div><div class="db"><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">6월 1일 업로드 · 420KB</div><div class="sent">3개 대학에 전송됨</div></div><span class="vch">v1</span></div>
+            </div>
+            <div class="doc-group" data-category="졸업(예정)증명서">
+              <div class="doc-cat">졸업(예정)증명서</div>
+              <div class="dcard empty-doc" style="opacity:.55"><div class="di">🎓</div><div class="db"><div class="dn">아직 업로드하지 않았어요</div><div class="dm">입학 지원 시 필요할 수 있어요</div></div></div>
+            </div>
+          </div>
+          <div class="upl" role="button" tabindex="0" onclick="openUploadModal()" onkeydown="if(event.key==='Enter'||event.key===' ')openUploadModal()">＋ 문서 업로드<small>카테고리를 지정해 PDF/JPG/PNG 파일을 올릴 수 있어요 (10MB 이하)</small></div>
+        </div>
+        <div class="sidebox">
+          <h4>전송 이력 요약</h4>
+          <div class="row"><span>서정대학교</span><b>2건</b></div>
+          <div class="row"><span>한양여자대학교</span><b>2건</b></div>
+          <div class="row"><span>연성대학교</span><b>1건</b></div>
+          <h4 style="margin-top:16px">안내</h4>
+          <div style="font-size:11.5px;color:var(--ink2);line-height:1.6">보관함 원본은 본인만 볼 수 있어요. 대학은 대화방에 전송한 사본만 열람할 수 있습니다. 보관함에서 삭제해도 이미 전송된 사본은 회수되지 않아요.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ST-5 마이 -->
+    <div class="page" id="pMy">
+      <span class="ix">ST-5</span>
+      <h2 class="vt" style="margin-top:8px">마이페이지</h2>
+      <div class="lead">상담 현황과 계정을 관리하세요</div>
+      <div class="mygrid">
+        <div>
+          <div class="prof">
+            <div class="pav">🇹🇭</div>
+            <div><b>NAPAT SUKSAI</b><small>태국 · 방콕 제1고등학교</small><small>napat@example.com ✓ 인증됨 · 희망: 컴퓨터공학 (2027년 3월)</small></div>
+          </div>
+          <div class="stat4">
+            <div class="stat"><b>3</b><small>상담 중인 대학</small></div>
+            <div class="stat"><b>2</b><small>진행 중</small></div>
+            <div class="stat"><b>1</b><small>종료</small></div>
+            <div class="stat"><b>4</b><small>보낸 문서</small></div>
+            <div class="stat"><b>1.2h</b><small>평균 응답 시간</small></div>
+          </div>
+          <div class="sect">알림</div>
+          <div class="noti">
+            <div class="ni">💬 <div>서정대학교의 새 메시지가 있어요<small>10분 전</small></div></div>
+            <div class="ni">🏫 <div>요청하신 <b>한양여자대학교</b>가 등록되었어요! 지금 상담을 시작해보세요<small>어제</small></div></div>
+            <div class="ni">📄 <div>연성대학교가 어학성적 서류를 요청했어요<small>2일 전</small></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="sect" style="margin-top:0">설정</div>
+          <div class="setrow">
+            <div class="si">언어 <small>한국어 ›</small></div>
+            <div class="si">이메일 알림 <small>켜짐 ›</small></div>
+            <div class="si">시간대 <small>Asia/Bangkok (자동) ›</small></div>
+            <div class="si">계정 탈퇴 <small style="color:var(--warn)">문서·대화 파기 안내 ›</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 등록 요청 모달 -->
+  <div class="modal-overlay" id="reqModal" onclick="if(event.target===this) closeModal('reqModal')">
+    <div class="modal-box">
+      <div class="modal-hd"><b>대학 등록 요청</b><button onclick="closeModal('reqModal')">✕</button></div>
+      <div class="modal-bd">
+        <div class="field"><label>대학 이름 <span class="req">*</span></label><input placeholder="국문 또는 영문 교명"></div>
+        <div class="mergehint">💡 이미 <b>12명</b>이 이 대학을 요청했어요 — 요청이 모이면 대학 등록 가능성이 높아져요</div>
+        <div class="field"><label>아는 정보 (선택)</label><input placeholder="지역, 웹사이트 등"></div>
+        <div class="field"><label>요청 이유 (선택)</label><input placeholder="예: 컴퓨터공학 지원 희망"></div>
+        <button class="btn btn-primary btn-full" onclick="closeModal('reqModal')">요청하기 — 대학이 등록되면 알려드려요</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 문서 선택 모달 -->
+  <div class="modal-overlay" id="docPick" onclick="if(event.target===this) closeModal('docPick')">
+    <div class="modal-box">
+      <div class="modal-hd"><b>문서 보관함에서 전송</b><button onclick="closeModal('docPick')">✕</button></div>
+      <div class="modal-bd">
+        <div class="pickitem" onclick="sendDoc('성적증명서_2026.pdf','성적증명서 · v2')"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일</div></div></div>
+        <div class="pickitem" onclick="sendDoc('TOPIK_4급_성적표.pdf','어학성적 · v1')"><span class="di">🗣️</span><div><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">어학성적 · v1 · 6월 1일</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 문서 업로드 모달 -->
+  <div class="modal-overlay" id="uploadModal" onclick="if(event.target===this) closeModal('uploadModal')">
+    <div class="modal-box">
+      <div class="modal-hd"><b>문서 업로드</b><button onclick="closeModal('uploadModal')">✕</button></div>
+      <div class="modal-bd">
+        <div class="upload-summary">업로드할 문서의 카테고리를 먼저 선택해 주세요. 같은 카테고리에 추가한 문서는 버전별로 보관됩니다.</div>
+        <div class="field"><label for="desktopUploadCategory">카테고리 <span class="req">*</span></label><select id="desktopUploadCategory"><option>성적증명서</option><option>어학성적</option><option>졸업(예정)증명서</option><option>기타</option></select></div>
+        <div class="field"><label for="desktopUploadFile">파일 <span class="req">*</span></label><input id="desktopUploadFile" type="file" accept=".pdf,.jpg,.jpeg,.png"><span class="hint">PDF/JPG/PNG · 최대 10MB</span></div>
+        <button class="btn btn-primary btn-full" onclick="uploadDesktopDocument()">선택한 카테고리로 업로드</button>
+      </div>
+    </div>
+  </div>
+
+<script src="university-data.js"></script>
+<script src="student-university-directory.js"></script>
+<script src="student-session.js"></script>
+<script>
+  const signupCities={
+    '베트남':['하노이','호치민','다낭'],
+    '태국':['방콕','치앙마이','콘깬'],
+    '중국':['베이징','상하이','칭다오'],
+    '우즈베키스탄':['타슈켄트','사마르칸트','부하라'],
+    '몽골':['울란바토르','에르데네트']
+  };
+  function updateSignupCities(){
+    const country=document.getElementById('signupCountry').value;
+    const city=document.getElementById('signupCity');
+    city.replaceChildren(...signupCities[country].map(name=>new Option(name,name)));
+  }
+  const protectedPages=new Set(['pChats','pDocs','pMy']);
+  const desktopQuery=new URLSearchParams(window.location.search);
+  const requestedUniversity=desktopQuery.get('universityId')||desktopQuery.get('university');
+  const requestedView=desktopQuery.get('view');
+  let studentAuthenticated=Boolean(window.UniChatStudentSession?.isSignedIn()), desktopEmailAuthState='unverified';
+  const desktopAuthCopy={
+    unverified:['이메일 인증 전입니다. 인증을 완료해야 회원가입할 수 있습니다.',''],
+    pending:['인증 코드를 발송했습니다. 6자리 코드를 입력해 주세요.','pending'],
+    success:['이메일 인증이 완료되었습니다. 이제 회원가입할 수 있습니다.','success'],
+    failure:['인증 코드가 일치하지 않습니다. 다시 입력하거나 코드를 재발송해 주세요.','error'],
+    expired:['인증 코드가 만료되었습니다. 새 코드를 발송해 주세요.','error']
+  };
+  function renderDesktopEmailAuth(){
+    const code=document.getElementById('desktopVerificationCode');
+    const verify=document.getElementById('desktopVerifyButton');
+    const status=document.getElementById('desktopAuthStatus');
+    const submit=document.getElementById('desktopSignupSubmit');
+    const [message,tone]=desktopAuthCopy[desktopEmailAuthState];
+    status.textContent=message; status.className='auth-status'+(tone?' '+tone:'');
+    const canVerify=desktopEmailAuthState==='pending'||desktopEmailAuthState==='failure';
+    code.disabled=!canVerify; verify.disabled=!canVerify;
+    submit.disabled=desktopEmailAuthState!=='success';
+    if(desktopEmailAuthState==='success') code.value='123456';
+    if(desktopEmailAuthState==='expired') code.value='123456';
+  }
+  function setDesktopEmailAuthState(state, openSignup=true){
+    studentAuthenticated=false; desktopEmailAuthState=state;
+    renderDesktopEmailAuth();
+    if(openSignup) showPage('pSignup',true);
+  }
+  function sendDesktopVerificationCode(){
+    setDesktopEmailAuthState('pending',false);
+    const code=document.getElementById('desktopVerificationCode'); code.value=''; code.focus();
+  }
+  function verifyDesktopEmail(){
+    const value=document.getElementById('desktopVerificationCode').value.trim();
+    setDesktopEmailAuthState(value==='123456'?'success':'failure',false);
+  }
+  function getDesktopConsultationMessage(university){
+    const consultation=university?.consultation||{};
+    const status=String(consultation.status||'').trim().toLowerCase();
+    if(status==='offline') return consultation.offlineMessage||'현재는 상담 운영시간이 아닙니다. 운영시간에 다시 상담을 시작해 주세요.';
+    if(status==='paused') return consultation.pausedMessage||'현재 신규 상담을 일시 중지했습니다. 잠시 후 다시 확인해 주세요.';
+    return '현재 이 대학의 상담을 시작할 수 없습니다. 대학 상세에서 운영 정보를 확인해 주세요.';
+  }
+  function returnToDesktopFind(university){
+    const name=university?.name?.ko||'선택한 대학';
+    window.alert(`${name}: ${getDesktopConsultationMessage(university)}`);
+    window.history?.replaceState?.({}, '', 'student-desktop.html?view=find');
+    showPage('pFind');
+  }
+  function openRequestedDesktopConsultation(){
+    if(requestedUniversity){
+      const university=window.UniversityDirectory?.resolve?.(requestedUniversity);
+      const isOpen=university?.publication?.status==='published'&&university?.consultation?.status==='open';
+      if(isOpen){
+        openChatFromFind(university.name.ko,'대기');
+        return;
+      }
+      returnToDesktopFind(university);
+      return;
+    }
+    showPage({docs:'pDocs',my:'pMy',signup:'pSignup'}[requestedView]||'pChats');
+  }
+  function completeDesktopSignup(){
+    if(desktopEmailAuthState!=='success'){ setDesktopEmailAuthState('unverified',false); return; }
+    studentAuthenticated=true; window.UniChatStudentSession?.signIn(); openRequestedDesktopConsultation();
+  }
+  function loginDesktopStudent(){ studentAuthenticated=true; window.UniChatStudentSession?.signIn(); openRequestedDesktopConsultation(); }
+  function showPage(id, bypassAuth=false){
+    if(!bypassAuth&&protectedPages.has(id)&&!studentAuthenticated){
+      id='pSignup'; renderDesktopEmailAuth();
+      const status=document.getElementById('desktopAuthStatus');
+      if(desktopEmailAuthState==='unverified') status.textContent='이메일 인증과 회원가입을 완료해야 내 상담과 문서 보관함을 이용할 수 있습니다.';
+    }
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+    document.getElementById(id).classList.add('show');
+    if(id==='pChats' && window.innerWidth<=760) document.querySelector('.msgr')?.classList.remove('show-conversation');
+    document.getElementById('appHeader').style.display=(id==='pLogin'||id==='pSignup')?'none':'';
+    document.querySelectorAll('.scn button').forEach(b=>b.classList.toggle('on', b.dataset.p===id));
+    document.querySelectorAll('nav.menu button').forEach(b=>b.classList.toggle('on', b.dataset.p===id));
+  }
+  document.querySelectorAll('.scn button, nav.menu button').forEach(b=>{
+    if(b.dataset.p) b.addEventListener('click', ()=> showPage(b.dataset.p));
+  });
+  document.querySelectorAll('.scn button[data-auth-state]').forEach(b=> b.addEventListener('click', ()=>{
+    setDesktopEmailAuthState(b.dataset.authState); b.classList.add('on');
+  }) );
+  document.querySelectorAll('.scn button[data-chat-state]').forEach(b=> b.addEventListener('click', ()=>{
+    studentAuthenticated=true; window.UniChatStudentSession?.signIn(); setChatHeader('서정대학교',b.dataset.chatState); showPage('pChats'); b.classList.add('on');
+  }) );
+  renderDesktopEmailAuth();
+
+  const stMap={'대기':'st-wait','진행중':'st-live','종료':'st-done'};
+  const activeThreadMarkup=document.getElementById('thread').innerHTML;
+  const completedThreadMarkup=activeThreadMarkup.replace('<div class="day">오늘</div>','<div class="day">6월 30일</div>');
+  let currentChatStatus='진행중', currentChatUniversity='서정대학교';
+  function renderChatState(){
+    const thread=document.getElementById('thread'), input=document.getElementById('chatInput'), composer=document.querySelector('#pChats .composer');
+    const contact=document.querySelector('#pChats .chat-hd .tt small');
+    composer.style.display='flex'; input.disabled=false;
+    if(currentChatStatus==='대기'){
+      contact.textContent='담당자 배정 대기 · 대학이 상담을 시작하면 알려드려요';
+      input.placeholder='추가 메시지 남기기';
+      thread.innerHTML=`<div class="day">오늘</div><div class="msg sys"><div class="bub">상담을 신청했어요</div></div><div class="msg me"><div><div class="bub">장학금 관련해서 문의드립니다.</div><div class="meta">보냄 · 아직 읽지 않음</div></div></div>`;
+    }else if(currentChatStatus==='종료'){
+      contact.textContent='상담이 종료되었습니다';
+      composer.style.display='none';
+      thread.innerHTML=`${completedThreadMarkup}<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div><button class="btn btn-primary" style="margin:14px" onclick="reopenConsultation()">다시 상담하기</button>`;
+    }else{
+      contact.innerHTML='이수진 입학팀 · <span style="color:#1a7f43">●</span> 운영중 · 운영 09:00–18:00 KST (내 시간 07:00–16:00)';
+      input.placeholder='메시지를 입력하세요';
+      thread.innerHTML=activeThreadMarkup;
+    }
+  }
+  function setChatHeader(univ, st){
+    currentChatUniversity=univ; currentChatStatus=st;
+    document.getElementById('chatUniv').textContent=univ;
+    const chip=document.getElementById('chatSt');
+    chip.textContent=st; chip.className='stchip '+stMap[st]+' st';
+    renderChatState();
+  }
+  function selectConv(el, univ, st){
+    document.querySelectorAll('.citem').forEach(c=>c.classList.remove('act'));
+    el.classList.add('act');
+    setChatHeader(univ, st);
+    if(window.innerWidth<=760) document.querySelector('.msgr')?.classList.add('show-conversation');
+  }
+  function openChatFromFind(univ, st){
+    setChatHeader(univ, st);
+    showPage('pChats');
+    if(window.innerWidth<=760) document.querySelector('.msgr')?.classList.add('show-conversation');
+  }
+  function showMobileConversationList(){
+    document.querySelector('.msgr')?.classList.remove('show-conversation');
+  }
+  function reopenConsultation(){ setChatHeader(currentChatUniversity,'대기'); }
+  function toggleAtt(){ document.getElementById('attMenu').classList.toggle('show'); }
+  function closeAtt(){ document.getElementById('attMenu').classList.remove('show'); }
+  function openModal(id){ document.getElementById(id).classList.add('show'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+  function openUploadModal(){
+    document.getElementById('desktopUploadFile').value='';
+    openModal('uploadModal');
+  }
+  function uploadDesktopDocument(){
+    const category=document.getElementById('desktopUploadCategory').value;
+    const input=document.getElementById('desktopUploadFile');
+    const file=input.files[0];
+    if(!file){ alert('업로드할 파일을 선택해 주세요.'); return; }
+    if(!/\.(pdf|jpe?g|png)$/i.test(file.name)){ alert('PDF/JPG/PNG 파일만 업로드할 수 있어요.'); return; }
+    if(file.size>10*1024*1024){ alert('10MB 이하의 파일만 업로드할 수 있어요.'); return; }
+
+    const list=document.getElementById('desktopDocList');
+    let group=[...list.querySelectorAll('.doc-group')].find(el=>el.dataset.category===category);
+    if(!group){
+      group=document.createElement('div');
+      group.className='doc-group';
+      group.dataset.category=category;
+      const heading=document.createElement('div');
+      heading.className='doc-cat';
+      heading.textContent=category;
+      group.appendChild(heading);
+      list.appendChild(group);
+    }
+    const empty=group.querySelector('.empty-doc');
+    if(empty) empty.remove();
+    const versions=[...group.querySelectorAll('.vch')].map(el=>Number(el.textContent.replace('v',''))||0);
+    const version=Math.max(0,...versions)+1;
+    const icons={'성적증명서':'📄','어학성적':'🗣️','졸업(예정)증명서':'🎓','기타':'📎'};
+    const card=document.createElement('div');
+    card.className='dcard';
+    card.innerHTML=`<div class="di">${icons[category]||'📎'}</div><div class="db"><div class="dn"></div><div class="dm">방금 업로드 · ${formatFileSize(file.size)}</div><div class="sent">전송 전</div></div><span class="vch">v${version}</span>`;
+    card.querySelector('.dn').textContent=file.name;
+    group.appendChild(card);
+
+    const pick=document.createElement('div');
+    pick.className='pickitem';
+    pick.innerHTML=`<span class="di">${icons[category]||'📎'}</span><div><div class="dn"></div><div class="dm">${category} · v${version} · 방금</div></div>`;
+    pick.querySelector('.dn').textContent=file.name;
+    pick.addEventListener('click',()=>sendDoc(file.name,`${category} · v${version}`));
+    document.querySelector('#docPick .modal-bd').appendChild(pick);
+    closeModal('uploadModal');
+  }
+  function formatFileSize(bytes){
+    if(bytes<1024) return `${bytes}B`;
+    if(bytes<1024*1024) return `${Math.ceil(bytes/1024)}KB`;
+    return `${(bytes/1024/1024).toFixed(1)}MB`;
+  }
+
+  function sendMsg(){
+    const el=document.getElementById('chatInput');
+    if(!el.value.trim()) return;
+    const stateMeta=currentChatStatus==='대기'?'보냄 · 아직 읽지 않음':'읽음 · 방금';
+    addMe(`<div class="bub">${el.value.replace(/</g,'&lt;')}</div><div class="meta">${stateMeta}</div>`);
+    el.value='';
+  }
+  function sendDoc(name, meta){
+    closeModal('docPick');
+    const stateMeta=currentChatStatus==='대기'?'보냄 · 아직 읽지 않음':'읽음 · 방금';
+    addMe(`<div class="bub">📎 문서 보관함에서 전송<div class="doccard"><span class="di">📄</span><div><div class="dn">${name}</div><div class="dm">${meta}</div></div></div></div><div class="meta">${stateMeta}</div>`);
+  }
+  function addMe(inner){
+    const t=document.getElementById('thread');
+    const div=document.createElement('div');
+    div.className='msg me';
+    div.innerHTML=`<div>${inner}</div>`;
+    t.appendChild(div);
+    t.scrollTop=99999;
+  }
+  document.getElementById('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendMsg(); });
+  function openUniversityDetail(universityId, st){
+    let detail=document.getElementById('universityDetail');
+    if(!detail){
+      detail=document.createElement('div'); detail.className='modal-overlay'; detail.id='universityDetail';
+      detail.innerHTML=`<div class="modal-box" style="width:620px"><div class="modal-hd"><b>대학 상세</b><button onclick="closeModal('universityDetail')">✕</button></div><div class="modal-bd" id="universityDetailBody"></div></div>`;
+      document.body.appendChild(detail);
+    }
+    const action=st==='진행중'?'대화 이어하기':'상담하기';
+    const rendered=window.UniChatStudentUniversityDirectory?.renderDetail(
+      document.getElementById('universityDetailBody'), universityId,
+      {
+        actionClass:'btn btn-primary btn-full',
+        actionLabel:action,
+        onAction:(university)=>{
+          if(university.consultation?.status!=='open') return;
+          closeModal('universityDetail');
+          openChatFromFind(university.name.ko,st);
+        }
+      }
+    );
+    if(rendered) openModal('universityDetail');
+  }
+  window.UniChatStudentUniversityDirectory?.mount({
+    container:document.getElementById('studentUniversityGridDesktop'),
+    layout:'desktop',
+    searchInput:document.querySelector('#pFind .findbar input'),
+    chips:[...document.querySelectorAll('#pFind .chips .chip')],
+    getConversationStatus:(university)=>university.id==='seojeong'?'진행중':'대기',
+    onSelect:(university,status)=>openUniversityDetail(university.id,status)
+  });
+  function closeDesktopProfileMenu(){
+    const dropdown=document.getElementById('desktopProfileDropdown');
+    dropdown.hidden=true;
+    document.getElementById('desktopProfileTrigger').setAttribute('aria-expanded','false');
+  }
+  function toggleDesktopProfileMenu(){
+    const dropdown=document.getElementById('desktopProfileDropdown');
+    const open=dropdown.hidden;
+    dropdown.hidden=!open;
+    document.getElementById('desktopProfileTrigger').setAttribute('aria-expanded',open?'true':'false');
+  }
+  function logoutDesktopStudent(){
+    window.UniChatStudentSession?.signOut();
+    studentAuthenticated=false;
+    closeDesktopProfileMenu();
+    window.location.href='기업용_배너_포함.html';
+  }
+  document.addEventListener('click',event=>{
+    const menu=document.getElementById('desktopProfileMenu');
+    if(menu&&!menu.contains(event.target)) closeDesktopProfileMenu();
+  });
+  document.addEventListener('keydown',event=>{ if(event.key==='Escape') closeDesktopProfileMenu(); });
+  function toggleLang(el){
+    const ko = el.innerHTML.includes('<b>한국어</b>');
+    el.innerHTML = ko ? '한국어 / <b>EN</b>' : '<b>한국어</b> / EN';
+  }
+  if(studentAuthenticated) openRequestedDesktopConsultation();
+</script>
+</body>
+</html>

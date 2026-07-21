@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniChat 대학 포털 — 로그인·상담·통계</title>
+<link rel="stylesheet" href="unichat-brand.css">
+<style>
+  :root{
+    --ink:#1f2933; --ink2:#52606d; --line:#cbd2d9; --line2:#e4e7eb;
+    --bg:#eef1f5; --panel:#ffffff; --brand:#1f4ba8;
+    --accent:#0b6b5e; --warn:#b42318; --warnbg:#fef3f2;
+    --admin:#1f2d3d; --admin2:#2a3b50;
+    --bubble-me:#1f4ba8;--bubble-me-tx:#fff;--bubble-you:#eef1f5;--bubble-you-tx:#1b2230;
+    --shadow:0 1px 3px rgba(16,24,40,.08); --r:8px;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+    --sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  body{margin:0;background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px}
+  .wf-flag{background:repeating-linear-gradient(45deg,#fff6e6,#fff6e6 12px,#ffedcc 12px,#ffedcc 24px);
+    border-bottom:1px solid #e8c97a;padding:7px 16px;font-size:12.5px;color:#7a5b16;text-align:center}
+  .wf-flag b{color:#5a4310}
+  .ix{font-size:11px;color:#fff;background:var(--accent);border-radius:4px;padding:2px 7px;font-family:var(--mono)}
+
+  /* 정책·상태 시연용 시나리오 전환기 */
+  .scenario-bar{background:#fff;border-bottom:1px solid var(--line2);padding:9px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 1px 2px rgba(16,24,40,.04);position:relative;z-index:20}
+  .scenario-bar strong{font-size:12px;color:var(--admin);margin-right:2px}
+  .scenario-control{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink2);font-weight:700}
+  .scenario-control select{border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);padding:5px 8px;font:11.5px var(--sans)}
+  .scenario-summary{margin-left:auto;font-size:10.5px;color:var(--brand);font-weight:700;background:#eef3fb;border-radius:999px;padding:4px 9px}
+  .scenario-toast{position:fixed;top:86px;left:50%;transform:translateX(-50%);z-index:200;background:var(--warn);color:#fff;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:700;box-shadow:0 8px 24px rgba(16,24,40,.2)}
+
+  .account-state-stage{min-height:calc(100vh - 104px);background:linear-gradient(135deg,#f5f7fb,#e8eef8);display:grid;place-items:center;padding:32px 20px}
+  .account-state-card{width:min(560px,100%);background:#fff;border:1px solid var(--line2);border-radius:16px;padding:34px;text-align:center;box-shadow:0 20px 60px rgba(31,45,61,.12)}
+  .account-state-card .state-icon{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 13px;background:#fff4e5;color:#9a5b00;font-size:25px}
+  .account-state-card h1{font-size:22px;margin:0 0 7px}
+  .account-state-card p{color:var(--ink2);font-size:13px;margin:0 auto 18px;max-width:440px}
+  .account-state-meta{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px;font-size:11.5px}
+  .account-state-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+
+  .admin-top{background:var(--admin);color:#fff;display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 18px;position:sticky;top:0;z-index:10}
+  .admin-top .brand{font-weight:800;font-size:14px}
+  .admin-top .brand.unichat-brand{gap:10px;color:#fff}
+  .admin-top .brand .unichat-brand-name{font-size:15px}
+  .admin-top .brand .unichat-brand-context{border-color:rgba(205,216,228,.35);color:#cdd8e4}
+  .admin-top .path{font-size:12px;color:#9fb0c4;font-family:var(--mono)}
+  .admin-top .right{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12.5px;color:#cdd8e4}
+  .top-link{color:#dce6f2;text-decoration:none;border:1px solid #53657a;border-radius:7px;padding:5px 10px;font-size:11.5px;font-weight:700;white-space:nowrap}
+  .top-link:hover{background:#34485f;color:#fff}
+  .logout-btn{border:0;background:none;color:#aebed0;font-family:var(--sans);font-size:11.5px;text-decoration:underline;cursor:pointer;padding:4px}
+  .mystatus{display:flex;align-items:center;gap:6px;background:#16324d;border-radius:999px;padding:5px 12px}
+  .mystatus .dot{width:7px;height:7px;border-radius:50%;background:#5fe3a1}
+  .mystatus select{background:none;border:none;color:#cdd8e4;font-size:12px;font-family:var(--sans)}
+  .admin-top .ava{width:26px;height:26px;border-radius:50%;background:#3a4d66;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+
+  .shell{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 84px)}
+  .side{background:var(--admin2);color:#cdd8e4;padding:12px 8px}
+  .side .grp{font-size:11px;color:#7e91a8;padding:10px 12px 4px;font-family:var(--mono)}
+  .side a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;color:#cdd8e4;text-decoration:none;font-size:13px;cursor:pointer}
+  .side a.on{background:var(--brand);color:#fff;font-weight:700}
+  .side a .ct{margin-left:auto;background:var(--warn);color:#fff;border-radius:999px;font-size:10px;padding:0 6px}
+
+  .page{display:none}
+  .page.show{display:block}
+
+  /* ===== 로그인 ===== */
+  .auth-stage{min-height:calc(100vh - 36px);background:linear-gradient(135deg,#f5f7fb 0%,#e8eef8 58%,#eef6f3 100%);display:flex;flex-direction:column}
+  .auth-nav{min-height:72px;background:#fff;border-bottom:1px solid var(--line2);display:flex;align-items:center;padding:0 30px;gap:12px}
+  .auth-nav .auth-brand .unichat-brand-context{color:var(--ink2);border-color:var(--line)}
+  .auth-nav .back-home{margin-left:auto;color:var(--ink2);text-decoration:none;font-size:12.5px;font-weight:700;border:1px solid var(--line);border-radius:8px;padding:7px 11px}
+  .auth-wrap{width:min(940px,calc(100% - 40px));margin:auto;display:grid;grid-template-columns:1.05fr .95fr;background:#fff;border:1px solid var(--line2);border-radius:18px;overflow:hidden;box-shadow:0 24px 70px rgba(31,45,61,.13)}
+  .auth-intro{background:var(--admin);color:#fff;padding:52px 46px;display:flex;flex-direction:column;justify-content:center;min-height:520px;position:relative;overflow:hidden}
+  .auth-intro::after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;background:rgba(70,113,200,.2);right:-80px;bottom:-80px}
+  .auth-kicker{font-size:11px;color:#a9bfe2;font-family:var(--mono);letter-spacing:.8px;margin-bottom:12px}
+  .auth-intro h1{font-size:31px;line-height:1.3;margin:0 0 15px;letter-spacing:-.7px}
+  .auth-intro p{font-size:14px;color:#c9d5e3;margin:0 0 30px;max-width:350px}
+  .auth-benefits{display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+  .auth-benefit{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#e6edf5}
+  .auth-benefit i{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-style:normal}
+  .auth-card{padding:48px 44px;display:flex;flex-direction:column;justify-content:center}
+  .auth-card h2{font-size:23px;margin:0 0 6px;letter-spacing:-.4px}
+  .auth-card .lead{color:var(--ink2);font-size:12.5px;margin:0 0 25px}
+  .auth-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .auth-field label{font-size:12px;font-weight:700;color:var(--ink2)}
+  .auth-field input{border:1px solid var(--line);border-radius:9px;padding:11px 12px;font:13.5px var(--sans);outline:none}
+  .auth-field input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(31,75,168,.1)}
+  .auth-row{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--ink2);margin:1px 0 18px}
+  .auth-row label{display:flex;align-items:center;gap:5px}
+  .auth-row a{color:var(--brand);text-decoration:none;font-weight:700}
+  .auth-submit{width:100%;border:0;border-radius:9px;padding:11px 15px;background:var(--brand);color:#fff;font:700 13.5px var(--sans);cursor:pointer}
+  .auth-submit:hover{background:#173e8e}
+  .auth-error{display:none;color:var(--warn);background:var(--warnbg);border:1px solid #fecdca;border-radius:8px;padding:8px 10px;font-size:11.5px;margin:-4px 0 12px}
+  .auth-divider{display:flex;align-items:center;gap:10px;color:#9aa4b2;font-size:11px;margin:22px 0}
+  .auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line2);flex:1}
+  .register-cta{border:1px solid var(--brand);border-radius:9px;padding:10px 15px;background:#fff;color:var(--brand);font:700 13px var(--sans);cursor:pointer;width:100%}
+  .register-note{text-align:center;color:var(--ink2);font-size:11.5px;margin:9px 0 0}
+
+  body.public-mode .admin-top .right{display:none}
+  body.public-mode .shell{grid-template-columns:1fr}
+  body.public-mode .side{display:none}
+  body.public-mode .body2{max-width:780px;margin:0 auto;padding-top:30px}
+
+  /* ===== UV-1 인박스 ===== */
+  .inbox-shell{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 84px)}
+  .inbox-list{border-right:1px solid var(--line2);background:#fff;display:flex;flex-direction:column}
+  .inbox-list .hd{padding:14px 16px 8px}
+  .inbox-list h1{font-size:17px;margin:0 0 8px}
+  .kpis{display:flex;gap:8px;margin-bottom:10px}
+  .kpi{flex:1;background:var(--bg);border-radius:8px;padding:8px 10px;text-align:center}
+  .kpi b{display:block;font-size:15px}
+  .kpi small{font-size:10px;color:var(--ink2)}
+  .itabs{display:flex;gap:4px;border-bottom:1px solid var(--line2);padding:0 12px}
+  .itabs button{border:0;background:none;padding:9px 10px;font-size:12.5px;font-weight:700;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;font-family:var(--sans)}
+  .itabs button.on{color:var(--brand);border-bottom-color:var(--brand)}
+  .itabs button .n{color:var(--warn);margin-left:3px}
+  .search{padding:10px 12px;border-bottom:1px solid var(--line2)}
+  .search input{width:100%;border:1px solid var(--line);border-radius:8px;padding:7px 11px;font-size:12.5px}
+  .clist{overflow-y:auto;flex:1}
+  .ccard{padding:12px 16px;border-bottom:1px solid var(--line2);cursor:pointer;display:flex;gap:10px;position:relative}
+  .ccard:hover{background:#f7faff}
+  .ccard.act{background:#eef3fb;border-left:3px solid var(--brand)}
+  .ccard.unassigned{background:#fffaf0}
+  .ccard .av{width:34px;height:34px;border-radius:50%;background:#eef1f5;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+  .ccard .bd{flex:1;min-width:0}
+  .ccard .row1{display:flex;justify-content:space-between;gap:6px}
+  .ccard .nm{font-weight:700;font-size:13px}
+  .ccard .nm small{font-weight:500;color:var(--ink2);font-size:10.5px}
+  .ccard .tm{font-size:10.5px;color:#aeb6c4;font-family:var(--mono);white-space:nowrap}
+  .ccard .prev{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .ccard .tagrow2{display:flex;gap:5px;margin-top:6px;align-items:center}
+  .tagchip{font-size:10px;border-radius:999px;padding:2px 8px;font-weight:700}
+  .tag-adm{background:#e7edf6;color:var(--brand)}
+  .tag-sch{background:#eefaf3;color:#0b6b5e}
+  .tag-dorm{background:#f3edfa;color:#6d3fb0}
+  .tag-etc{background:#eef1f5;color:#52606d}
+  .stchip{font-size:10px;border-radius:999px;padding:2px 8px;font-weight:700}
+  .st-wait{background:#fff4e5;color:#9a5b00}.st-live{background:#e7edf6;color:var(--brand)}.st-done{background:#e7f6ec;color:#1a7f43}
+  .claimbtn{font-size:10.5px;border:1px solid var(--brand);color:var(--brand);background:#fff;border-radius:999px;padding:2px 9px;font-weight:700;cursor:pointer;margin-left:auto}
+
+  /* 대화 상세 */
+  .conv{display:grid;grid-template-columns:1fr 310px;height:100%}
+  .conv-main{display:flex;flex-direction:column;background:#f7f9fb;min-width:0}
+  .conv-hd{background:#fff;border-bottom:1px solid var(--line2);padding:13px 18px;display:flex;align-items:center;gap:10px}
+  .conv-hd .nm{font-weight:800;font-size:15px}
+  .conv-hd .flag{font-size:16px}
+  .conv-hd .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .btn{border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);font-family:var(--sans)}
+  .btn-primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .btn-warn{background:#fff;border-color:var(--warn);color:var(--warn)}
+
+  .thread{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
+  .day{text-align:center;font-size:11px;color:var(--ink2);margin:4px 0}
+  .msg{display:flex;gap:8px;max-width:70%}
+  .msg .av{width:26px;height:26px;border-radius:50%;background:#eef1f5;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+  .msg .bub{background:var(--bubble-you);color:var(--bubble-you-tx);padding:9px 13px;border-radius:14px 14px 14px 4px;font-size:13.5px}
+  .msg .meta{font-size:10px;color:#aeb6c4;margin-top:3px}
+  .msg.me{align-self:flex-end;flex-direction:row-reverse}
+  .msg.me .bub{background:var(--bubble-me);color:var(--bubble-me-tx);border-radius:14px 14px 4px 14px}
+  .msg.me .meta{text-align:right}
+  .msg.sys{align-self:center;max-width:100%}
+  .msg.sys .bub{background:#e7edf6;color:var(--brand);font-size:11.5px;border-radius:10px}
+  .doccard{border:1px solid var(--line2);border-radius:10px;padding:8px 11px;display:flex;gap:9px;align-items:center;margin-top:3px;background:#fff}
+  .doccard .di{font-size:18px}
+  .doccard .dn{font-size:12.5px;font-weight:700;line-height:1.3;color:var(--ink)}
+  .doccard .dm{font-size:10.5px;color:var(--ink2)}
+
+  .composer{border-top:1px solid var(--line2);background:#fff;padding:10px 16px;display:flex;gap:8px;align-items:center}
+  .composer input{flex:1;border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-size:13.5px}
+  .composer .att{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink2)}
+  .composer .send{width:36px;height:36px;border-radius:50%;background:var(--brand);border:none;color:#fff;cursor:pointer}
+
+  /* 우측 학생 정보 패널 */
+  .vinfo{background:#fff;border-left:1px solid var(--line2);padding:16px;overflow-y:auto}
+  .vinfo h4{font-size:12px;color:var(--ink2);margin:15px 0 8px;text-transform:uppercase;letter-spacing:.4px}
+  .vinfo h4:first-child{margin-top:0}
+  .kv{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line2);gap:8px}
+  .kv b{font-weight:600;text-align:right}
+  .mask{filter:blur(3px);cursor:pointer}
+  .masktoggle{font-size:11px;color:var(--brand);cursor:pointer;text-decoration:underline}
+  .assignbox select{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12.5px;margin-bottom:6px;font-family:var(--sans)}
+  .notebox textarea{width:100%;border:1px solid var(--line);border-radius:7px;padding:8px;font-size:12.5px;font-family:var(--sans);min-height:56px}
+  .logmini{font-size:11px;color:var(--ink2);padding:4px 0;border-bottom:1px dashed var(--line2)}
+  .logbtn{width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:12.5px;color:var(--ink2);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--sans)}
+  .logbtn:hover{background:var(--bg)}
+  .logbtn .arrow{margin-left:auto;color:#aeb6c4}
+
+  .filelist{display:flex;flex-direction:column;gap:8px}
+  .fileitem{display:flex;align-items:center;gap:9px;border:1px solid var(--line2);border-radius:8px;padding:8px 10px}
+  .fileitem .fi{width:30px;height:30px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .fileitem .fb{flex:1;min-width:0}
+  .fileitem .fn{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fileitem .fm{font-size:10.5px;color:var(--ink2)}
+  .fileitem .fa{font-size:11px;color:var(--brand);text-decoration:none;font-weight:700;flex-shrink:0}
+
+  .reqdoc{display:flex;gap:6px;margin-top:8px}
+  .reqdoc select{flex:1;border:1px solid var(--line);border-radius:7px;padding:7px 9px;font-size:12px;font-family:var(--sans)}
+  .reqdoc button{font-size:11.5px;font-weight:700;color:#fff;background:var(--brand);border:none;border-radius:7px;padding:7px 12px;cursor:pointer;white-space:nowrap}
+
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:100;align-items:center;justify-content:center}
+  .modal-overlay.show{display:flex}
+  .modal-box{background:#fff;border-radius:12px;width:420px;max-height:70vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(16,24,40,.3)}
+  .modal-hd{padding:14px 18px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:8px}
+  .modal-hd b{font-size:14.5px}
+  .modal-hd button{margin-left:auto;border:none;background:none;font-size:17px;cursor:pointer;color:var(--ink2)}
+  .modal-body{padding:6px 18px 14px;overflow-y:auto}
+  .modal-body .logmini{padding:7px 0}
+
+  /* ===== 공용 설정형 페이지 ===== */
+  .body2{padding:22px 26px;max-width:860px}
+  .body2 h1{font-size:20px;margin:0 0 4px}
+  .body2 .sub{color:var(--ink2);font-size:13px;margin:0 0 20px}
+  .panelbox{background:#fff;border:1px solid var(--line2);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px}
+  .panelbox .ph{padding:13px 17px;border-bottom:1px solid var(--line2);font-weight:700;display:flex;align-items:center;gap:8px}
+  .panelbox .pb{padding:18px}
+  .togglerow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line2);gap:12px}
+  .togglerow:last-child{border-bottom:0}
+  .togglerow .lab b{display:block;font-size:13.5px}
+  .togglerow .lab small{font-size:12px;color:var(--ink2)}
+  .sw{width:40px;height:22px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;flex-shrink:0}
+  .sw.on{background:var(--brand)}
+  .sw::after{content:"";position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:.15s}
+  .sw.on::after{left:20px}
+  .maprow{display:grid;grid-template-columns:1fr 20px 1fr;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2);font-size:13px}
+  .maprow select{border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:12.5px;font-family:var(--sans)}
+  table.hours{width:100%;border-collapse:collapse;font-size:13px}
+  table.hours td,table.hours th{padding:8px;border-bottom:1px solid var(--line2)}
+  table.hours th{color:var(--ink2);font-size:12px;text-align:left}
+  table.hours input{border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:12px;width:80px}
+  .consultation-state-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0 14px}
+  .consultation-state-option{position:relative;display:block;cursor:pointer}
+  .consultation-state-option input{position:absolute;opacity:0;pointer-events:none}
+  .consultation-state-option span{display:block;min-height:104px;padding:13px;border:1px solid var(--line);border-radius:9px;background:#fff;transition:.16s ease}
+  .consultation-state-option strong{display:block;font-size:13px;margin-bottom:4px}
+  .consultation-state-option small{display:block;font-size:11px;color:var(--ink2);line-height:1.45}
+  .consultation-state-option input:focus-visible + span{outline:3px solid rgba(31,75,168,.22);outline-offset:2px}
+  .consultation-state-option input:checked + span{border-color:var(--brand);background:#eef3fb;box-shadow:0 0 0 1px var(--brand)}
+  .consultation-state-summary{display:flex;align-items:flex-start;gap:8px;border-radius:8px;background:var(--bg);padding:10px 12px;font-size:12px;color:var(--ink2)}
+  .consultation-state-summary b{color:var(--ink)}
+  .consultation-status-chip{font-size:10px;border-radius:999px;padding:3px 8px;font-weight:700}
+  .consultation-status-chip.open{background:#e7f6ec;color:#1a7f43}.consultation-status-chip.offline{background:#fff4e5;color:#9a5b00}.consultation-status-chip.paused{background:var(--warnbg);color:var(--warn)}
+  #page-settings textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13px;font-family:var(--sans);min-height:58px;resize:vertical}
+
+  /* UV-0 등록 신청 */
+  .steps{display:flex;gap:8px;margin-bottom:18px}
+  .step{flex:1;text-align:center;font-size:12px;color:var(--ink2);padding:8px;border-radius:8px;background:#fff;border:1px solid var(--line2)}
+  .step.on{background:var(--brand);color:#fff;font-weight:700;border-color:var(--brand)}
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+  .field label{font-size:12px;color:var(--ink2);font-weight:600}
+  .field label .req{color:var(--warn)}
+  .field input,.field select{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13.5px;font-family:var(--sans)}
+  .field .hint{font-size:11px;color:#8b96a5}
+  .vertbox{border:1px solid var(--line2);border-radius:10px;padding:14px;margin-bottom:12px}
+  .vertbox b{font-size:13px;display:flex;align-items:center;gap:7px}
+  .vertbox p{font-size:12px;color:var(--ink2);margin:4px 0 10px}
+  .waitcard{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:22px;text-align:center;margin-top:16px}
+  .waitcard .wic{width:52px;height:52px;border-radius:50%;background:#fff4e5;color:#9a5b00;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 10px}
+  .reg-pane{display:none}
+  .reg-pane.show{display:block}
+  .reg-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 32px}
+  .reg-actions .left{display:flex;gap:8px}
+  .reg-actions .btn{min-width:92px}
+  .reg-complete{display:none}
+  .reg-complete.show{display:block}
+  .waitcard.complete .wic{background:#e7f6ec;color:#1a7f43}
+  .waitcard.complete{border-color:#b7e1c4}
+  .reg-help{font-size:11.5px;color:var(--ink2);margin-top:10px}
+
+  /* ===== 통계 ===== */
+  .stats-body{max-width:1120px}
+  .stat-filter{display:flex;align-items:center;gap:8px;margin-left:auto}
+  .stat-filter select{border:1px solid var(--line);border-radius:7px;padding:6px 9px;font:12px var(--sans);background:#fff}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .stat-card{background:#fff;border:1px solid var(--line2);border-radius:11px;padding:16px;box-shadow:var(--shadow)}
+  .stat-card .sl{font-size:11.5px;color:var(--ink2);display:flex;justify-content:space-between;gap:6px}
+  .stat-card .sv{font-size:25px;font-weight:850;margin:5px 0 1px;letter-spacing:-.4px}
+  .stat-card .delta{font-size:10.5px;color:#1a7f43;font-weight:700}
+  .stats-cols{display:grid;grid-template-columns:1.35fr .85fr;gap:16px;margin-bottom:18px}
+  .chart-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .legend{display:flex;gap:12px;font-size:10.5px;color:var(--ink2)}
+  .legend span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--brand);margin-right:5px}
+  .legend span:last-child::before{background:#78a0ed}
+  .chart{height:210px;display:flex;align-items:flex-end;gap:14px;padding:18px 4px 2px;border-bottom:1px solid var(--line)}
+  .bar-day{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;position:relative}
+  .bar-stack{height:var(--h);min-height:12px;width:min(36px,68%);border-radius:7px 7px 2px 2px;background:linear-gradient(to top,var(--brand) 0 66%,#78a0ed 66%);position:relative}
+  .bar-stack:hover::after{content:attr(data-value);position:absolute;top:-25px;left:50%;transform:translateX(-50%);background:var(--admin);color:#fff;border-radius:5px;padding:3px 7px;font-size:10px;white-space:nowrap}
+  .bar-day small{font-size:10px;color:var(--ink2)}
+  .cat-list{display:flex;flex-direction:column;gap:14px}
+  .cat-row .cr{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+  .cat-row .track{height:7px;border-radius:999px;background:var(--bg);overflow:hidden}
+  .cat-row .fill{height:100%;border-radius:999px;background:var(--brand);width:var(--w)}
+  .cat-row:nth-child(2) .fill{background:#0b6b5e}.cat-row:nth-child(3) .fill{background:#6d3fb0}.cat-row:nth-child(4) .fill{background:#8995a5}
+  .perf{width:100%;border-collapse:collapse;font-size:12.5px}
+  .perf th,.perf td{padding:10px 9px;border-bottom:1px solid var(--line2);text-align:left}
+  .perf th{font-size:11px;color:var(--ink2);font-weight:700;background:#f8fafc}
+  .perf td:nth-child(n+2),.perf th:nth-child(n+2){text-align:right}
+  .perf tr:last-child td{border-bottom:0}
+
+  @media(max-width:800px){
+    .scenario-summary{width:100%;margin-left:0;text-align:center}.scenario-control{flex:1;min-width:150px}.scenario-control select{flex:1;min-width:0}
+    .auth-wrap{grid-template-columns:1fr;margin:24px auto}.auth-intro{display:none}.auth-card{padding:36px 28px;min-height:500px}
+    .admin-top .path,.admin-top .right span:not(.top-link){display:none}.admin-top{padding:10px 12px}
+    .shell{grid-template-columns:64px 1fr}.side .grp{font-size:0;padding:7px 4px}.side a{font-size:0;justify-content:center;padding:10px 4px}.side a::first-letter{font-size:16px}.side a .ct{font-size:9px;margin-left:-4px}
+    .stat-grid{grid-template-columns:repeat(2,1fr)}.stats-cols{grid-template-columns:1fr}.body2{padding:18px 14px}
+  }
+
+  /* UV-2 멤버 */
+  .mrow{display:flex;align-items:center;gap:12px;padding:12px 8px;border-bottom:1px solid var(--line2);cursor:pointer;border-radius:8px}
+  .mrow:hover{background:#f7faff}
+  .mrow:last-child{border-bottom:0}
+  .mrow .marrow{color:#aeb6c4;font-size:18px;font-weight:700}
+  .mrow .mav{width:36px;height:36px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+  .mrow .mb{flex:1}
+  .mrow .mb b{font-size:13.5px;display:block}
+  .mrow .mb small{font-size:11.5px;color:var(--ink2)}
+  .rolechip{font-size:10px;border-radius:999px;padding:2px 9px;font-weight:700;background:#e7edf6;color:var(--brand)}
+  .rolechip.owner{background:#1f2d3d;color:#fff}
+  .invrow{display:flex;gap:8px;margin-top:6px}
+  .invrow input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:12.5px}
+  .invrow select{border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12.5px;font-family:var(--sans)}
+  .invrow button{font-size:12.5px;font-weight:700;color:#fff;background:var(--brand);border:none;border-radius:8px;padding:8px 16px;cursor:pointer;white-space:nowrap}
+  .invrow button:disabled{background:#aeb6c4;cursor:not-allowed}
+
+  /* 멤버 상세 모달 */
+  .mmhead{display:flex;align-items:center;gap:12px;padding:4px 0 14px;border-bottom:1px solid var(--line2);margin-bottom:6px}
+  .mmhead .mmav{width:46px;height:46px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+  .mmhead .mmn{font-size:15px;font-weight:800}
+  .mmhead .mmsub{font-size:12px;color:var(--ink2)}
+  .modal-body h4{font-size:12px;color:var(--ink2);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:8px}
+  .ownerbadge{font-size:10px;background:#1f2d3d;color:#fff;border-radius:999px;padding:2px 8px;font-weight:700;letter-spacing:0;text-transform:none}
+  .teamedit{display:flex;gap:8px}
+  .teamedit select{flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:var(--sans)}
+  .mmnote{font-size:12px;color:#1a7f43;margin:9px 0 0;font-weight:600}
+
+  /* 모바일 인박스 전용 탐색 요소 — 데스크톱에서는 기존 3열 구조를 유지 */
+  .mobile-back-btn,.mobile-info-btn,.mobile-sheet-close,.mobile-sheet-scrim{display:none}
+
+  @media(max-width:800px){
+    html,body{max-width:100%;overflow-x:hidden}
+    body.student-sheet-open{overflow:hidden}
+    body{font-size:13px}
+    .wf-flag{padding:6px 10px;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    /* 시나리오는 한 줄을 유지하며 좌우 스와이프로 모든 조건을 선택 */
+    .scenario-bar{padding:7px 10px;gap:8px;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+    .scenario-bar strong,.scenario-control,.scenario-summary{flex:0 0 auto}
+    .scenario-control{min-width:0;font-size:10px;gap:4px}
+    .scenario-control select{width:auto;max-width:170px;padding:5px 24px 5px 7px;font-size:11px}
+    .scenario-summary{width:auto;margin-left:0;white-space:nowrap}
+    .scenario-toast{top:auto;bottom:18px;width:calc(100% - 28px);text-align:center}
+
+    .auth-nav{min-height:56px;padding:0 16px}.auth-nav .back-home{font-size:11.5px;padding:6px 9px}
+    .auth-wrap{width:calc(100% - 24px);margin:16px auto;border-radius:14px}
+    .auth-card{padding:30px 20px;min-height:0}.auth-card h2{font-size:21px}
+    .account-state-stage{min-height:calc(100dvh - 76px);padding:20px 12px}
+    .account-state-card{padding:26px 18px;border-radius:14px}
+    .account-state-card h1{font-size:20px}.account-state-actions .btn{flex:1;min-width:120px}
+
+    /* 상단바와 GNB를 모바일용 2단 가로 탭으로 전환 */
+    .admin-top{min-height:54px;padding:8px 10px;gap:8px;top:0}
+    .admin-top .brand{font-size:13px;white-space:nowrap}
+    .admin-top .brand .unichat-brand-name{font-size:14px}
+    .admin-top .brand .unichat-brand-context{font-size:10.5px;padding-left:7px}
+    .admin-top .right{margin-left:auto;gap:6px;min-width:0}
+    .admin-top .path,.admin-top .mystatus,.admin-top .right>span,.admin-top .ava{display:none!important}
+    .top-link{font-size:0;padding:5px 8px}.top-link::after{content:"⌂ 홈";font-size:11px}
+    .logout-btn{font-size:10.5px;white-space:nowrap}
+    .shell{display:block;min-height:0}
+    .side{height:48px;padding:5px 8px;display:flex;align-items:center;gap:5px;overflow-x:auto;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;position:sticky;top:54px;z-index:30;box-shadow:0 2px 5px rgba(16,24,40,.12)}
+    .side .grp{display:none}
+    .side a{flex:0 0 auto;min-width:max-content;padding:7px 11px;font-size:11.5px!important;justify-content:flex-start;white-space:nowrap}
+    .side a::first-letter{font-size:13px}.side a .ct{font-size:9px;margin-left:2px}
+    body.public-mode .side{display:none}
+
+    /* 목록이 기본. 카드 선택 후 상세만 표시되는 모바일 드릴다운 */
+    .inbox-shell{display:block;height:calc(100dvh - 94px);min-height:520px;background:#fff}
+    .inbox-list{height:100%;border-right:0}
+    .inbox-list .hd{padding:12px 12px 7px}.inbox-list h1{font-size:16px}
+    .kpis{margin-bottom:7px}.kpi{padding:6px 8px}.kpi b{font-size:14px}
+    .itabs{padding:0 8px;overflow-x:auto}.itabs button{flex:0 0 auto;padding:8px 9px;font-size:11.5px;white-space:nowrap}
+    .search{padding:8px 10px}.search input{font-size:12px}
+    .ccard{padding:11px 12px}.ccard .nm{font-size:12.5px}.ccard .prev{font-size:11.5px}
+    #page-inbox .conv{display:none}
+    #page-inbox.mobile-detail .inbox-list{display:none}
+    #page-inbox.mobile-detail .conv{display:grid;grid-template-columns:minmax(0,1fr);height:100%}
+    #page-inbox.mobile-detail .conv-main{height:100%;min-width:0;overflow:hidden}
+
+    .conv-hd{padding:9px 10px;gap:7px;flex-wrap:wrap;min-width:0}
+    .conv-hd .nm{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100vw - 216px)}
+    .conv-hd .right{order:2;width:100%;margin-left:0;gap:6px;overflow-x:auto;padding-top:2px}
+    .conv-hd .right .btn{flex:0 0 auto;padding:7px 10px;font-size:11px}
+    .mobile-back-btn,.mobile-info-btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font:700 11px var(--sans);padding:6px 8px;white-space:nowrap}
+    .mobile-back-btn{flex:0 0 auto}.mobile-info-btn{margin-left:auto;color:var(--brand);border-color:#9bb3e2}
+    .thread{padding:12px 10px 72px;gap:9px;min-height:0;overscroll-behavior:contain}
+    .msg{max-width:88%}.msg .bub{font-size:12.5px;padding:8px 10px;overflow-wrap:anywhere}.msg.sys{max-width:96%}
+    .doccard{max-width:100%;padding:7px 8px}.doccard .dn{font-size:11.5px}.doccard .dm{font-size:9.5px}
+    .composer{position:fixed;left:0;right:0;bottom:0;z-index:80;padding:8px 9px;gap:6px;padding-bottom:max(8px,env(safe-area-inset-bottom));box-shadow:0 -2px 10px rgba(16,24,40,.08)}
+    .composer input{min-width:0;width:0;padding:8px 11px;font-size:12px}.composer .att,.composer .send{flex:0 0 auto;width:32px;height:32px}
+
+    /* 학생 정보는 상세 화면 위에 올라오는 바텀시트 */
+    .vinfo{position:fixed;left:0;right:0;bottom:0;z-index:121;width:100%;max-height:min(82dvh,720px);padding:16px 16px max(20px,env(safe-area-inset-bottom));border:0;border-radius:18px 18px 0 0;box-shadow:0 -12px 40px rgba(16,24,40,.24);transform:translateY(105%);transition:transform .2s ease;pointer-events:none}
+    .conv.info-open .vinfo{transform:translateY(0);pointer-events:auto}
+    .mobile-sheet-close{display:flex;position:sticky;top:0;margin:-7px 0 9px auto;border:1px solid var(--line);background:#fff;border-radius:999px;width:30px;height:30px;align-items:center;justify-content:center;color:var(--ink2);font-size:15px;z-index:2}
+    .mobile-sheet-scrim{position:fixed;inset:0;z-index:120;border:0;background:rgba(16,24,40,.45)}
+    .conv.info-open .mobile-sheet-scrim{display:block}
+
+    /* 등록·멤버·통계·설정은 한 열, 표와 차트만 내부 가로 스크롤 */
+    .body2,body.public-mode .body2{width:100%;max-width:none;padding:16px 12px}
+    .body2 h1{font-size:18px}.body2 .sub{font-size:12px;margin-bottom:14px}
+    .panelbox{margin-bottom:12px}.panelbox .ph{padding:11px 12px;min-width:0;flex-wrap:wrap}.panelbox .pb{padding:14px 12px}
+    #page-register .body2>div:first-child,#page-stats .body2>div:first-child{flex-direction:column;align-items:stretch!important;margin-bottom:14px!important}
+    #page-register .body2>div:first-child>div:last-child,#page-stats .stat-filter{margin-left:0!important;width:100%}
+    #page-register .body2>div:first-child>div:last-child{justify-content:flex-end;overflow-x:auto}
+    .steps{overflow-x:auto;padding-bottom:3px}.step{flex:0 0 118px;font-size:11px;padding:7px 5px}
+    .reg-actions{margin:14px 0 24px;flex-wrap:wrap}.reg-actions>.btn,.reg-actions .left{flex:1}.reg-actions .left .btn{width:100%}
+    .waitcard{padding:20px 14px}.waitcard>div[style*="inline-flex"]{display:flex!important;flex-wrap:wrap;justify-content:center}
+    .invrow{flex-direction:column}.invrow input,.invrow select,.invrow button{width:100%}
+    .mrow{gap:8px;flex-wrap:wrap;padding:11px 4px}.mrow .mb{min-width:calc(100% - 58px)}.mrow .marrow{margin-left:auto}
+    .stat-filter{display:grid;grid-template-columns:1fr auto}.stat-filter select{min-width:0}
+    .stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat-card{padding:12px}.stat-card .sv{font-size:20px;overflow-wrap:anywhere}.stat-card .sl{font-size:10.5px}
+    .stats-cols{grid-template-columns:minmax(0,1fr);gap:12px}.stats-cols .panelbox .pb{overflow-x:auto}
+    .chart{min-width:500px;height:190px}.perf{min-width:560px}.hours{min-width:520px}
+    .consultation-state-grid{grid-template-columns:1fr}.consultation-state-option span{min-height:auto}
+    #page-settings .consultation-hours-panel .pb{overflow-x:auto}
+    #page-settings .panelbox:first-of-type .pb>div[style*="justify-content:flex-end"]{flex-wrap:wrap}
+    .maprow{grid-template-columns:1fr;gap:5px}.maprow>span{text-align:center;transform:rotate(90deg)}
+    .togglerow{align-items:flex-start}.togglerow .lab{min-width:0}
+    .field input,.field select,textarea{max-width:100%}
+
+    .modal-overlay{align-items:flex-end;padding:0}
+    .modal-box{width:100%;max-width:none;max-height:88dvh;border-radius:17px 17px 0 0}
+    .modal-hd{padding:13px 15px}.modal-body{padding:6px 15px max(18px,env(safe-area-inset-bottom))}
+  }
+
+  @media(max-width:390px){
+    .scenario-control select{max-width:145px}
+    .stat-grid{grid-template-columns:1fr}
+    .mobile-info-btn{font-size:0}.mobile-info-btn::after{content:"정보";font-size:11px}
+    .conv-hd .nm{max-width:calc(100vw - 205px)}
+  }
+</style>
+</head>
+<body>
+  <div class="wf-flag"><b>WIREFRAME</b> · 대학 포털 목업 (서정대학교 국제교류처) — UV-0 등록 신청 · UV-1 인박스 · UV-2 멤버 · UV-3 운영설정 · UV-4 통계</div>
+  <section class="scenario-bar" aria-label="목업 시나리오 전환기">
+    <strong>시나리오 전환</strong>
+    <label class="scenario-control">계정·등록 상태
+      <select id="accountScenario" onchange="applyAccountScenario()">
+        <option value="internal">박람회 내부발급 계정</option>
+        <option value="review">신규 등록 · 검토대기</option>
+        <option value="supplement">신규 등록 · 보완요청</option>
+        <option value="approved">신규 등록 · 승인</option>
+        <option value="rejected">신규 등록 · 반려/재신청</option>
+      </select>
+    </label>
+    <label class="scenario-control">로그인 역할
+      <select id="roleScenario" onchange="applyRoleScenario()">
+        <option value="owner">오너</option>
+        <option value="member">멤버</option>
+      </select>
+    </label>
+    <label class="scenario-control">상담 시작
+      <select id="claimScenario">
+        <option value="success">정상 배정</option>
+        <option value="conflict">동시 클릭 충돌</option>
+      </select>
+    </label>
+    <label class="scenario-control">종료 후 재문의
+      <select id="reopenScenario">
+        <option value="retain">기존 담당 유지</option>
+        <option value="unassigned">담당자 비활성 → 미배정</option>
+      </select>
+    </label>
+    <span class="scenario-summary" id="scenarioSummary">박람회 내부발급 계정 · 오너</span>
+  </section>
+  <div class="scenario-toast" id="scenarioToast" role="status" aria-live="polite" hidden></div>
+
+  <!-- ===== 로그인 (기본 진입 화면) ===== -->
+  <main class="auth-stage" id="loginView">
+    <nav class="auth-nav">
+      <a class="unichat-brand auth-brand" href="기업용_배너_포함.html" aria-label="UniChat 랜딩페이지">
+        <span class="unichat-emblem" aria-hidden="true"></span>
+        <span class="unichat-brand-name">UniChat</span>
+        <span class="unichat-brand-context">대학 서비스</span>
+      </a>
+      <a class="back-home" href="기업용_배너_포함.html">← 랜딩페이지로</a>
+    </nav>
+    <section class="auth-wrap">
+      <div class="auth-intro">
+        <div class="auth-kicker">UNIVERSITY PARTNER PORTAL</div>
+        <h1>유학생 상담을<br>한곳에서 관리하세요</h1>
+        <p>학생 문의 배정부터 서류 확인, 멤버 운영, 응대 통계까지 대학 국제교류처에 필요한 업무를 하나의 채널로 연결합니다.</p>
+        <div class="auth-benefits">
+          <div class="auth-benefit"><i>💬</i> 미배정·진행·종료 상담 통합 관리</div>
+          <div class="auth-benefit"><i>👥</i> 모든 멤버가 열람하고 담당자가 직접 상담 시작</div>
+          <div class="auth-benefit"><i>📊</i> 응답 속도와 상담 현황 통계</div>
+        </div>
+      </div>
+      <div class="auth-card">
+        <h2>대학 담당자 로그인</h2>
+        <p class="lead" id="loginLead">운영팀에서 전달받은 대학 계정으로 접속하세요.</p>
+        <form onsubmit="loginUniversity(event)">
+          <div class="auth-field">
+            <label for="univEmail">학교 이메일</label>
+            <input id="univEmail" type="email" value="admission@seojeong.ac.kr" autocomplete="username" required>
+          </div>
+          <div class="auth-field">
+            <label for="univPassword">비밀번호</label>
+            <input id="univPassword" type="password" value="unichat2026" autocomplete="current-password" required>
+          </div>
+          <div class="auth-row">
+            <label><input type="checkbox" checked> 아이디 저장</label>
+            <a href="#" onclick="event.preventDefault();showLoginHelp()">비밀번호 재설정</a>
+          </div>
+          <div class="auth-error" id="loginMessage"></div>
+          <button class="auth-submit" type="submit">로그인</button>
+        </form>
+        <div class="auth-divider">처음 방문하셨나요?</div>
+        <button class="register-cta" type="button" onclick="openPublicRegister()">대학 등록 신청</button>
+        <p class="register-note">신청 후 플랫폼 관리자 승인을 거쳐 이용할 수 있어요.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 승인 전 계정은 인박스 대신 상태 화면으로 이동 -->
+  <main class="account-state-stage" id="accountStateView" hidden>
+    <section class="account-state-card">
+      <div class="state-icon" id="accountStateIcon">⌛</div>
+      <h1 id="accountStateTitle">대학 등록 신청을 검토하고 있어요</h1>
+      <p id="accountStateDescription">승인 전에는 상담 인박스와 운영 메뉴를 이용할 수 없습니다.</p>
+      <div class="account-state-meta">
+        <span class="stchip st-wait" id="accountStateChip">검토 대기</span>
+        <span>신청 번호 <b>UNIV-2026-0714</b></span>
+        <span>예상 처리 1~3영업일</span>
+      </div>
+      <div class="account-state-actions">
+        <a class="btn" href="기업용_배너_포함.html" style="text-decoration:none">⌂ 랜딩페이지</a>
+        <button class="btn" type="button" onclick="showLoginFromState()">로그인 화면</button>
+        <button class="btn btn-primary" id="accountStateAction" type="button" hidden></button>
+      </div>
+    </section>
+  </main>
+
+  <div class="admin-top" id="appTop" hidden>
+    <a class="brand unichat-brand" href="기업용_배너_포함.html" aria-label="UniChat 랜딩페이지">
+      <span class="unichat-emblem" aria-hidden="true"></span>
+      <span class="unichat-brand-name">UniChat</span>
+      <span class="unichat-brand-context">대학 서비스</span>
+    </a>
+    <span class="path" id="pathTx">/univ/inbox</span>
+    <div class="right">
+      <a class="top-link" href="기업용_배너_포함.html">← 랜딩페이지로</a>
+      <div class="mystatus"><span class="dot"></span>
+        <select id="myStatusSel" onchange="setMyStatus(this.value)">
+          <option>온라인</option><option>자리비움</option><option>오프라인</option>
+        </select>
+      </div>
+      <span id="roleIdentity">서정대학교 국제교류처 · 박현우 (오너)</span>
+      <div class="ava" id="roleAvatar">박현</div>
+      <button class="logout-btn" type="button" onclick="logoutUniversity()">로그아웃</button>
+    </div>
+  </div>
+
+  <div class="shell" id="appShell" hidden>
+    <div class="side">
+      <div class="grp">상담</div>
+      <a class="on" href="#" data-pg="inbox" onclick="showPage('inbox', this);return false">💬 인박스 <span class="ct">3</span></a>
+      <div class="grp">채널 관리</div>
+      <a href="#" data-pg="members" data-owner-only onclick="showPage('members', this);return false">👥 멤버 관리</a>
+      <a href="#" data-pg="settings" onclick="showPage('settings', this);return false">⚙️ 공개 대학 정보</a>
+      <a href="#" data-pg="stats" onclick="showPage('stats', this);return false">📊 통계</a>
+    </div>
+
+    <!-- ===== UV-1 인박스 ===== -->
+    <div class="page show" id="page-inbox">
+      <div class="inbox-shell">
+        <div class="inbox-list">
+          <div class="hd">
+            <h1>상담 인박스</h1>
+            <div class="kpis">
+              <div class="kpi"><b>3</b><small>미배정</small></div>
+              <div class="kpi"><b>7</b><small>진행중</small></div>
+              <div class="kpi"><b>12</b><small>오늘 종료</small></div>
+            </div>
+          </div>
+          <div class="itabs">
+            <button type="button" data-inbox-filter="queue">미배정<span class="n">3</span></button>
+            <button type="button" data-inbox-filter="mine">내 상담<span class="n">4</span></button>
+            <button class="on" type="button" data-inbox-filter="all">전체 상담</button>
+            <button type="button" data-inbox-filter="done">종료</button>
+          </div>
+          <div class="search"><input id="inboxSearch" placeholder="학생명 · 국가 · 메시지 내용 검색"></div>
+          <div class="clist">
+
+            <div class="ccard unassigned" data-kind="queue" onclick="openConv(this,'queue','NAPAT SIRIPORN','🇹🇭')">
+              <div class="av">🇹🇭</div>
+              <div class="bd">
+                <div class="row1"><span class="nm">NAPAT SIRIPORN <small>태국 · 방콕</small></span><span class="tm">2분 전</span></div>
+                <div class="prev">สวัสดีค่ะ! 컴퓨터공학과 영문 모집요강이 궁금해요.</div>
+                <div class="tagrow2"><span class="stchip st-wait">대기</span><button class="claimbtn" onclick="event.stopPropagation();claim(this)">상담 시작하기</button></div>
+              </div>
+            </div>
+
+            <div class="ccard unassigned" data-kind="queue" onclick="openConv(this,'queue','NGUYEN THI HOA','🇻🇳')">
+              <div class="av">🇻🇳</div>
+              <div class="bd">
+                <div class="row1"><span class="nm">NGUYEN THI HOA <small>베트남 · 하노이</small></span><span class="tm">9분 전</span></div>
+                <div class="prev">Xin chào! 경영학과 장학금 신청 조건을 알고 싶어요.</div>
+                <div class="tagrow2"><span class="stchip st-wait">대기</span><button class="claimbtn" onclick="event.stopPropagation();claim(this)">상담 시작하기</button></div>
+              </div>
+            </div>
+
+            <div class="ccard unassigned" data-kind="queue" onclick="openConv(this,'queue','LI WEI','🇨🇳')">
+              <div class="av">🇨🇳</div>
+              <div class="bd">
+                <div class="row1"><span class="nm">LI WEI <small>중국 · 칭다오</small></span><span class="tm">15분 전</span></div>
+                <div class="prev">您好！TOPIK 없이 기계공학과에 지원할 수 있나요?</div>
+                <div class="tagrow2"><span class="stchip st-wait">대기</span><button class="claimbtn" onclick="event.stopPropagation();claim(this)">상담 시작하기</button></div>
+              </div>
+            </div>
+
+            <div class="ccard act" data-kind="other" data-assignee="김서윤" onclick="openConv(this,'other','DILNOZA KARIMOVA','🇺🇿')">
+              <div class="av">🇺🇿</div>
+              <div class="bd">
+                <div class="row1"><span class="nm">DILNOZA KARIMOVA <small>우즈베키스탄 · 타슈켄트</small></span><span class="tm">40분 전</span></div>
+                <div class="prev">Salom! 한국학과와 어학연수 연계 과정을 문의드려요.</div>
+                <div class="tagrow2"><span class="stchip st-live">진행중</span></div>
+              </div>
+            </div>
+
+            <div class="ccard" data-kind="done" data-assignee="최도윤" onclick="openConv(this,'done','BOLOR ERDENE','🇲🇳')">
+              <div class="av">🇲🇳</div>
+              <div class="bd">
+                <div class="row1"><span class="nm">BOLOR ERDENE <small>몽골 · 울란바토르</small></span><span class="tm">어제</span></div>
+                <div class="prev">Сайн байна уу! 기숙사 신청 서류 안내 감사합니다.</div>
+                <div class="tagrow2"><span class="stchip st-done">종료</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 대화 상세 -->
+        <div class="conv">
+          <div class="conv-main">
+            <div class="conv-hd">
+              <button class="mobile-back-btn" type="button" onclick="showMobileInboxList()" aria-label="상담 목록으로 돌아가기">← 목록</button>
+              <span class="flag" id="convFlag">🇹🇭</span>
+              <span class="nm" id="convName">NAPAT SIRIPORN</span>
+              <span class="stchip st-wait" id="convSt" role="status" aria-live="polite">대기</span>
+              <button class="mobile-info-btn" id="mobileInfoButton" type="button" onclick="toggleStudentInfo()" aria-expanded="false" aria-controls="studentInfoPanel">학생 정보</button>
+              <div class="right">
+                <button class="btn" id="transferBtn" style="display:none" onclick="transferMsg()">이관하기</button>
+                <button class="btn btn-primary" id="claimMainBtn" onclick="claimMain()">상담 시작하기</button>
+                <button class="btn btn-warn" id="endBtn" style="display:none" onclick="endConv()">종료 처리</button>
+                <button class="btn btn-primary" id="reopenBtn" style="display:none" onclick="reopenConversation()">학생 재문의 수신</button>
+              </div>
+            </div>
+            <div class="thread" id="thread">
+              <div class="day">오늘 오전 10:02</div>
+              <div class="msg sys"><div class="bub" id="studentProfileLine">🇹🇭 태국 · 방콕 · 트리암 우돔 숙사 고등학교 · 태국어·영어 · 희망: 컴퓨터공학(2027년 3월) — 학생 프로필이 전달되었습니다</div></div>
+              <div class="msg"><div class="av" id="studentMsgFlag">🇹🇭</div><div><div class="bub" id="studentGreeting">สวัสดีค่ะ! 컴퓨터공학과 지원 조건과 영문 모집요강이 궁금해요. Do you have English materials?</div><div class="meta">10:02</div></div></div>
+              <div class="msg"><div class="av" id="studentDocFlag">🇹🇭</div><div><div class="bub">📎 문서 보관함에서 전송
+                <div class="doccard"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 다운로드 시 로그 기록</div></div></div>
+              </div><div class="meta">10:06</div></div></div>
+              <div class="msg sys"><div class="bub">🔔 대기 중인 상담입니다 — 내용은 열람할 수 있지만, 상담 시작 전까지 학생 메시지는 읽지 않음으로 유지됩니다.</div></div>
+            </div>
+            <div class="composer">
+              <button class="att">📎</button>
+              <input placeholder="메시지를 입력하세요 (배정 후 전송 가능)" id="adminInput" disabled>
+              <button class="send" onclick="adminSend()">➤</button>
+            </div>
+          </div>
+
+          <div class="vinfo" id="studentInfoPanel" aria-label="학생 정보와 상담 자료">
+            <button class="mobile-sheet-close" type="button" onclick="toggleStudentInfo(false)" aria-label="학생 정보 닫기">✕</button>
+            <h4>학생 정보</h4>
+            <div class="kv"><span>이름</span><b id="studentInfoName">NAPAT SIRIPORN</b></div>
+            <div class="kv"><span>국적·도시·언어</span><b id="studentInfoCountry">🇹🇭 태국 · 방콕 · 태국어·영어</b></div>
+            <div class="kv"><span>고등학교</span><b id="studentInfoSchool">트리암 우돔 숙사 고등학교</b></div>
+            <div class="kv"><span>희망 전공</span><b id="studentInfoMajor">컴퓨터공학 · 2027.03</b></div>
+            <div class="kv"><span>이메일</span><b class="mask" id="studentInfoEmail" onclick="this.classList.remove('mask')">napat.siriporn@example.com</b></div>
+            <div class="masktoggle" onclick="document.querySelectorAll('.mask').forEach(m=>m.classList.remove('mask'))">전체 마스킹 해제 (열람 로그 기록됨)</div>
+
+            <h4>수신 문서</h4>
+            <div class="filelist">
+              <div class="fileitem">
+                <div class="fi">📄</div>
+                <div class="fb"><div class="fn">성적증명서_2026.pdf</div><div class="fm">성적증명서 · v2 · 10:06</div></div>
+                <a class="fa" href="#" onclick="return false">다운로드</a>
+              </div>
+              <div class="fileitem">
+                <div class="fi">🗣️</div>
+                <div class="fb"><div class="fn">TOPIK_4급_성적표.pdf</div><div class="fm">어학성적 · v1 · 6월 20일</div></div>
+                <a class="fa" href="#" onclick="return false">다운로드</a>
+              </div>
+            </div>
+            <h4>담당자</h4>
+            <div class="logmini" id="assigneeSummary">미배정 · 상담 시작 시 본인 담당으로 지정</div>
+
+            <h4>과거 대화 이력</h4>
+            <div class="logmini">2026-05-14 · 어학당 문의 (종료)</div>
+
+            <h4>내부 메모 (비공개)</h4>
+            <div class="notebox"><textarea placeholder="담당자만 볼 수 있는 메모">영문 모집요강 링크 전달 필요, TOPIK 4급 보유</textarea></div>
+
+            <h4>자료 요청</h4>
+            <p class="sub" style="font-size:11px;margin:0 0 8px">상담 중 추가로 필요한 자료만 요청합니다.</p>
+            <div class="reqdoc">
+              <select id="reqDocSel2"><option>졸업(예정)증명서</option><option>어학성적</option><option>성적증명서</option><option>기타</option></select>
+              <button onclick="requestDoc('reqDocSel2')">📄 서류 요청</button>
+            </div>
+
+            <h4>첨부파일 · 링크</h4>
+            <div class="filelist">
+              <div class="fileitem">
+                <div class="fi">📄</div>
+                <div class="fb"><div class="fn">성적증명서_2026.pdf</div><div class="fm">NAPAT · 840KB · 10:06</div></div>
+                <a class="fa" href="#" onclick="return false">다운로드</a>
+              </div>
+              <div class="fileitem">
+                <div class="fi">🔗</div>
+                <div class="fb"><div class="fn">www.seojeong.ac.kr</div><div class="fm">김서윤 · 지난 대화</div></div>
+                <a class="fa" href="#" onclick="return false">열기</a>
+              </div>
+            </div>
+          </div>
+          <button class="mobile-sheet-scrim" type="button" onclick="toggleStudentInfo(false)" aria-label="학생 정보 닫기"></button>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="logModal" onclick="if(event.target===this) closeLogModal()">
+        <div class="modal-box">
+          <div class="modal-hd"><b>활동 로그</b><button onclick="closeLogModal()">✕</button></div>
+          <div class="modal-body">
+            <div class="logmini" id="studentFileLog">10:06 NAPAT SIRIPORN 학생이 파일 첨부 (성적증명서_2026.pdf)</div>
+            <div class="logmini">10:02 대화 시작 · 미배정 큐 진입</div>
+            <div class="logmini">10:02 학생 프로필 자동 전달 (국적·고교·희망전공)</div>
+            <div class="logmini">2026-06-20 (이전) TOPIK 성적표 수신</div>
+            <div class="logmini">2026-05-14 (이전) 한국어과정 문의 종료 처리 · 담당 최도윤</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== UV-0 등록 신청 ===== -->
+    <div class="page" id="page-register">
+      <div class="body2">
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div>
+            <h1>대학 등록 신청 <span class="ix">UV-0</span></h1>
+            <p class="sub">승인 후 학생이 대학을 찾고 상담을 시작할 수 있어요.</p>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:8px">
+            <a class="btn" href="기업용_배너_포함.html" style="text-decoration:none">⌂ 랜딩페이지</a>
+            <button class="btn" type="button" onclick="closeRegister()">← 로그인으로</button>
+          </div>
+        </div>
+        <div class="steps" id="regSteps">
+          <div class="step on">1. 대학 정보</div>
+          <div class="step">2. 신청자 정보</div>
+          <div class="step">3. 인증·제출</div>
+          <div class="step">4. 승인 대기</div>
+        </div>
+
+        <section class="reg-pane show" data-reg-step="1">
+          <div class="panelbox"><div class="ph">1. 대학 정보</div><div class="pb">
+            <div class="field"><label for="regNameKo">교명 (국문) <span class="req">*</span></label><input id="regNameKo" value="서정대학교" required></div>
+            <div class="field"><label for="regNameEn">교명 (영문) <span class="req">*</span></label><input id="regNameEn" value="Seojeong University" required></div>
+            <div class="field"><label>학교 유형 · 지역 <span class="req">*</span></label><select><option>전문대학 · 경기 양주</option></select><span class="hint">MVP 등록 대상은 전문대학으로 한정합니다.</span></div>
+            <div class="field"><label for="regWebsite">공식 웹사이트 <span class="req">*</span></label><input id="regWebsite" value="https://www.seojeong.ac.kr" required><span class="hint">대학 정보 확인에 사용됩니다.</span></div>
+          </div></div>
+          <div class="reg-actions"><span class="reg-help">표시된 항목은 필수입니다.</span><button class="btn btn-primary" type="button" onclick="goRegisterStep(2)">다음</button></div>
+        </section>
+
+        <section class="reg-pane" data-reg-step="2">
+          <div class="panelbox"><div class="ph">2. 신청자 정보</div><div class="pb">
+            <div class="field"><label for="regApplicant">신청자 이름 <span class="req">*</span></label><input id="regApplicant" value="김서윤" required></div>
+            <div class="field"><label for="regDept">부서 · 직책 <span class="req">*</span></label><input id="regDept" value="국제교류처 유학생입학팀 · 주임" required></div>
+            <div class="field"><label for="regPhone">연락처 <span class="req">*</span></label><input id="regPhone" value="031-860-5000" required></div>
+            <div class="field"><label for="regPurpose">등록 목적</label><select id="regPurpose"><option>외국인 입학 상담 운영</option><option>국제교류·어학당 상담 운영</option><option>장학·생활 지원 상담</option></select></div>
+          </div></div>
+          <div class="reg-actions"><div class="left"><button class="btn" type="button" onclick="goRegisterStep(1)">이전</button></div><button class="btn btn-primary" type="button" onclick="goRegisterStep(3)">다음</button></div>
+        </section>
+
+        <section class="reg-pane" data-reg-step="3">
+          <div class="panelbox"><div class="ph">3. 소속 대학 인증</div><div class="pb">
+            <div class="vertbox">
+              <b>✉️ 학교 공식 이메일 인증 <span class="tagchip tag-adm">권장</span></b>
+              <p>학교 도메인 이메일로 인증 코드를 받아 확인해요.</p>
+              <div class="invrow"><input id="regEmail" type="email" value="admission@seojeong.ac.kr"><button id="sendVerifyBtn" type="button" onclick="sendVerifyCode(this)">인증 코드 발송</button></div>
+              <div class="invrow" id="verifyRow" style="display:none"><input id="verifyCode" inputmode="numeric" value="123456" aria-label="인증 코드"><button id="verifyRegisterBtn" type="button" onclick="verifyRegisterCode(this)">확인</button></div>
+              <p class="mmnote" id="verifyNote" style="display:none">✅ 소속 대학 이메일이 확인되었어요.</p>
+            </div>
+            <div class="vertbox">
+              <b>📎 서류 증빙 (이메일 인증이 어려운 경우)</b>
+              <p>재직증명서 또는 공문을 올리면 플랫폼 관리자가 수동으로 확인해요. (1~3영업일)</p>
+              <button class="btn" id="proofUploadBtn" type="button" onclick="mockUploadProof(this)">파일 업로드</button>
+            </div>
+            <label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--ink2)"><input id="regAgree" type="checkbox" checked> 등록 신청을 위한 정보 수집·이용과 플랫폼 운영 정책에 동의합니다.</label>
+          </div></div>
+          <div class="auth-error" id="regMessage"></div>
+          <div class="reg-actions"><div class="left"><button class="btn" type="button" onclick="goRegisterStep(2)">이전</button></div><button class="btn btn-primary" type="button" onclick="submitRegistration()">등록 신청 제출</button></div>
+        </section>
+
+        <section class="reg-pane" data-reg-step="4">
+          <div class="waitcard complete">
+            <div class="wic">✓</div>
+            <h2 style="font-size:20px;margin:0 0 7px">대학 등록 신청이 접수되었어요</h2>
+            <p class="sub" style="margin:0 0 15px">플랫폼 관리자가 대학과 신청자 정보를 확인한 뒤 영업일 기준 1~3일 안에 알려드려요.</p>
+            <div style="display:inline-flex;gap:8px;align-items:center;background:#f6f8fb;border:1px solid var(--line2);border-radius:8px;padding:9px 13px;font-size:12px"><span>신청 번호</span><b id="registrationId">UNIV-2026-0714</b><span class="stchip st-wait">검토 대기</span></div>
+            <p class="reg-help">승인되면 <b id="registrationEmail">admission@seojeong.ac.kr</b>로 첫 로그인 안내를 보내드려요.</p>
+            <button class="btn btn-primary" style="margin-top:10px" type="button" onclick="closeRegister()">로그인 화면으로</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ===== UV-2 멤버 관리 ===== -->
+    <div class="page" id="page-members">
+      <div class="body2">
+        <h1>멤버 관리 <span class="ix">UV-2</span></h1>
+        <p class="sub">모든 멤버는 전체 상담 내역을 열람할 수 있습니다. 상담 시작·이관으로 담당자를 정합니다.</p>
+        <div class="panelbox"><div class="ph">멤버 초대 <span class="ownerbadge">오너 전용</span></div><div class="pb">
+          <div class="invrow">
+            <input id="inviteEmail" type="email" placeholder="동료 이메일 입력" value="new.member@seojeong.ac.kr">
+            <select><option>역할: 멤버</option><option>역할: 오너</option></select>
+            <button id="inviteButton" type="button" onclick="sendInvite(this)">초대 링크 발송</button>
+          </div>
+          <p class="sub" id="invitePolicyNote" style="margin:10px 0 0">현재 로그인 계정은 오너입니다. 초대 링크 발송·재발송·철회와 멤버 상태를 관리할 수 있습니다.</p>
+        </div></div>
+        <div class="panelbox"><div class="ph">멤버 4명 <small style="font-weight:500;color:var(--ink2);font-size:12px">· 이름을 클릭하면 상세를 볼 수 있어요</small></div><div class="pb">
+          <div class="mrow" onclick="openMember('kim')"><div class="mav">박현</div><div class="mb"><b>박현우</b><small>상담 운영 · 진행중 0건</small></div><span class="rolechip owner">오너</span><span class="stchip st-done">온라인</span><span class="marrow">›</span></div>
+          <div class="mrow" onclick="openMember('lee')"><div class="mav">김서</div><div class="mb"><b>김서윤 (나)</b><small>상담 담당자 · 진행중 2건</small></div><span class="rolechip">멤버</span><span class="stchip st-done">온라인</span><span class="marrow">›</span></div>
+          <div class="mrow" onclick="openMember('park')"><div class="mav">이민</div><div class="mb"><b>이민지</b><small>상담 담당자 · 진행중 1건</small></div><span class="rolechip">멤버</span><span class="stchip st-wait">자리비움</span><span class="marrow">›</span></div>
+          <div class="mrow" onclick="openMember('jung')"><div class="mav">최도</div><div class="mb"><b>최도윤</b><small>상담 담당자 · 진행중 0건</small></div><span class="rolechip">멤버</span><span class="tagchip tag-etc">오프라인</span><span class="marrow">›</span></div>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- 멤버 상세 모달 (UV-2) -->
+    <div class="modal-overlay" id="memberModal" onclick="if(event.target===this) closeMember()">
+      <div class="modal-box">
+        <div class="modal-hd"><b id="mmName">멤버 상세</b><span class="rolechip" id="mmRole" style="margin-left:2px">멤버</span><button onclick="closeMember()">✕</button></div>
+        <div class="modal-body">
+          <div class="mmhead">
+            <div class="mmav" id="mmAv">김서</div>
+            <div><div class="mmn" id="mmFull">김서윤</div><div class="mmsub" id="mmEmail">admission@seojeong.ac.kr</div></div>
+            <span class="stchip" id="mmStatus" style="margin-left:auto">온라인</span>
+          </div>
+          <div class="kv"><span>진행중 상담</span><b id="mmActive">2건</b></div>
+          <div class="kv"><span>가입일</span><b id="mmJoined">2026-03-02</b></div>
+          <p class="sub" style="font-size:11.5px;margin:14px 0 0">모든 멤버는 전체 상담을 열람할 수 있습니다. 담당 상담은 인박스에서 상담 시작 또는 이관으로 변경합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== UV-4 상담 통계 ===== -->
+    <div class="page" id="page-stats">
+      <div class="body2 stats-body">
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px">
+          <div>
+            <h1>상담 통계 <span class="ix">UV-4</span></h1>
+            <p class="sub" style="margin-bottom:0">문의량·응답 속도·완료 현황을 확인하고 상담 운영을 개선하세요.</p>
+          </div>
+          <div class="stat-filter">
+            <select id="statsRange" onchange="changeStatsRange(this.value)">
+              <option value="7">최근 7일</option>
+              <option value="30">최근 30일</option>
+              <option value="90">최근 90일</option>
+            </select>
+            <button class="btn" type="button" onclick="showStatsExport(this)">내보내기</button>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card"><div class="sl"><span>전체 상담</span><span>💬</span></div><div class="sv" data-stat="total">86</div><div class="delta" data-stat-note="total">5개국 유학생 문의</div></div>
+          <div class="stat-card"><div class="sl"><span>완료된 상담</span><span>✓</span></div><div class="sv" data-stat="done">72</div><div class="delta" data-stat-note="done">완료율 83.7%</div></div>
+          <div class="stat-card"><div class="sl"><span>평균 첫 응답</span><span>⏱️</span></div><div class="sv" data-stat="response">6분 24초</div><div class="delta" data-stat-note="response">↓ 1분 12초 단축</div></div>
+          <div class="stat-card"><div class="sl"><span>운영시간 내 응답률</span><span>📈</span></div><div class="sv" data-stat="sla">94.2%</div><div class="delta" data-stat-note="sla">목표 90% 달성</div></div>
+        </div>
+
+        <div class="stats-cols">
+          <div class="panelbox" style="margin:0">
+            <div class="ph chart-head"><span>일별 상담 현황</span><div class="legend"><span>완료</span><span>진행·대기</span></div></div>
+            <div class="pb">
+              <div class="chart" aria-label="최근 7일 상담 차트">
+                <div class="bar-day"><div class="bar-stack" style="--h:48%" data-value="8건"></div><small>7/8</small></div>
+                <div class="bar-day"><div class="bar-stack" style="--h:65%" data-value="11건"></div><small>7/9</small></div>
+                <div class="bar-day"><div class="bar-stack" style="--h:54%" data-value="9건"></div><small>7/10</small></div>
+                <div class="bar-day"><div class="bar-stack" style="--h:84%" data-value="14건"></div><small>7/11</small></div>
+                <div class="bar-day"><div class="bar-stack" style="--h:72%" data-value="12건"></div><small>7/12</small></div>
+                <div class="bar-day"><div class="bar-stack" style="--h:60%" data-value="10건"></div><small>7/13</small></div>
+                <div class="bar-day"><div class="bar-stack" style="--h:100%" data-value="22건"></div><small>7/14</small></div>
+              </div>
+            </div>
+          </div>
+          <div class="panelbox" style="margin:0">
+            <div class="ph">학생 국가 분포</div>
+            <div class="pb cat-list">
+              <div class="cat-row"><div class="cr"><span>🇻🇳 베트남</span><b>20건 · 23%</b></div><div class="track"><div class="fill" style="--w:100%"></div></div></div>
+              <div class="cat-row"><div class="cr"><span>🇹🇭 태국</span><b>19건 · 22%</b></div><div class="track"><div class="fill" style="--w:95%"></div></div></div>
+              <div class="cat-row"><div class="cr"><span>🇨🇳 중국</span><b>18건 · 21%</b></div><div class="track"><div class="fill" style="--w:90%"></div></div></div>
+              <div class="cat-row"><div class="cr"><span>🇺🇿 우즈베키스탄</span><b>15건 · 17%</b></div><div class="track"><div class="fill" style="--w:75%"></div></div></div>
+              <div class="cat-row"><div class="cr"><span>🇲🇳 몽골</span><b>14건 · 16%</b></div><div class="track"><div class="fill" style="--w:70%"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panelbox">
+          <div class="ph">담당자별 응대 현황 <span id="statsPeriodLabel" style="margin-left:auto;font-size:11px;color:var(--ink2);font-weight:500">최근 7일</span></div>
+          <div class="pb" style="padding:0;overflow-x:auto">
+            <table class="perf">
+              <thead><tr><th>담당자</th><th>배정</th><th>완료</th><th>평균 첫 응답</th><th>응답률</th></tr></thead>
+              <tbody>
+                <tr><td><b>김서윤</b></td><td>31건</td><td>27건</td><td>4분 52초</td><td><span class="stchip st-done">97%</span></td></tr>
+                <tr><td><b>이민지</b></td><td>24건</td><td>20건</td><td>6분 18초</td><td><span class="stchip st-done">94%</span></td></tr>
+                <tr><td><b>최도윤</b></td><td>19건</td><td>16건</td><td>7분 41초</td><td><span class="stchip st-live">91%</span></td></tr>
+                <tr><td><b>박현우</b></td><td>12건</td><td>9건</td><td>9분 03초</td><td><span class="stchip st-wait">86%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== UV-3 공개 대학 정보 ===== -->
+    <div class="page" id="page-settings">
+      <div class="body2">
+        <h1>공개 대학 정보 <span class="ix">UV-3</span></h1>
+        <p class="sub">공개 대학 정보와 운영시간은 모든 활성 멤버가 함께 관리하며, 공개 반영은 플랫폼 검토 후 처리됩니다.</p>
+
+        <div class="panelbox">
+          <div class="ph">공개 탐색 대학 정보 <span class="stchip st-done" style="margin-left:6px">게시 중</span></div>
+          <div class="pb">
+            <div class="field"><label>대학명</label><input id="managedUniversityName" value="서정대학교" readonly aria-readonly="true"><span class="hint">플랫폼이 인증한 공식 정보로, 대학에서 수정할 수 없습니다.</span></div>
+            <div class="field"><label>한 줄 소개</label><input id="managedUniversityHeadline" value="외국인 유학생의 새로운 시작을 함께합니다."></div>
+            <div class="field"><label>배경 이미지</label><input id="managedUniversityHeroImage" value="campus-hero.jpg"><span class="hint">플랫폼 검토 승인 뒤 공개 대학 상세 상단에 노출됩니다.</span></div>
+            <div class="field"><label>학교 로고</label><input id="managedUniversityLogo" value="seojeong-logo.svg" readonly aria-readonly="true"><span class="hint">플랫폼이 인증한 공식 정보로, 변경은 관리자에게 요청합니다.</span></div>
+            <div class="field"><label>모집 브로셔</label><input id="managedUniversityBrochure" value="2027-foreign-student-brochure.pdf"><span class="hint">플랫폼 검토 승인 뒤 학생은 PC·모바일에서 바로 볼 수 있습니다.</span></div>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn" onclick="previewUniversityProfile()">미리보기</button><button class="btn btn-primary" onclick="publishUniversityProfile(this)">변경 검토 요청</button></div>
+            <p class="sub" id="publishStatus" style="font-size:11px;margin:10px 0 0">현재 공개 정보가 표시됩니다. 변경 요청은 플랫폼 검토 후 반영됩니다.</p>
+          </div>
+        </div>
+
+        <div class="panelbox" aria-labelledby="consultationControlTitle">
+          <div class="ph" id="consultationControlTitle">상담 채널 상태 <span id="managedConsultationStatusChip" class="consultation-status-chip open">상담 운영 중</span></div>
+          <div class="pb">
+            <p class="sub" style="margin-bottom:0">공개 대학 소개는 유지한 채, 학생의 새 상담 시작 여부만 제어합니다.</p>
+            <div class="consultation-state-grid" role="radiogroup" aria-label="상담 채널 상태 선택">
+              <label class="consultation-state-option"><input type="radio" name="managedConsultationStatus" value="open"><span><strong>상담 받기</strong><small>학생이 로그인 후 새 상담을 시작할 수 있습니다.</small></span></label>
+              <label class="consultation-state-option"><input type="radio" name="managedConsultationStatus" value="offline"><span><strong>운영시간 외</strong><small>대학 상세는 유지하고, 운영시간에 상담을 재개합니다.</small></span></label>
+              <label class="consultation-state-option"><input type="radio" name="managedConsultationStatus" value="paused"><span><strong>일시 중지</strong><small>대학 사정으로 신규 상담을 잠시 받지 않습니다.</small></span></label>
+            </div>
+            <div class="consultation-state-summary" id="managedConsultationSummary" role="status"></div>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px"><button class="btn btn-primary" type="button" onclick="saveConsultationSettings(this)">상담 상태 저장</button></div>
+            <p class="sub" id="managedConsultationSaveNotice" style="font-size:11px;margin:10px 0 0"></p>
+          </div>
+        </div>
+
+        <div class="panelbox consultation-hours-panel">
+          <div class="ph">운영시간 — 학생 화면에는 학생 시간대로 환산 표기</div>
+          <div class="pb">
+            <table class="hours">
+              <tr><th>요일</th><th>시작</th><th>종료</th><th>휴무</th></tr>
+              <tr><td>평일 (월~금)</td><td><input id="managedConsultationStart" value="09:00"></td><td><input id="managedConsultationEnd" value="18:00"></td><td><input type="checkbox"></td></tr>
+              <tr><td>토요일</td><td><input value="-" disabled></td><td><input value="-" disabled></td><td><input type="checkbox" checked></td></tr>
+              <tr><td>일요일·공휴일</td><td><input value="-" disabled></td><td><input value="-" disabled></td><td><input type="checkbox" checked></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panelbox">
+          <div class="ph">운영시간 외·일시 중지 안내 문구</div>
+          <div class="pb">
+            <div class="field"><label for="managedConsultationOfflineMessage">운영시간 외 안내 (한국어)</label><textarea id="managedConsultationOfflineMessage">현재는 상담 운영시간이 아닙니다. 운영시간에 다시 상담을 시작해 주세요.</textarea></div>
+            <div class="field"><label for="managedConsultationPausedMessage">일시 중지 안내 (한국어)</label><textarea id="managedConsultationPausedMessage">현재 신규 상담을 일시 중지했습니다. 잠시 후 다시 확인해 주세요.</textarea></div>
+            <div class="field" style="margin-bottom:0"><label for="managedConsultationOfflineMessageEn">운영시간 외 안내 (English)</label><textarea id="managedConsultationOfflineMessageEn">We're currently offline. Office hours: weekdays 09:00–18:00 (KST). Please check again during our office hours.</textarea></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script src="university-data.js"></script>
+<script src="audit-log-data.js"></script>
+<script>
+  let registrationStep=1;
+  let registrationVerified=false;
+  let proofUploaded=false;
+  let currentConversationKind='queue';
+  let scenarioToastTimer;
+  let inboxFilter='all';
+
+  const accountScenarios={
+    internal:{active:true,label:'박람회 내부발급 계정',lead:'운영팀에서 전달받은 대학 계정으로 접속하세요.'},
+    approved:{active:true,label:'신규 등록 · 승인',lead:'등록 승인이 완료되었습니다. 최초 오너 또는 초대받은 멤버 계정으로 접속하세요.'},
+    review:{active:false,label:'신규 등록 · 검토대기',icon:'⌛',title:'대학 등록 신청을 검토하고 있어요',description:'승인 전에는 상담 인박스와 운영 메뉴를 이용할 수 없습니다. 영업일 기준 1~3일 안에 이메일로 결과를 알려드려요.',chip:'검토 대기',chipClass:'st-wait'},
+    supplement:{active:false,label:'신규 등록 · 보완요청',icon:'!',title:'등록 신청 정보의 보완이 필요해요',description:'플랫폼 운영팀이 요청한 소속 증빙 서류를 보완해 주세요. 보완 제출 후 다시 검토 대기 상태로 전환됩니다.',chip:'보완 요청',chipClass:'st-live',action:'보완 내용 제출',step:3},
+    rejected:{active:false,label:'신규 등록 · 반려/재신청',icon:'×',title:'대학 등록 신청이 반려되었어요',description:'반려 사유: 공식 대학 정보와 신청자 재직 정보가 일치하지 않습니다. 내용을 수정한 뒤 다시 신청할 수 있습니다.',chip:'반려',chipClass:'st-wait',action:'수정 후 재신청',step:1}
+  };
+
+  function currentRole(){ return document.getElementById('roleScenario').value; }
+  function isOwner(){ return currentRole()==='owner'; }
+  function currentUserName(){ return isOwner() ? '박현우' : '김서윤'; }
+
+  function showScenarioToast(text){
+    const toast=document.getElementById('scenarioToast');
+    toast.textContent=text; toast.hidden=false;
+    clearTimeout(scenarioToastTimer);
+    scenarioToastTimer=setTimeout(()=>{ toast.hidden=true; },2200);
+  }
+
+  function isMobilePortal(){
+    return window.matchMedia('(max-width: 800px)').matches;
+  }
+
+  function toggleStudentInfo(force){
+    const conversation=document.querySelector('#page-inbox .conv');
+    const button=document.getElementById('mobileInfoButton');
+    const panel=document.getElementById('studentInfoPanel');
+    if(!conversation) return;
+    const wasOpen=conversation.classList.contains('info-open');
+    const shouldOpen=typeof force==='boolean' ? force : !conversation.classList.contains('info-open');
+    const isOpen=shouldOpen && isMobilePortal();
+    conversation.classList.toggle('info-open',isOpen);
+    document.body.classList.toggle('student-sheet-open',isOpen);
+    if(button) button.setAttribute('aria-expanded',String(isOpen));
+    if(panel){
+      if(isMobilePortal()){
+        panel.setAttribute('role','dialog');
+        panel.setAttribute('aria-modal','true');
+        panel.setAttribute('aria-hidden',String(!isOpen));
+        panel.toggleAttribute('inert',!isOpen);
+      }else{
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-modal');
+        panel.removeAttribute('aria-hidden');
+        panel.removeAttribute('inert');
+      }
+      if(isOpen) requestAnimationFrame(()=>panel.querySelector('.mobile-sheet-close')?.focus());
+    }
+    if(wasOpen && !isOpen && button && isMobilePortal()) button.focus();
+  }
+
+  function showMobileConversation(){
+    if(!isMobilePortal()) return;
+    const page=document.getElementById('page-inbox');
+    page.classList.add('mobile-detail');
+    toggleStudentInfo(false);
+    const thread=document.getElementById('thread');
+    requestAnimationFrame(()=>{ thread.scrollTop=thread.scrollHeight; });
+  }
+
+  function showMobileInboxList(){
+    const page=document.getElementById('page-inbox');
+    if(page) page.classList.remove('mobile-detail');
+    toggleStudentInfo(false);
+  }
+
+  window.addEventListener('resize',()=>{
+    if(!isMobilePortal()){
+      const page=document.getElementById('page-inbox');
+      if(page) page.classList.remove('mobile-detail');
+      toggleStudentInfo(false);
+    }
+  });
+
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape' && document.querySelector('#page-inbox .conv.info-open')) toggleStudentInfo(false);
+  });
+
+  function updateScenarioSummary(){
+    const account=accountScenarios[document.getElementById('accountScenario').value];
+    const role=isOwner() ? '오너' : '멤버';
+    document.getElementById('scenarioSummary').textContent=`${account.label} · ${role}`;
+    document.getElementById('loginLead').textContent=account.lead || '승인 전 계정은 로그인해도 상담 인박스에 접근할 수 없습니다.';
+  }
+
+  function hidePortalViews(){
+    document.getElementById('loginView').hidden=true;
+    document.getElementById('accountStateView').hidden=true;
+    document.getElementById('appTop').hidden=true;
+    document.getElementById('appShell').hidden=true;
+    document.body.classList.remove('public-mode');
+  }
+
+  function applyAccountScenario(){
+    const value=document.getElementById('accountScenario').value;
+    const scenario=accountScenarios[value];
+    updateScenarioSummary();
+    hidePortalViews();
+    if(scenario.active) document.getElementById('loginView').hidden=false;
+    else showAccountState(value);
+  }
+
+  function showAccountState(value=document.getElementById('accountScenario').value){
+    const scenario=accountScenarios[value];
+    hidePortalViews();
+    const view=document.getElementById('accountStateView');
+    document.getElementById('accountStateIcon').textContent=scenario.icon || '⌛';
+    document.getElementById('accountStateTitle').textContent=scenario.title || '대학 등록 상태를 확인해 주세요';
+    document.getElementById('accountStateDescription').textContent=scenario.description || '승인 전에는 상담 인박스에 접근할 수 없습니다.';
+    const chip=document.getElementById('accountStateChip');
+    chip.textContent=scenario.chip || '확인 필요';
+    chip.className=`stchip ${scenario.chipClass || 'st-wait'}`;
+    const action=document.getElementById('accountStateAction');
+    if(scenario.action){
+      action.hidden=false; action.textContent=scenario.action;
+      action.onclick=()=>openCorrectionRegistration(scenario.step);
+    }else{
+      action.hidden=true; action.onclick=null;
+    }
+    view.hidden=false;
+  }
+
+  function showLoginFromState(){
+    hidePortalViews();
+    document.getElementById('loginView').hidden=false;
+  }
+
+  function openCorrectionRegistration(step){
+    openPublicRegister();
+    goRegisterStep(step,true);
+  }
+
+  function applyRoleScenario(){
+    const owner=isOwner();
+    let returnedFromOwnerPage=false;
+    document.getElementById('roleIdentity').textContent=owner ? '서정대학교 국제교류처 · 박현우 (오너)' : '서정대학교 국제교류처 · 김서윤 (상담 담당자)';
+    document.getElementById('roleAvatar').textContent=owner ? '박현' : '김서';
+    document.getElementById('univEmail').value=owner ? 'international@seojeong.ac.kr' : 'admission@seojeong.ac.kr';
+    document.querySelectorAll('[data-owner-only]').forEach(el=>{ el.hidden=!owner; });
+    const inviteButton=document.getElementById('inviteButton');
+    if(inviteButton){
+      inviteButton.disabled=!owner;
+      inviteButton.title=owner ? '' : '오너만 초대 링크를 발송할 수 있습니다';
+    }
+    const inviteNote=document.getElementById('invitePolicyNote');
+    if(inviteNote) inviteNote.textContent=owner
+      ? '현재 로그인 계정은 오너입니다. 초대 링크 발송·재발송·철회와 멤버 상태를 관리할 수 있습니다.'
+      : '현재 로그인 계정은 멤버입니다. 공개 대학 정보·상담 통계·전체 상담 이력에 접근할 수 있으며, 멤버 관리와 초대 링크 발송은 오너만 할 수 있습니다.';
+    updateScenarioSummary();
+
+    const currentPage=document.querySelector('.page.show');
+    if(!owner && currentPage && currentPage.id==='page-members'){
+      showScenarioToast('멤버는 오너 전용 화면에 접근할 수 없습니다.');
+      const inboxLink=document.querySelector('.side a[data-pg="inbox"]');
+      showPage('inbox',inboxLink);
+      returnedFromOwnerPage=true;
+    }
+    applyInboxFilter();
+    const active=document.querySelector('.ccard.act');
+    if(active && !document.getElementById('appShell').hidden){
+      const name=active.querySelector('.nm').childNodes[0].textContent.trim();
+      const flag=active.querySelector('.av').textContent.trim();
+      openConv(active,active.dataset.kind || 'queue',name,flag);
+      if(returnedFromOwnerPage && isMobilePortal()) showMobileInboxList();
+    }
+  }
+
+  function loginUniversity(event){
+    event.preventDefault();
+    const email=document.getElementById('univEmail');
+    const password=document.getElementById('univPassword');
+    const msg=document.getElementById('loginMessage');
+    if(!email.value.trim() || !password.value.trim()){
+      msg.textContent='학교 이메일과 비밀번호를 입력해 주세요.';
+      msg.style.display='block';
+      return;
+    }
+    msg.style.display='none';
+    const account=document.getElementById('accountScenario').value;
+    if(!accountScenarios[account].active){
+      showAccountState(account);
+      return;
+    }
+    document.body.classList.remove('public-mode');
+    document.getElementById('loginView').hidden=true;
+    document.getElementById('accountStateView').hidden=true;
+    document.getElementById('appTop').hidden=false;
+    document.getElementById('appShell').hidden=false;
+    applyRoleScenario();
+    const inboxLink=document.querySelector('.side a[data-pg="inbox"]');
+    showPage('inbox',inboxLink);
+  }
+
+  function logoutUniversity(){
+    document.getElementById('appTop').hidden=true;
+    document.getElementById('appShell').hidden=true;
+    document.getElementById('accountStateView').hidden=true;
+    document.getElementById('loginView').hidden=false;
+    document.body.classList.remove('public-mode');
+    document.getElementById('pathTx').textContent='/univ/inbox';
+  }
+
+  function showLoginHelp(){
+    const msg=document.getElementById('loginMessage');
+    msg.textContent='등록된 학교 이메일로 비밀번호 재설정 링크를 보내드려요. (목업 안내)';
+    msg.style.display='block';
+  }
+
+  function openPublicRegister(){
+    document.getElementById('loginView').hidden=true;
+    document.getElementById('accountStateView').hidden=true;
+    document.getElementById('appTop').hidden=false;
+    document.getElementById('appShell').hidden=false;
+    document.body.classList.add('public-mode');
+    resetRegistration();
+    showPage('register',null);
+  }
+
+  function closeRegister(){
+    if(document.body.classList.contains('public-mode')){
+      document.getElementById('appTop').hidden=true;
+      document.getElementById('appShell').hidden=true;
+      document.getElementById('loginView').hidden=false;
+      document.getElementById('accountStateView').hidden=true;
+      document.body.classList.remove('public-mode');
+    }else{
+      const inboxLink=document.querySelector('.side a[data-pg="inbox"]');
+      showPage('inbox',inboxLink);
+    }
+  }
+
+  function resetRegistration(){
+    registrationStep=1;
+    registrationVerified=false;
+    proofUploaded=false;
+    const verifyRow=document.getElementById('verifyRow');
+    const verifyNote=document.getElementById('verifyNote');
+    const regMessage=document.getElementById('regMessage');
+    if(verifyRow) verifyRow.style.display='none';
+    if(verifyNote) verifyNote.style.display='none';
+    if(regMessage) regMessage.style.display='none';
+    const sendBtn=document.getElementById('sendVerifyBtn');
+    const verifyBtn=document.getElementById('verifyRegisterBtn');
+    const proofBtn=document.getElementById('proofUploadBtn');
+    if(sendBtn) sendBtn.textContent='인증 코드 발송';
+    if(verifyBtn){ verifyBtn.textContent='확인'; verifyBtn.disabled=false; }
+    if(proofBtn){ proofBtn.textContent='파일 업로드'; proofBtn.removeAttribute('style'); }
+    goRegisterStep(1,true);
+  }
+
+  function goRegisterStep(step,skipValidation){
+    if(!skipValidation && step>registrationStep && registrationStep<3){
+      const current=document.querySelector(`[data-reg-step="${registrationStep}"]`);
+      const empty=[...current.querySelectorAll('input[required]')].find(input=>!input.value.trim());
+      if(empty){ empty.focus(); empty.style.borderColor='var(--warn)'; return; }
+    }
+    registrationStep=step;
+    document.querySelectorAll('.reg-pane').forEach(p=>p.classList.toggle('show',Number(p.dataset.regStep)===step));
+    document.querySelectorAll('#regSteps .step').forEach((s,i)=>s.classList.toggle('on',i+1===step));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function sendVerifyCode(button){
+    const email=document.getElementById('regEmail');
+    if(!email.value.trim() || !email.checkValidity()){
+      email.focus();
+      return;
+    }
+    document.getElementById('verifyRow').style.display='flex';
+    button.textContent='재발송';
+    document.getElementById('verifyCode').focus();
+  }
+
+  function verifyRegisterCode(button){
+    const code=document.getElementById('verifyCode').value.trim();
+    if(code.length<4){
+      button.textContent='코드 확인';
+      document.getElementById('verifyCode').focus();
+      return;
+    }
+    registrationVerified=true;
+    button.textContent='인증 완료';
+    button.disabled=true;
+    document.getElementById('verifyNote').style.display='block';
+  }
+
+  function mockUploadProof(button){
+    proofUploaded=true;
+    button.textContent='✅ 재직증명서.pdf 선택됨';
+    button.style.color='#1a7f43';
+    button.style.borderColor='#9fd3af';
+  }
+
+  function submitRegistration(){
+    const msg=document.getElementById('regMessage');
+    if(!registrationVerified && !proofUploaded){
+      msg.textContent='학교 이메일을 인증하거나 소속 증빙 서류를 선택해 주세요.';
+      msg.style.display='block';
+      return;
+    }
+    if(!document.getElementById('regAgree').checked){
+      msg.textContent='등록 신청을 위한 정보 수집·이용에 동의해 주세요.';
+      msg.style.display='block';
+      return;
+    }
+    msg.style.display='none';
+    document.getElementById('registrationEmail').textContent=document.getElementById('regEmail').value;
+    const accountSelect=document.getElementById('accountScenario');
+    if(accountSelect.value==='supplement' || accountSelect.value==='rejected'){
+      accountSelect.value='review';
+      updateScenarioSummary();
+    }
+    goRegisterStep(4,true);
+  }
+
+  function showPage(key, el){
+    if(key==='members' && !isOwner()){
+      showScenarioToast('오너만 멤버 관리에 접근할 수 있습니다.');
+      key='inbox';
+      el=document.querySelector('.side a[data-pg="inbox"]');
+    }
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+    document.getElementById('page-'+key).classList.add('show');
+    document.querySelectorAll('.side a').forEach(a=>a.classList.remove('on'));
+    if(el) el.classList.add('on');
+    if(key==='register' && !document.body.classList.contains('public-mode')) resetRegistration();
+    if(key==='inbox') showMobileInboxList();
+    else toggleStudentInfo(false);
+    const paths={inbox:'/univ/inbox', settings:'/univ/settings', members:'/univ/members', stats:'/univ/statistics', register:'/univ/register'};
+    document.getElementById('pathTx').textContent = paths[key] || '/univ';
+  }
+
+  const statsData={
+    7:{total:'86',done:'72',response:'6분 24초',sla:'94.2%',totalNote:'5개국 유학생 문의',doneNote:'완료율 83.7%'},
+    30:{total:'364',done:'309',response:'7분 08초',sla:'92.8%',totalNote:'5개국 유학생 문의',doneNote:'완료율 84.9%'},
+    90:{total:'1,042',done:'901',response:'7분 36초',sla:'91.5%',totalNote:'5개국 유학생 문의',doneNote:'완료율 86.5%'}
+  };
+  function changeStatsRange(range){
+    const d=statsData[range];
+    document.querySelector('[data-stat="total"]').textContent=d.total;
+    document.querySelector('[data-stat="done"]').textContent=d.done;
+    document.querySelector('[data-stat="response"]').textContent=d.response;
+    document.querySelector('[data-stat="sla"]').textContent=d.sla;
+    document.querySelector('[data-stat-note="total"]').textContent=d.totalNote;
+    document.querySelector('[data-stat-note="done"]').textContent=d.doneNote;
+    document.getElementById('statsPeriodLabel').textContent=`최근 ${range}일`;
+  }
+  function showStatsExport(button){
+    button.textContent='✅ 내보내기 준비 완료';
+    setTimeout(()=>button.textContent='내보내기',1600);
+  }
+  const managedUniversityId='seojeong';
+  function getManagedUniversity(){
+    return window.UniversityDirectory?.getById?.(managedUniversityId)||null;
+  }
+  function escapeUniversityProfileValue(value){
+    return String(value??'').replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character]));
+  }
+  function hydrateManagedUniversityProfile(){
+    const university=getManagedUniversity();
+    if(!university) return;
+    const draft=university.profileDraft||{};
+    document.getElementById('managedUniversityName').value=university.name.ko;
+    document.getElementById('managedUniversityHeadline').value=draft.profile?.headline||university.profile.headline||'';
+    document.getElementById('managedUniversityHeroImage').value=draft.visual?.heroImage||university.visual.heroImage||'campus-hero.jpg';
+    document.getElementById('managedUniversityLogo').value=university.visual.logo||'seojeong-logo.svg';
+    document.getElementById('managedUniversityBrochure').value=draft.profile?.brochure?.title||university.profile.brochure?.title||'';
+    const reviewStatus=university.publication?.reviewStatus;
+    document.getElementById('publishStatus').textContent=reviewStatus==='requested'
+      ? '변경 검토 요청을 보냈습니다. 플랫폼 승인 전까지 현재 공개 정보는 유지됩니다.'
+      : reviewStatus==='changes_requested'
+        ? '플랫폼에서 보완을 요청했습니다: '+(university.publication?.reviewNote||'검토 메모를 확인해 주세요.')
+        : university.publication.status==='published'
+          ? '공개 대학 탐색에 게시 중 · 변경 사항은 플랫폼 검토 승인 후 반영됩니다.'
+          : '현재 공개 탐색 미노출 상태입니다. 노출 여부는 플랫폼 관리자가 관리합니다.';
+  }
+  const managedConsultationStates=Object.freeze({
+    open:{label:'상담 운영 중',description:'학생은 로그인 후 새 상담을 시작할 수 있습니다.',className:'open'},
+    offline:{label:'운영시간 외',description:'대학 상세는 유지되며, 운영시간에 새 상담을 다시 받을 수 있습니다.',className:'offline'},
+    paused:{label:'상담 일시 중지',description:'대학 상세는 유지되며, 신규 상담은 일시 중지됩니다.',className:'paused'}
+  });
+  function getManagedConsultationStatus(){
+    const selected=document.querySelector('input[name="managedConsultationStatus"]:checked');
+    return managedConsultationStates[selected?.value] ? selected.value : 'offline';
+  }
+  function setManagedConsultationSummary(status){
+    const state=managedConsultationStates[status]||managedConsultationStates.offline;
+    const chip=document.getElementById('managedConsultationStatusChip');
+    chip.textContent=state.label;
+    chip.className='consultation-status-chip '+state.className;
+    const summary=document.getElementById('managedConsultationSummary');
+    summary.replaceChildren();
+    const title=document.createElement('b'); title.textContent='학생 화면 안내';
+    const copy=document.createElement('span'); copy.textContent=state.description;
+    summary.append(title,copy);
+  }
+  function hydrateManagedConsultationSettings(){
+    const university=getManagedUniversity();
+    if(!university) return;
+    const consultation=university.consultation||{};
+    const status=managedConsultationStates[consultation.status] ? consultation.status : 'offline';
+    const selected=document.querySelector(`input[name="managedConsultationStatus"][value="${status}"]`);
+    if(selected) selected.checked=true;
+    const hoursMatch=String(consultation.hours||'').match(/(\d{1,2}:\d{2})\s*[–-]\s*(\d{1,2}:\d{2})/);
+    if(hoursMatch){
+      document.getElementById('managedConsultationStart').value=hoursMatch[1];
+      document.getElementById('managedConsultationEnd').value=hoursMatch[2];
+    }
+    document.getElementById('managedConsultationOfflineMessage').value=consultation.offlineMessage||'현재는 상담 운영시간이 아닙니다. 운영시간에 다시 상담을 시작해 주세요.';
+    document.getElementById('managedConsultationPausedMessage').value=consultation.pausedMessage||'현재 신규 상담을 일시 중지했습니다. 잠시 후 다시 확인해 주세요.';
+    document.getElementById('managedConsultationOfflineMessageEn').value=consultation.offlineMessageEn||"We're currently offline. Office hours: weekdays 09:00–18:00 (KST). Please check again during our office hours.";
+    setManagedConsultationSummary(status);
+    document.getElementById('managedConsultationSaveNotice').textContent='현재 상태가 공개 대학 상세와 플랫폼 관리자 상담 채널 표시에 반영됩니다.';
+  }
+  function saveConsultationSettings(button){
+    const university=getManagedUniversity();
+    if(!university){ showScenarioToast('대학 정보를 불러오지 못했습니다.'); return; }
+    const status=getManagedConsultationStatus();
+    const start=document.getElementById('managedConsultationStart').value.trim();
+    const end=document.getElementById('managedConsultationEnd').value.trim();
+    if(!/^\d{1,2}:\d{2}$/.test(start)||!/^\d{1,2}:\d{2}$/.test(end)){
+      showScenarioToast('운영시간을 09:00 형식으로 입력해 주세요.');
+      return;
+    }
+    const offlineMessage=document.getElementById('managedConsultationOfflineMessage').value.trim();
+    const pausedMessage=document.getElementById('managedConsultationPausedMessage').value.trim();
+    const offlineMessageEn=document.getElementById('managedConsultationOfflineMessageEn').value.trim();
+    window.UniversityDirectory?.update?.(managedUniversityId,{
+      consultation:{
+        ...university.consultation,
+        status,
+        hours:`평일 ${start}–${end} KST`,
+        offlineMessage:offlineMessage||university.consultation.offlineMessage,
+        pausedMessage:pausedMessage||university.consultation.pausedMessage,
+        offlineMessageEn:offlineMessageEn||university.consultation.offlineMessageEn
+      }
+    });
+    window.UniChatAuditLog?.add?.({actor:currentUserName(),role:isOwner()?'대학 오너':'대학 멤버',scope:'상담 채널',action:'상담 채널 상태 저장',target:university.name.ko,detail:'상태: '+managedConsultationStates[status].label+' · 운영시간: 평일 '+start+'–'+end+' KST'});
+    hydrateManagedConsultationSettings();
+    document.getElementById('managedConsultationSaveNotice').textContent='방금 저장됨 · 공개 대학 상세과 플랫폼 관리자 상담 채널에 반영됩니다.';
+    button.textContent='✓ 저장 완료';
+    setTimeout(()=>button.textContent='상담 상태 저장',1500);
+  }
+  function previewUniversityProfile(){
+    let modal=document.getElementById('profilePreviewModal');
+    if(!modal){
+      modal=document.createElement('div'); modal.className='modal-overlay'; modal.id='profilePreviewModal';
+      modal.innerHTML='<div class="modal-box"><div class="modal-hd"><b>공개 대학 상세 미리보기</b><button onclick="document.getElementById(\'profilePreviewModal\').classList.remove(\'show\')">✕</button></div><div class="modal-body" id="profilePreviewBody"></div></div>';
+      document.body.appendChild(modal);
+    }
+    const name=escapeUniversityProfileValue(document.getElementById('managedUniversityName').value);
+    const headline=escapeUniversityProfileValue(document.getElementById('managedUniversityHeadline').value);
+    const background=escapeUniversityProfileValue(document.getElementById('managedUniversityHeroImage').value);
+    const logo=escapeUniversityProfileValue(document.getElementById('managedUniversityLogo').value);
+    const brochure=escapeUniversityProfileValue(document.getElementById('managedUniversityBrochure').value);
+    document.getElementById('profilePreviewBody').innerHTML=`<div style="height:130px;border-radius:10px;background:linear-gradient(135deg,#b9c8d8,#e8edf3);display:grid;place-items:center;color:#52606d;font-size:11px">${background}</div><div style="display:flex;gap:10px;align-items:center;margin-top:-20px;padding:0 12px"><div style="width:46px;height:46px;background:#fff;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;font-size:10px">${logo}</div><div><b>${name}</b><small style="display:block;color:var(--ink2)">✓ 인증 대학</small></div></div><p>${headline}</p><div class="fileitem"><div class="fi">▤</div><div class="fb"><div class="fn">${brochure}</div><div class="fm">PDF · 바로 보기</div></div></div><button class="btn btn-primary" style="width:100%;margin-top:12px">상담하기</button>`;
+    modal.classList.add('show');
+  }
+  function publishUniversityProfile(button){
+    const university=getManagedUniversity();
+    if(!university){ showScenarioToast('대학 정보를 불러오지 못했습니다.'); return; }
+    const headline=document.getElementById('managedUniversityHeadline').value.trim();
+    const heroImage=document.getElementById('managedUniversityHeroImage').value.trim();
+    const brochureTitle=document.getElementById('managedUniversityBrochure').value.trim();
+    window.UniversityDirectory?.update?.(managedUniversityId,{
+      publication:{...university.publication,reviewStatus:'requested',reviewNote:'',requestedAt:new Date().toISOString()},
+      profileDraft:{visual:{heroImage:heroImage||university.visual.heroImage},profile:{headline:headline||university.profile.headline,brochure:{...university.profile.brochure,title:brochureTitle||university.profile.brochure.title}},submittedBy:currentUserName(),submittedAt:new Date().toISOString()}
+    });
+    window.UniChatAuditLog?.add?.({actor:currentUserName(),role:isOwner()?'대학 오너':'대학 멤버',scope:'대학 정보',action:'프로필 변경 검토 요청',target:university.name.ko,detail:'한 줄 소개·배경 이미지·모집 브로셔 변경안 제출'});
+    hydrateManagedUniversityProfile();
+    document.getElementById('publishStatus').textContent='방금 변경 검토를 요청했습니다. 플랫폼 승인 전까지 현재 공개 정보는 유지됩니다.';
+    button.textContent='✓ 검토 요청 완료'; setTimeout(()=>button.textContent='변경 검토 요청',1500);
+  }
+
+  function getInboxCardState(card){
+    const kind=card.dataset.kind || 'queue';
+    if(kind==='queue' || kind==='done') return kind;
+    return card.dataset.assignee===currentUserName() ? 'mine' : 'other';
+  }
+  function cardIdentity(card){
+    return {
+      name:card.querySelector('.nm').childNodes[0].textContent.trim(),
+      flag:card.querySelector('.av').textContent.trim()
+    };
+  }
+  function applyInboxFilter(){
+    const query=(document.getElementById('inboxSearch')?.value || '').trim().toLowerCase();
+    const cards=[...document.querySelectorAll('.ccard')];
+    cards.forEach(card=>{
+      const state=getInboxCardState(card);
+      const matchesState=inboxFilter==='all' || state===inboxFilter;
+      const matchesQuery=!query || card.textContent.toLowerCase().includes(query);
+      card.hidden=!(matchesState && matchesQuery);
+    });
+    const queueCount=cards.filter(card=>getInboxCardState(card)==='queue').length;
+    const mineCount=cards.filter(card=>getInboxCardState(card)==='mine').length;
+    const queueBadge=document.querySelector('[data-inbox-filter="queue"] .n');
+    const mineBadge=document.querySelector('[data-inbox-filter="mine"] .n');
+    if(queueBadge) queueBadge.textContent=queueCount;
+    if(mineBadge) mineBadge.textContent=mineCount;
+    const active=document.querySelector('.ccard.act');
+    if(active?.hidden){
+      active.classList.remove('act');
+      const next=cards.find(card=>!card.hidden);
+      if(next && !isMobilePortal()){
+        const {name,flag}=cardIdentity(next);
+        openConv(next,next.dataset.kind || 'queue',name,flag);
+      }
+    }
+  }
+  function setInboxFilter(filter,button){
+    inboxFilter=filter;
+    document.querySelectorAll('[data-inbox-filter]').forEach(tab=>tab.classList.toggle('on',tab===button));
+    applyInboxFilter();
+  }
+  document.querySelectorAll('[data-inbox-filter]').forEach(button=>{
+    button.addEventListener('click',()=>setInboxFilter(button.dataset.inboxFilter,button));
+  });
+  document.getElementById('inboxSearch').addEventListener('input',applyInboxFilter);
+  document.querySelectorAll('.ccard .tagchip').forEach(tag=>tag.remove());
+  document.querySelectorAll('.claimbtn').forEach(button=>button.textContent='상담 시작하기');
+
+  const studentProfiles={
+    'NAPAT SIRIPORN':{
+      flag:'🇹🇭',country:'태국',city:'방콕',school:'트리암 우돔 숙사 고등학교',language:'태국어·영어',major:'컴퓨터공학',intake:'2027.03',email:'napat.siriporn@example.com',
+      greeting:'สวัสดีค่ะ! 컴퓨터공학과 지원 조건과 영문 모집요강이 궁금해요. Do you have English materials?'
+    },
+    'NGUYEN THI HOA':{
+      flag:'🇻🇳',country:'베트남',city:'하노이',school:'추반안 고등학교',language:'베트남어·영어',major:'경영학',intake:'2027.09',email:'hoa.nguyen@example.vn',
+      greeting:'Xin chào! 경영학과 입학 장학금과 기숙사 신청 조건을 알고 싶어요.'
+    },
+    'LI WEI':{
+      flag:'🇨🇳',country:'중국',city:'칭다오',school:'칭다오 제2고등학교',language:'중국어·영어',major:'기계공학',intake:'2027.03',email:'li.wei@example.cn',
+      greeting:'您好！TOPIK 성적 없이 기계공학과에 지원할 수 있는 전형이 있나요?'
+    },
+    'DILNOZA KARIMOVA':{
+      flag:'🇺🇿',country:'우즈베키스탄',city:'타슈켄트',school:'타슈켄트 국립경제대학교 부속 리체이',language:'우즈베크어·러시아어',major:'한국학',intake:'2027.09',email:'dilnoza.karimova@example.uz',
+      greeting:'Salom! 한국학과와 한국어 어학연수를 연계해서 신청할 수 있는지 문의드려요.'
+    },
+    'BOLOR ERDENE':{
+      flag:'🇲🇳',country:'몽골',city:'울란바토르',school:'몽골‑러시아 제3학교',language:'몽골어·러시아어',major:'국제학',intake:'2027.03',email:'bolor.erdene@example.mn',
+      greeting:'Сайн байна уу! 국제학부 입학과 기숙사 신청에 필요한 서류를 확인하고 싶어요.'
+    }
+  };
+
+  function bindCardState(card,kind,name,flag){
+    card.dataset.kind=kind;
+    card.onclick=()=>openConv(card,kind,name,flag);
+  }
+
+  function ensureClaimButton(card){
+    const row=card.querySelector('.tagrow2');
+    if(row && !row.querySelector('.claimbtn')){
+      const button=document.createElement('button');
+      button.className='claimbtn'; button.textContent='상담 시작하기';
+      button.onclick=function(event){ event.stopPropagation(); claim(this); };
+      row.appendChild(button);
+    }
+  }
+
+  function openConv(el, kind, name, flag){
+    if(!el) return;
+    if(kind==='mine' || kind==='other'){
+      const assignee=el.dataset.assignee || currentUserName();
+      kind=assignee===currentUserName() ? 'mine' : 'other';
+    }
+    currentConversationKind=kind;
+    el.dataset.kind=kind;
+    document.querySelectorAll('.ccard').forEach(c=>c.classList.remove('act'));
+    el.classList.add('act');
+    document.getElementById('convName').textContent = name;
+    document.getElementById('convFlag').textContent = flag;
+    const profile=studentProfiles[name];
+    if(profile){
+      document.getElementById('studentInfoName').textContent=name;
+      document.getElementById('studentInfoCountry').textContent=`${profile.flag} ${profile.country} · ${profile.city} · ${profile.language}`;
+      document.getElementById('studentInfoSchool').textContent=profile.school;
+      document.getElementById('studentInfoMajor').textContent=`${profile.major} · ${profile.intake}`;
+      document.getElementById('studentInfoEmail').textContent=profile.email;
+      document.getElementById('studentMsgFlag').textContent=profile.flag;
+      document.getElementById('studentDocFlag').textContent=profile.flag;
+      document.getElementById('studentGreeting').textContent=profile.greeting;
+      document.getElementById('studentProfileLine').textContent=`${profile.flag} ${profile.country} · ${profile.city} · ${profile.school} · ${profile.language} · 희망: ${profile.major}(${profile.intake.replace('.', '년 ')+'월'}) — 학생 프로필이 전달되었습니다`;
+      document.getElementById('studentFileLog').textContent=`10:06 ${name} 학생이 파일 첨부 (성적증명서_2026.pdf)`;
+    }
+    const st = document.getElementById('convSt');
+    const claimBtn = document.getElementById('claimMainBtn');
+    const transferBtn = document.getElementById('transferBtn');
+    const endBtn = document.getElementById('endBtn');
+    const reopenBtn = document.getElementById('reopenBtn');
+    const assigneeSummary = document.getElementById('assigneeSummary');
+    const input = document.getElementById('adminInput');
+    claimBtn.style.display='none'; transferBtn.style.display='none'; endBtn.style.display='none'; reopenBtn.style.display='none';
+    if(kind==='queue'){
+      st.className='stchip st-wait'; st.textContent='대기';
+      claimBtn.style.display='inline-block';
+      input.disabled=true; input.placeholder='메시지를 입력하세요 (배정 후 전송 가능)';
+      assigneeSummary.textContent='미배정 · 상담 시작 시 본인 담당으로 지정';
+    } else if(kind==='mine'){
+      st.className='stchip st-live'; st.textContent='진행중';
+      transferBtn.style.display='inline-block'; endBtn.style.display='inline-block';
+      input.disabled=false; input.placeholder='메시지를 입력하세요';
+      assigneeSummary.textContent=`${el.dataset.assignee || currentUserName()} (나) · 진행 중`;
+    } else if(kind==='other'){
+      st.className='stchip st-live'; st.textContent='진행중';
+      if(isOwner()) transferBtn.style.display='inline-block';
+      input.disabled=true; input.placeholder=`${el.dataset.assignee || '다른 담당자'}님이 상담 중입니다`;
+      assigneeSummary.textContent=`${el.dataset.assignee || '다른 담당자'} · 진행 중`;
+    } else {
+      st.className='stchip st-done'; st.textContent='종료';
+      reopenBtn.style.display='inline-block';
+      input.disabled=true; input.placeholder='종료된 대화입니다';
+      assigneeSummary.textContent=`${el.dataset.assignee || '담당자 미상'} · 종료 시점 담당`;
+    }
+    showMobileConversation();
+  }
+
+  function claim(btn){
+    const card = btn.closest('.ccard');
+    beginCounseling(card);
+  }
+  function claimMain(){
+    beginCounseling(document.querySelector('.ccard.act'));
+  }
+  function beginCounseling(card){
+    if(!card || (card.dataset.kind || 'queue')!=='queue'){
+      showScenarioToast('이미 다른 상태로 변경된 상담입니다. 최신 상태를 확인해 주세요.');
+      return;
+    }
+    const nm = card.querySelector('.nm').childNodes[0].textContent.trim();
+    const flag = card.querySelector('.av').textContent.trim();
+    card.classList.remove('unassigned');
+    card.querySelector('.stchip').className='stchip st-live';
+    card.querySelector('.stchip').textContent='진행중';
+    const cb=card.querySelector('.claimbtn'); if(cb) cb.remove();
+    if(document.getElementById('claimScenario').value==='conflict'){
+      card.dataset.assignee='이민지';
+      bindCardState(card,'other',nm,flag);
+      openConv(card,'other',nm,flag);
+      setInboxFilter('all',document.querySelector('[data-inbox-filter="all"]'));
+      addSys('⚠️ 다른 멤버 이민지가 먼저 상담을 시작했습니다 · 최신 담당자와 진행 상태를 불러왔습니다');
+      return;
+    }
+    card.dataset.assignee=currentUserName();
+    bindCardState(card,'mine',nm,flag);
+    openConv(card,'mine',nm,flag);
+    setInboxFilter('mine',document.querySelector('[data-inbox-filter="mine"]'));
+    addSys(`✅ ${currentUserName()}이 상담을 시작했습니다 · 대기 중 누적 학생 메시지는 읽음 처리되었습니다`);
+  }
+  function endConv(){
+    const active = document.querySelector('.ccard.act');
+    if(!active || currentConversationKind!=='mine'){
+      showScenarioToast('현재 담당자만 진행 중 상담을 종료할 수 있습니다.');
+      return;
+    }
+    active.querySelector('.stchip').className='stchip st-done'; active.querySelector('.stchip').textContent='종료';
+    const nm = active ? active.querySelector('.nm').childNodes[0].textContent.trim() : '';
+    const flag = active ? active.querySelector('.av').textContent.trim() : '';
+    bindCardState(active,'done',nm,flag);
+    openConv(active, 'done', nm, flag);
+    setInboxFilter('done',document.querySelector('[data-inbox-filter="done"]'));
+    addSys('🔒 담당자가 대화를 종료했습니다 · 학생이 다시 상담하기를 누르면 같은 채널의 새 상담 회차가 열립니다');
+  }
+  function reopenConversation(){
+    const active=document.querySelector('.ccard.act');
+    if(!active || currentConversationKind!=='done') return;
+    const nm=active.querySelector('.nm').childNodes[0].textContent.trim();
+    const flag=active.querySelector('.av').textContent.trim();
+    const mode=document.getElementById('reopenScenario').value;
+    if(mode==='retain'){
+      const assignee=active.dataset.assignee || '최도윤';
+      active.classList.remove('unassigned');
+      active.querySelector('.stchip').className='stchip st-live'; active.querySelector('.stchip').textContent='진행중';
+      const kind=assignee===currentUserName() ? 'mine' : 'other';
+      bindCardState(active,kind,nm,flag);
+      openConv(active,kind,nm,flag);
+      setInboxFilter('all',document.querySelector('[data-inbox-filter="all"]'));
+      addSys(`↩ 학생이 다시 상담하기를 눌렀습니다 · 새 상담 회차가 열리고 기존 활성 담당자 ${assignee}에게 유지 배정되었습니다`);
+    }else{
+      delete active.dataset.assignee;
+      active.classList.add('unassigned');
+      active.querySelector('.stchip').className='stchip st-wait'; active.querySelector('.stchip').textContent='대기';
+      ensureClaimButton(active);
+      bindCardState(active,'queue',nm,flag);
+      openConv(active,'queue',nm,flag);
+      setInboxFilter('queue',document.querySelector('[data-inbox-filter="queue"]'));
+      addSys('↩ 학생이 다시 상담하기를 눌렀습니다 · 기존 담당자가 비활성 상태여서 새 상담 회차가 미배정 큐에 들어왔습니다');
+    }
+  }
+  function transferMsg(){
+    if(currentConversationKind!=='mine' && !(currentConversationKind==='other' && isOwner())){
+      showScenarioToast('이관은 진행 중 상담의 현재 담당자 또는 오너만 할 수 있습니다.');
+      return;
+    }
+    let modal=document.getElementById('transferModal');
+    if(!modal){
+      modal=document.createElement('div'); modal.className='modal-overlay'; modal.id='transferModal';
+      modal.innerHTML='<div class="modal-box"><div class="modal-hd"><b>상담 이관</b><button onclick="closeTransferModal()">✕</button></div><div class="modal-body"><p class="sub">학생 채널과 내부 메모는 유지한 채 담당자만 변경합니다.</p><div class="field"><label>담당자 선택</label><select id="transferAssignee"><option value="">담당자 선택</option><option>김서윤</option><option>이민지</option><option>최도윤</option><option>박현우</option></select></div><div class="field"><label>이관 메모 (선택)</label><textarea id="transferNote" placeholder="다음 담당자에게 전달할 내용을 남겨주세요"></textarea></div><button class="btn btn-primary" onclick="confirmTransfer()">이관하기</button></div></div>';
+      document.body.appendChild(modal);
+    }
+    modal.classList.add('show');
+  }
+  function closeTransferModal(){ document.getElementById('transferModal').classList.remove('show'); }
+  function confirmTransfer(){
+    const assignee=document.getElementById('transferAssignee').value;
+    if(!assignee) return;
+    const active=document.querySelector('.ccard.act');
+    if(!active) return;
+    const nm=active.querySelector('.nm').childNodes[0].textContent.trim();
+    const flag=active.querySelector('.av').textContent.trim();
+    active.dataset.assignee=assignee;
+    const kind=assignee===currentUserName() ? 'mine' : 'other';
+    bindCardState(active,kind,nm,flag);
+    closeTransferModal();
+    openConv(active,kind,nm,flag);
+    setInboxFilter('all',document.querySelector('[data-inbox-filter="all"]'));
+    addSys(`↪ ${assignee}에게 이관되었습니다 · 학생 채널과 내부 메모는 유지됩니다`);
+  }
+  function requestDoc(selectId='reqDocSel2'){
+    const cat = document.getElementById(selectId).value;
+    addMe(`📄 [서류 요청] <b>${cat}</b>를 보내주세요.<br><small style="opacity:.8">학생은 문서 보관함에서 바로 전송할 수 있어요</small>`);
+  }
+  function addSys(text){
+    const thread=document.getElementById('thread');
+    const sys=document.createElement('div');
+    sys.className='msg sys';
+    sys.innerHTML=`<div class="bub">${text}</div>`;
+    thread.appendChild(sys);
+    thread.scrollTop=99999;
+  }
+  function addMe(inner){
+    const thread=document.getElementById('thread');
+    const div=document.createElement('div');
+    div.className='msg me';
+    div.innerHTML=`<div><div class="bub">${inner}</div><div class="meta">방금</div></div>`;
+    thread.appendChild(div);
+    thread.scrollTop=99999;
+  }
+  function adminSend(){
+    const el=document.getElementById('adminInput');
+    if(el.disabled || !el.value.trim()) return;
+    addMe(el.value.replace(/</g,'&lt;'));
+    el.value='';
+  }
+  document.getElementById('adminInput').addEventListener('keydown', e=>{ if(e.key==='Enter') adminSend(); });
+  function openLogModal(){ document.getElementById('logModal').classList.add('show'); }
+  function closeLogModal(){ document.getElementById('logModal').classList.remove('show'); }
+  function setMyStatus(v){
+    const dot=document.querySelector('.mystatus .dot');
+    dot.style.background = v==='온라인' ? '#5fe3a1' : v==='자리비움' ? '#f5b400' : '#aeb6c4';
+  }
+
+  function sendInvite(button){
+    if(!isOwner()){
+      showScenarioToast('오너만 초대 링크를 발송할 수 있습니다.');
+      return;
+    }
+    const email=document.getElementById('inviteEmail');
+    if(!email.value.trim() || !email.checkValidity()){
+      email.focus();
+      showScenarioToast('초대할 동료의 이메일을 확인해 주세요.');
+      return;
+    }
+    button.textContent='✓ 초대 링크 발송 완료';
+    setTimeout(()=>{ button.textContent='초대 링크 재발송'; },1400);
+  }
+
+  // 멤버 상세 모달 (UV-2)
+  const members={
+    kim:{full:'박현우',av:'박현',role:'오너',roleCls:'owner',email:'international@seojeong.ac.kr',active:'0건',joined:'2026-02-18',status:'온라인',statusCls:'st-done'},
+    lee:{full:'김서윤',av:'김서',role:'멤버',roleCls:'',email:'admission@seojeong.ac.kr',active:'2건',joined:'2026-03-02',status:'온라인',statusCls:'st-done'},
+    park:{full:'이민지',av:'이민',role:'멤버',roleCls:'',email:'support@seojeong.ac.kr',active:'1건',joined:'2026-03-15',status:'자리비움',statusCls:'st-wait'},
+    jung:{full:'최도윤',av:'최도',role:'멤버',roleCls:'',email:'dormitory@seojeong.ac.kr',active:'0건',joined:'2026-04-01',status:'오프라인',statusCls:'tag-etc'}
+  };
+  function openMember(key){
+    const m=members[key];
+    document.getElementById('mmName').textContent=m.full+' 상세';
+    const role=document.getElementById('mmRole'); role.textContent=m.role; role.className='rolechip '+m.roleCls;
+    document.getElementById('mmAv').textContent=m.av;
+    document.getElementById('mmFull').textContent=m.full;
+    document.getElementById('mmEmail').textContent=m.email;
+    const st=document.getElementById('mmStatus'); st.textContent=m.status; st.className='stchip '+m.statusCls;
+    document.getElementById('mmActive').textContent=m.active;
+    document.getElementById('mmJoined').textContent=m.joined;
+    document.getElementById('memberModal').classList.add('show');
+  }
+  function closeMember(){ document.getElementById('memberModal').classList.remove('show'); }
+  document.querySelectorAll('.ccard').forEach(card=>{
+    card.tabIndex=0;
+    card.setAttribute('role','button');
+    card.addEventListener('keydown',event=>{
+      if(event.target===card && (event.key==='Enter' || event.key===' ')){
+        event.preventDefault();
+        card.click();
+      }
+    });
+  });
+  applyInboxFilter();
+  applyRoleScenario();
+  updateScenarioSummary();
+  hydrateManagedUniversityProfile();
+  hydrateManagedConsultationSettings();
+  document.querySelectorAll('input[name="managedConsultationStatus"]').forEach(input=>{
+    input.addEventListener('change',()=>setManagedConsultationSummary(input.value));
+  });
+  window.addEventListener('unichat:universities-updated',()=>{
+    hydrateManagedUniversityProfile();
+    hydrateManagedConsultationSettings();
+  });
+  toggleStudentInfo(false);
+  if(new URLSearchParams(window.location.search).get('register')==='1') openPublicRegister();
+</script>
+</body>
+</html>

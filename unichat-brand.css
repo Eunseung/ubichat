@@ -1,0 +1,72 @@
+:root {
+  --unichat-navy: #10223f;
+  --unichat-blue: #2563eb;
+  --unichat-blue-dark: #1d4ed8;
+  --unichat-line: #dde4ee;
+  --unichat-surface: #ffffff;
+  --unichat-muted: #667085;
+}
+
+.unichat-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--unichat-navy);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.unichat-emblem {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 11px;
+  background: var(--unichat-navy);
+  box-shadow: 0 8px 20px rgba(16, 34, 63, .18);
+}
+
+.unichat-emblem::before,
+.unichat-emblem::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.unichat-emblem::before {
+  width: 8px;
+  height: 8px;
+  top: 8px;
+  left: 8px;
+  box-shadow: 10px 0 0 #70a2ff;
+}
+
+.unichat-emblem::after {
+  width: 18px;
+  height: 6px;
+  bottom: 8px;
+  left: 8px;
+}
+
+.unichat-brand-name {
+  font-size: 17px;
+  font-weight: 850;
+  letter-spacing: -.035em;
+}
+
+.unichat-brand-context {
+  padding-left: 9px;
+  border-left: 1px solid var(--unichat-line);
+  color: var(--unichat-muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+@media (max-width: 520px) {
+  .unichat-emblem { width: 30px; height: 30px; border-radius: 10px; }
+  .unichat-emblem::before { top: 7px; left: 7px; }
+  .unichat-emblem::after { bottom: 7px; left: 6px; }
+  .unichat-brand-name { font-size: 16px; }
+}
