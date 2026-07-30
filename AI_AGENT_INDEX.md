@@ -1,4 +1,4 @@
-# ubichat AI Agent Index
+# UBIChat AI Agent Index
 
 총 5개 세션, 13개 역할 에이전트로 운영한다.
 
@@ -25,7 +25,7 @@
 ### Product Owner
 
 ```text
-이 세션은 ubichat Product Owner 세션입니다.
+이 세션은 UBIChat Product Owner 세션입니다.
 product-owner/AGENTS.md와 관련 기준 문서를 읽고 사업 방향, 제품 원칙,
 우선순위, KPI, 스쿼드 간 결정을 관리해주세요.
 ```
@@ -33,7 +33,7 @@ product-owner/AGENTS.md와 관련 기준 문서를 읽고 사업 방향, 제품 
 ### 학생 스쿼드
 
 ```text
-이 세션은 ubichat 학생 스쿼드 세션입니다.
+이 세션은 UBIChat 학생 스쿼드 세션입니다.
 squads/student/AGENTS.md를 기준으로 요청에 맞는 PM, Designer,
 Developer 역할을 선택하고 학생 소유 범위 안에서 작업해주세요.
 ```
@@ -41,7 +41,7 @@ Developer 역할을 선택하고 학생 소유 범위 안에서 작업해주세�
 ### 학교 스쿼드
 
 ```text
-이 세션은 ubichat 학교 스쿼드 세션입니다.
+이 세션은 UBIChat 학교 스쿼드 세션입니다.
 squads/university/AGENTS.md를 기준으로 요청에 맞는 PM, Designer,
 Developer 역할을 선택하고 학교 소유 범위 안에서 작업해주세요.
 ```
@@ -49,7 +49,7 @@ Developer 역할을 선택하고 학교 소유 범위 안에서 작업해주세�
 ### 어드민 스쿼드
 
 ```text
-이 세션은 ubichat 어드민 스쿼드 세션입니다.
+이 세션은 UBIChat 어드민 스쿼드 세션입니다.
 squads/admin/AGENTS.md를 기준으로 요청에 맞는 PM, Designer,
 Developer 역할을 선택하고 어드민 소유 범위 안에서 작업해주세요.
 ```
@@ -57,7 +57,7 @@ Developer 역할을 선택하고 어드민 소유 범위 안에서 작업해주�
 ### 메인·탐색·콘텐츠 스쿼드
 
 ```text
-이 세션은 ubichat 메인·탐색·콘텐츠 스쿼드 세션입니다.
+이 세션은 UBIChat 메인·탐색·콘텐츠 스쿼드 세션입니다.
 squads/main/AGENTS.md를 기준으로 요청에 맞는 PM, Designer,
 Developer 역할을 선택하고 공개 경험 소유 범위 안에서 작업해주세요.
 ```

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ubichat 대학 포털 — 로그인·상담·통계</title>
+<title>UBIChat 대학 포털 — 로그인·상담·통계</title>
 <link rel="stylesheet" href="unichat-brand.css">
 <style>
   :root{
@@ -599,9 +599,9 @@
   <!-- ===== 로그인 (기본 진입 화면) ===== -->
   <main class="auth-stage" id="loginView">
     <nav class="auth-nav">
-      <a class="unichat-brand auth-brand" href="기업용_배너_포함.html" aria-label="ubichat 랜딩페이지">
+      <a class="unichat-brand auth-brand" href="기업용_배너_포함.html" aria-label="UBIChat 랜딩페이지">
         <span class="unichat-emblem" aria-hidden="true"></span>
-        <span class="unichat-brand-name">ubichat</span>
+        <span class="unichat-brand-name">UBIChat</span>
         <span class="unichat-brand-context">대학 서비스</span>
       </a>
       <a class="back-home" href="기업용_배너_포함.html">← 랜딩페이지로</a>
@@ -663,9 +663,9 @@
   </main>
 
   <div class="admin-top" id="appTop" hidden>
-    <a class="brand unichat-brand" href="기업용_배너_포함.html" aria-label="ubichat 랜딩페이지">
+    <a class="brand unichat-brand" href="기업용_배너_포함.html" aria-label="UBIChat 랜딩페이지">
       <span class="unichat-emblem" aria-hidden="true"></span>
-      <span class="unichat-brand-name">ubichat</span>
+      <span class="unichat-brand-name">UBIChat</span>
       <span class="unichat-brand-context">대학 서비스</span>
     </a>
     <div class="right">
@@ -1106,7 +1106,7 @@
     <div class="page" id="page-notices">
       <div class="body2 stats-body">
         <nav class="breadcrumb" aria-label="브레드크럼"><button type="button" onclick="showPage('home',document.querySelector('.side a[data-pg=\'home\']'))">홈</button><span>›</span><span>공지사항</span></nav>
-        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px"><div><h1>공지사항</h1><p class="sub" style="margin-bottom:0">ubichat 플랫폼 운영팀이 학교 구성원에게 전달하는 안내입니다.</p></div></div>
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px"><div><h1>공지사항</h1><p class="sub" style="margin-bottom:0">UBIChat 플랫폼 운영팀이 학교 구성원에게 전달하는 안내입니다.</p></div></div>
         <div class="university-notice-layout">
           <section class="university-notice-list" id="universityNoticeList" aria-label="학교 대상 공지사항 목록"></section>
           <article class="university-notice-detail" id="universityNoticeDetail" tabindex="-1"><div class="university-notice-empty">확인할 공지사항을 선택해 주세요.</div></article>
@@ -2330,7 +2330,7 @@
     const manager=document.getElementById('publicDetailTabsManager');
     if(!profile || !manager) return;
     manager.replaceChildren();
-    normalizePublicDetailTabs(profile).forEach((tab,index)=>{
+    normalizePublicDetailTabs(profile).forEach(tab=>{
       const row=document.createElement('div'); row.className='public-detail-tab-row';
       const summary=document.createElement('div'); summary.className='public-detail-tab-summary';
       const title=document.createElement('b'); title.textContent=tab.title;

@@ -1,7 +1,7 @@
 (() => {
   const faqs = [
     {
-      question: 'ubichat에서는 무엇을 할 수 있나요?',
+      question: 'UBIChat에서는 무엇을 할 수 있나요?',
       answer: '공개된 대학 정보를 탐색하고, 관심 있는 대학에 상담을 시작할 수 있습니다.'
     },
     {

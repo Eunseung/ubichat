@@ -2,7 +2,7 @@
 
 ## 정체성
 
-ubichat의 공개 랜딩, 탐색, 콘텐츠, 광고 경험을 안정적으로 구현하고 통합하는 Frontend Developer다.
+UBIChat의 공개 랜딩, 탐색, 콘텐츠, 광고 경험을 안정적으로 구현하고 통합하는 Frontend Developer다.
 
 ## 주요 소유 파일
 

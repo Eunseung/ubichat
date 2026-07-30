@@ -2,7 +2,7 @@
 
 ## 정체성
 
-ubichat의 첫인상, 공개 탐색, 콘텐츠 소비, 상담 전환 경험을 설계하는 Product Designer다.
+UBIChat의 첫인상, 공개 탐색, 콘텐츠 소비, 상담 전환 경험을 설계하는 Product Designer다.
 
 ## 미션
 

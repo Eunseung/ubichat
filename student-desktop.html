@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ubichat 학생 포털</title>
+<title>UBIChat 학생 포털</title>
 <link rel="stylesheet" href="unichat-brand.css">
 <style>
   :root{
@@ -144,6 +144,7 @@
   .university-reopened-label{font-size:10.5px;font-weight:850}.university-reopened-time{font-size:10px;color:#4c8062}
   .msg.welcome-message .bub{background:#eef5ff;border:1px solid #c8daf6}
   .welcome-label{display:block;width:max-content;margin:0 0 6px;padding:3px 6px;border-radius:999px;background:#dce9fc;color:#2458a6;font-size:10px;font-weight:800;line-height:1.2}
+  .welcome-message-image{display:block;width:min(280px,100%);aspect-ratio:1.74;object-fit:cover;border-radius:9px;margin:0 0 8px}
   .doccard{min-width:0;max-width:100%;border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 11px;display:flex;gap:9px;align-items:center;margin-top:3px;background:rgba(255,255,255,.12)}
   .doccard > :last-child{min-width:0}
   .msg:not(.me) .doccard{border-color:var(--line2);background:#fff}
@@ -300,7 +301,7 @@
 <body>
   <header id="appHeader" class="student-public-header" data-public-header style="display:none">
     <div class="student-header-inner">
-      <a class="unichat-brand student-brand" href="기업용_배너_포함.html" aria-label="ubichat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">ubichat</span></a>
+      <a class="unichat-brand student-brand" href="기업용_배너_포함.html" aria-label="UBIChat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">UBIChat</span></a>
       <button class="student-mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
       <nav class="student-header-nav" aria-label="주 메뉴">
         <a href="university-explore.html">대학 탐색</a>
@@ -416,7 +417,7 @@
             <div class="cb">
               <div class="r1"><span class="nm">한양여자대학교</span><span class="tm">1시간 전</span></div>
               <div class="prev">장학금 관련해서 문의드립니다.</div>
-              <div class="r2"><span class="stchip st-wait">대기</span></div>
+              <div class="r2"><span class="stchip st-live">진행중</span></div>
             </div>
           </div>
           <div class="citem" data-channel-key="yeonsung::international-office" onclick="selectConv(this,'yeonsung','international-office')">
@@ -440,7 +441,7 @@
           </div>
           <div class="thread" id="thread">
             <div class="day">오늘</div>
-            <div class="msg welcome-message"><div class="av">GM</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요. 학부·학사 입학 상담팀입니다. 문의 내용을 확인하고 안내드리겠습니다.</div><div class="meta">방금</div></div></div>
+            <div class="msg welcome-message"><div class="av">GM</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span><img class="welcome-message-image" src="squads/university/prototype-assets/gumi/gumi-welcome-undergraduate.png" alt="구미대학교 학부·학사 웰컴 이미지">안녕하세요. 학부·학사 입학 상담팀입니다. 문의 내용을 확인하고 안내드리겠습니다.</div><div class="meta">방금</div></div></div>
           </div>
           <div class="composer">
             <div class="attmenu" id="attMenu">
@@ -489,7 +490,7 @@
     <div class="page" id="pNotices">
       <span class="ix">ST-6</span>
       <h2 class="vt" style="margin-top:8px">공지사항</h2>
-      <div class="lead">ubichat 서비스 이용과 학생 포털 운영 안내를 확인하세요.</div>
+      <div class="lead">UBIChat 서비스 이용과 학생 포털 운영 안내를 확인하세요.</div>
       <div class="student-notice-alert" id="studentNoticeAlert" hidden aria-live="polite"></div>
       <div class="student-notice-layout">
         <section class="student-notice-list" id="studentNoticeList" aria-label="공지사항 목록"></section>
@@ -769,7 +770,7 @@
     'gumi::undergraduate':{universityId:'gumi',affiliationId:'undergraduate',displayName:'구미대학교',mark:'GM',team:'학부·학사 입학 상담팀',status:'진행중',thread:undergraduateThread,preview:'문의 내용을 확인하고 안내드리겠습니다.'},
     'gumi::language-center':{universityId:'gumi',affiliationId:'language-center',displayName:'구미대학교 언어교육원',mark:'GM',team:'언어교육원 상담팀',status:'진행중',thread:`<div class="day">오늘</div><div class="msg sys"><div class="bub">언어교육원 상담이 시작되었어요 · 한국어 과정 문의가 전달되었습니다</div></div><div class="msg welcome-message"><div class="av">GM</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요! 구미대학교 언어교육원 상담팀입니다. 한국어 과정과 연계 진학을 안내해 드릴게요.</div><div class="meta">09:41</div></div></div><div class="msg me"><div><div class="bub">TOPIK 4급으로 지원 가능한 과정과 개강 일정을 알고 싶어요.</div><div class="meta">읽음 · 09:45</div></div></div><div class="msg"><div class="av">GM</div><div><div class="bub">현재 TOPIK 성적표를 보내주시면 지원 가능 과정을 확인해 드릴게요.<button class="doc-example-action" type="button" data-doc-request-example="gumi-language-topik">제출 예시 보기</button><button class="doc-request-action" type="button" data-doc-request="gumi-language-topik" onclick="fulfillDesktopDocumentRequest('gumi-language-topik')">어학성적 보내기</button></div><div class="meta">09:48</div></div></div>`,preview:'TOPIK 성적표를 보내주세요.'},
     'gumi::graduate-school':{universityId:'gumi',affiliationId:'graduate-school',displayName:'구미대학교 대학원',mark:'GM',team:'대학원 입학 상담팀',status:'차단',thread:'<div class="day">어제</div><div class="msg sys"><div class="bub">이 소속구분의 상담이 제한되었습니다. 차단 해제 뒤 구미대학교 대학원 상담을 다시 신청할 수 있어요.</div></div>',preview:'이 소속구분의 상담이 제한되었습니다.'},
-    'hanyang-womens::undergraduate':{universityId:'hanyang-womens',affiliationId:'undergraduate',displayName:'한양여자대학교',mark:'HY',team:'입학 상담팀',status:'대기',thread:'<div class="day">오늘</div><div class="msg sys"><div class="bub">입학 상담 신청이 접수되었어요</div></div><div class="msg me"><div><div class="bub">장학금 관련해서 문의드립니다.</div><div class="meta">보냄 · 아직 읽지 않음</div></div></div>',preview:'장학금 관련해서 문의드립니다.'},
+    'hanyang-womens::undergraduate':{universityId:'hanyang-womens',affiliationId:'undergraduate',displayName:'한양여자대학교',mark:'HY',team:'입학 상담팀',status:'진행중',thread:'<div class="day">오늘</div><div class="msg welcome-message"><div class="av">HY</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요. 한양여자대학교 입학 상담팀입니다. 문의 내용을 확인하고 안내드리겠습니다.</div><div class="meta">10:15</div></div></div><div class="msg me"><div><div class="bub">장학금 관련해서 문의드립니다.</div><div class="meta">읽음 · 10:18</div></div></div>',preview:'장학금 관련해서 문의드립니다.'},
     'yeonsung::international-office':{universityId:'yeonsung',affiliationId:'international-office',displayName:'연성대학교 국제교류',mark:'YS',team:'국제교류 상담팀',status:'종료',thread:'<div class="day">6월 30일</div><div class="msg sys"><div class="bub">입학 상담이 시작되었어요 · 희망 전공과 한국어 학습 계획이 대학에 전달되었습니다</div></div><div class="msg welcome-message"><div class="av">YS</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요, 연성대학교 국제교류 상담팀입니다. 호텔관광 전공에 관심이 있으시다고 들었어요.</div><div class="meta">13:20</div></div></div><div class="msg me"><div><div class="bub">네, 호텔관광과 지원을 준비 중이에요. 기숙사 신청도 함께 안내받을 수 있을까요?</div><div class="meta">읽음 · 13:24</div></div></div><div class="msg"><div class="av">YS</div><div><div class="bub">가능합니다. 입학 서류 확인 후 기숙사 신청 일정과 비용을 안내해 드릴게요.</div><div class="meta">13:29</div></div></div>',preview:'상담이 종료되었습니다.'}
   };
   function renderUniversityReopenedMessage(timestamp='방금'){
@@ -783,7 +784,6 @@
     channel.preview='대학이 상담을 다시 시작했어요.';
     return true;
   }
-  applyUniversityReopen(consultationChannels['yeonsung::international-office'],{timestamp:'13:35'});
   const desktopDocumentRequests={
     'gumi-language-topik':{channelKey:'gumi::language-center',category:'어학성적',label:'TOPIK 성적표',completed:false,exampleFile:{fileName:'TOPIK_성적표_제출예시.pdf',title:'TOPIK 성적표 제출 예시',description:'성명, 급수, 성적 확인 영역이 보이도록 전체 페이지를 제출해 주세요.',source:'구미대학교 언어교육원 상담팀 제공',isPrototype:true}}
   };
@@ -838,7 +838,7 @@
     }else if(channel.status==='종료'){
       contact.textContent='상담이 종료되었습니다';
       composer.style.display='none';
-      thread.insertAdjacentHTML('beforeend','<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div><button class="btn btn-primary" style="margin:14px" onclick="reopenConsultation()">다시 상담하기</button>');
+      thread.insertAdjacentHTML('beforeend','<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div><button class="btn btn-primary" style="margin:14px" onclick="restartConsultation()">상담 재시작하기</button>');
     }else if(channel.status==='차단'){
       contact.textContent='이 소속구분의 상담이 제한되었습니다';
       composer.style.display='none';
@@ -880,11 +880,10 @@
   function showMobileConversationList(){
     document.querySelector('.msgr')?.classList.remove('show-conversation');
   }
-  function reopenConsultation(){
+  function restartConsultation(){
     const channel=currentConsultationChannel();
     if(!channel||channel.status!=='종료') return;
-    channel.thread+='<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div><div class="msg sys"><div class="bub">다시 상담을 신청했어요 · 이전 대화 내용을 바탕으로 담당자 배정을 기다리고 있어요</div></div>';
-    channel.status='대기'; channel.preview='상담 재개 요청이 접수되었습니다.';
+    applyUniversityReopen(channel,{timestamp:'방금'});
     syncConsultationList(channel);
     renderChatState();
   }
@@ -1165,6 +1164,7 @@
         event.affiliationId===candidate.affiliationId
       );
       if(!channel) return;
+      if(channel.universityId==='gumi'&&channel.affiliationId==='undergraduate') return;
       const requestId=`external-document-request-${eventId}`;
       if(desktopDocumentRequests[requestId]) return;
       const category=String(event.category||'기타').slice(0,40);

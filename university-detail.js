@@ -44,7 +44,7 @@ if (!profile) {
     mark.replaceChildren(image);
   }
 
-  document.title = `ubichat | ${profile.displayName} 소개`;
+  document.title = `UBIChat | ${profile.displayName} 소개`;
   document.querySelector('#university-name').textContent = profile.displayName;
   document.querySelector('#university-meta').textContent = `${profile.location} · ${profile.universityNameEn}`;
   document.querySelector('#response-time').textContent = profile.consultation.responseLabel;
