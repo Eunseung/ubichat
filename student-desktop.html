@@ -140,6 +140,8 @@
   .msg.me .meta{text-align:right}
   .msg.sys{align-self:center;max-width:100%}
   .msg.sys .bub{background:#e7edf6;color:var(--brand);font-size:11.5px;border-radius:10px}
+  .msg.sys.university-reopened .bub{display:grid;gap:3px;background:#edf8f2;border:1px solid #b9e1ca;color:#176b3a}
+  .university-reopened-label{font-size:10.5px;font-weight:850}.university-reopened-time{font-size:10px;color:#4c8062}
   .msg.welcome-message .bub{background:#eef5ff;border:1px solid #c8daf6}
   .welcome-label{display:block;width:max-content;margin:0 0 6px;padding:3px 6px;border-radius:999px;background:#dce9fc;color:#2458a6;font-size:10px;font-weight:800;line-height:1.2}
   .doccard{min-width:0;max-width:100%;border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 11px;display:flex;gap:9px;align-items:center;margin-top:3px;background:rgba(255,255,255,.12)}
@@ -389,8 +391,8 @@
             <div class="ulogo">GM</div>
             <div class="cb">
               <div class="r1"><span class="nm">구미대학교</span><span class="tm">방금</span></div>
-              <div class="prev">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div>
-              <div class="r2"><span class="stchip st-live">진행중</span><span class="unread">2</span></div>
+              <div class="prev">문의 내용을 확인하고 안내드리겠습니다.</div>
+              <div class="r2"><span class="stchip st-live">진행중</span></div>
             </div>
           </div>
           <div class="citem" data-channel-key="gumi::language-center" onclick="selectConv(this,'gumi','language-center')">
@@ -438,14 +440,7 @@
           </div>
           <div class="thread" id="thread">
             <div class="day">오늘</div>
-            <div class="msg sys"><div class="bub">입학 상담이 시작되었어요 · 프로필(🇹🇭 태국 · 방콕 제1고)이 대학에 전달되었습니다</div></div>
-            <div class="msg welcome-message"><div class="av">SJ</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>Napat님 안녕하세요! 서정대학교 입학 상담팀입니다. 2027년 3월 학부 입학을 준비하시는군요 😊</div><div class="meta">10:02</div></div></div>
-            <div class="msg me"><div><div class="bub">네! 컴퓨터공학과 지원 조건이 궁금해요. Do you have English materials?</div><div class="meta">읽음 · 10:03</div></div></div>
-            <div class="msg"><div class="av">SJ</div><div><div class="bub">물론이죠. 우선 최근 성적증명서를 보내주시면 지원 가능 여부를 확인해드릴게요.</div><div class="meta">10:05</div></div></div>
-            <div class="msg me"><div><div class="bub">📎 문서 보관함에서 전송
-              <div class="doccard"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · 6월 28일 업로드</div></div></div>
-            </div><div class="meta">읽음 · 10:06</div></div></div>
-            <div class="msg"><div class="av">SJ</div><div><div class="bub">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div><div class="meta">10:08</div></div></div>
+            <div class="msg welcome-message"><div class="av">GM</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요. 학부·학사 입학 상담팀입니다. 문의 내용을 확인하고 안내드리겠습니다.</div><div class="meta">방금</div></div></div>
           </div>
           <div class="composer">
             <div class="attmenu" id="attMenu">
@@ -710,11 +705,18 @@
     setChatHeader('gumi','undergraduate');
     showPage('pChats');
   }
+  function redirectStudentAfterAuthentication(){
+    if(requestedUniversity&&requestedAffiliation){
+      window.location.href=`student-desktop.html?universityId=${encodeURIComponent(requestedUniversity)}&affiliationId=${encodeURIComponent(requestedAffiliation)}`;
+      return;
+    }
+    window.location.href='index.html';
+  }
   function completeDesktopSignup(){
     if(desktopEmailAuthState!=='success'){ setDesktopEmailAuthState('unverified',false); return; }
-    studentAuthenticated=true; window.UniChatStudentSession?.signIn(); openRequestedDesktopConsultation();
+    studentAuthenticated=true; window.UniChatStudentSession?.signIn(); redirectStudentAfterAuthentication();
   }
-  function loginDesktopStudent(){ studentAuthenticated=true; window.UniChatStudentSession?.signIn(); openRequestedDesktopConsultation(); }
+  function loginDesktopStudent(){ studentAuthenticated=true; window.UniChatStudentSession?.signIn(); redirectStudentAfterAuthentication(); }
   function showPage(id, bypassAuth=false){
     if(!bypassAuth&&protectedPages.has(id)&&!studentAuthenticated){
       id='pSignup'; renderDesktopEmailAuth();
@@ -762,16 +764,27 @@
 
   const stMap={'대기':'st-wait','진행중':'st-live','종료':'st-done','차단':'st-blocked'};
   const statusLabel={'차단':'상담 제한'};
-  const undergraduateThread=`${document.getElementById('thread').innerHTML.replaceAll('서정대학교','구미대학교').replaceAll('SJ','GM')}<div class="msg"><div class="av">GM</div><div><div class="bub">입학 진행을 위해 여권 인적사항 면을 보내주세요.<button class="doc-example-action" type="button" data-doc-request-example="gumi-undergraduate-passport">제출 예시 보기</button><button class="doc-request-action" type="button" data-doc-request="gumi-undergraduate-passport" onclick="fulfillDesktopDocumentRequest('gumi-undergraduate-passport')">여권 업로드 후 전송</button></div><div class="meta">10:12</div></div></div>`;
+  const undergraduateThread=document.getElementById('thread').innerHTML;
   const consultationChannels={
-    'gumi::undergraduate':{universityId:'gumi',affiliationId:'undergraduate',displayName:'구미대학교',mark:'GM',team:'학부·학사 입학 상담팀',status:'진행중',thread:undergraduateThread,preview:'성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!'},
+    'gumi::undergraduate':{universityId:'gumi',affiliationId:'undergraduate',displayName:'구미대학교',mark:'GM',team:'학부·학사 입학 상담팀',status:'진행중',thread:undergraduateThread,preview:'문의 내용을 확인하고 안내드리겠습니다.'},
     'gumi::language-center':{universityId:'gumi',affiliationId:'language-center',displayName:'구미대학교 언어교육원',mark:'GM',team:'언어교육원 상담팀',status:'진행중',thread:`<div class="day">오늘</div><div class="msg sys"><div class="bub">언어교육원 상담이 시작되었어요 · 한국어 과정 문의가 전달되었습니다</div></div><div class="msg welcome-message"><div class="av">GM</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요! 구미대학교 언어교육원 상담팀입니다. 한국어 과정과 연계 진학을 안내해 드릴게요.</div><div class="meta">09:41</div></div></div><div class="msg me"><div><div class="bub">TOPIK 4급으로 지원 가능한 과정과 개강 일정을 알고 싶어요.</div><div class="meta">읽음 · 09:45</div></div></div><div class="msg"><div class="av">GM</div><div><div class="bub">현재 TOPIK 성적표를 보내주시면 지원 가능 과정을 확인해 드릴게요.<button class="doc-example-action" type="button" data-doc-request-example="gumi-language-topik">제출 예시 보기</button><button class="doc-request-action" type="button" data-doc-request="gumi-language-topik" onclick="fulfillDesktopDocumentRequest('gumi-language-topik')">어학성적 보내기</button></div><div class="meta">09:48</div></div></div>`,preview:'TOPIK 성적표를 보내주세요.'},
     'gumi::graduate-school':{universityId:'gumi',affiliationId:'graduate-school',displayName:'구미대학교 대학원',mark:'GM',team:'대학원 입학 상담팀',status:'차단',thread:'<div class="day">어제</div><div class="msg sys"><div class="bub">이 소속구분의 상담이 제한되었습니다. 차단 해제 뒤 구미대학교 대학원 상담을 다시 신청할 수 있어요.</div></div>',preview:'이 소속구분의 상담이 제한되었습니다.'},
     'hanyang-womens::undergraduate':{universityId:'hanyang-womens',affiliationId:'undergraduate',displayName:'한양여자대학교',mark:'HY',team:'입학 상담팀',status:'대기',thread:'<div class="day">오늘</div><div class="msg sys"><div class="bub">입학 상담 신청이 접수되었어요</div></div><div class="msg me"><div><div class="bub">장학금 관련해서 문의드립니다.</div><div class="meta">보냄 · 아직 읽지 않음</div></div></div>',preview:'장학금 관련해서 문의드립니다.'},
     'yeonsung::international-office':{universityId:'yeonsung',affiliationId:'international-office',displayName:'연성대학교 국제교류',mark:'YS',team:'국제교류 상담팀',status:'종료',thread:'<div class="day">6월 30일</div><div class="msg sys"><div class="bub">입학 상담이 시작되었어요 · 희망 전공과 한국어 학습 계획이 대학에 전달되었습니다</div></div><div class="msg welcome-message"><div class="av">YS</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요, 연성대학교 국제교류 상담팀입니다. 호텔관광 전공에 관심이 있으시다고 들었어요.</div><div class="meta">13:20</div></div></div><div class="msg me"><div><div class="bub">네, 호텔관광과 지원을 준비 중이에요. 기숙사 신청도 함께 안내받을 수 있을까요?</div><div class="meta">읽음 · 13:24</div></div></div><div class="msg"><div class="av">YS</div><div><div class="bub">가능합니다. 입학 서류 확인 후 기숙사 신청 일정과 비용을 안내해 드릴게요.</div><div class="meta">13:29</div></div></div>',preview:'상담이 종료되었습니다.'}
   };
+  function renderUniversityReopenedMessage(timestamp='방금'){
+    return `<div class="msg sys university-reopened"><div class="bub"><span class="university-reopened-label">대학이 상담을 재개했어요</span><span>이전 대화를 이어서 바로 답장할 수 있어요.</span><span class="university-reopened-time">${timestamp}</span></div></div>`;
+  }
+  function applyUniversityReopen(channel,{timestamp='방금',appendClosure=true}={}){
+    if(!channel||channel.status!=='종료') return false;
+    if(appendClosure) channel.thread+='<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div>';
+    channel.thread+=renderUniversityReopenedMessage(timestamp);
+    channel.status='진행중';
+    channel.preview='대학이 상담을 다시 시작했어요.';
+    return true;
+  }
+  applyUniversityReopen(consultationChannels['yeonsung::international-office'],{timestamp:'13:35'});
   const desktopDocumentRequests={
-    'gumi-undergraduate-passport':{channelKey:'gumi::undergraduate',category:'여권',label:'여권 인적사항 면',completed:false,exampleFile:{fileName:'여권_인적사항면_제출예시.pdf',title:'여권 인적사항 면 제출 예시',description:'사진과 영문 인적사항이 한 페이지에 모두 보이도록 준비해 주세요.',source:'구미대학교 학부·학사 입학 상담팀 제공',isPrototype:true}},
     'gumi-language-topik':{channelKey:'gumi::language-center',category:'어학성적',label:'TOPIK 성적표',completed:false,exampleFile:{fileName:'TOPIK_성적표_제출예시.pdf',title:'TOPIK 성적표 제출 예시',description:'성명, 급수, 성적 확인 영역이 보이도록 전체 페이지를 제출해 주세요.',source:'구미대학교 언어교육원 상담팀 제공',isPrototype:true}}
   };
   const documentRequestStorageKey='unichat.prototype.document-requests.v1';
@@ -1395,6 +1408,7 @@
     if(menu&&!menu.contains(event.target)) closeDesktopProfileMenu();
   });
   document.addEventListener('keydown',event=>{ if(event.key==='Escape') closeDesktopProfileMenu(); });
+  Object.values(consultationChannels).forEach(syncConsultationList);
   syncExternalDesktopDocumentRequests();
   window.addEventListener('storage',event=>{
     if(event.key===documentRequestStorageKey){
@@ -1404,7 +1418,15 @@
     if(event.key===window.UniChatNotices?.storageKey&&document.getElementById('pNotices').classList.contains('show')) renderStudentNotices();
   });
   window.addEventListener('unichat:notices-updated',()=>{ if(document.getElementById('pNotices').classList.contains('show')) renderStudentNotices(); });
-  if(studentAuthenticated) openRequestedDesktopConsultation();
+  if(studentAuthenticated){
+    if(requestedUniversity&&requestedAffiliation){
+      openRequestedDesktopConsultation();
+    }else if(requestedView){
+      openRequestedDesktopConsultation();
+    }else{
+      window.location.replace('index.html');
+    }
+  }
 </script>
 <script src="language-selector.js"></script>
 </body>

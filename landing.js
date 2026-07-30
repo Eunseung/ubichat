@@ -74,6 +74,32 @@ function renderUniversities(field) {
   grid.innerHTML = matching.map(cardMarkup).join('');
 }
 
+function renderFaqPreview() {
+  const container = document.querySelector('#faq-preview-list');
+  if (!container) return;
+  const faqs = window.UbichatFaq?.list?.() || [];
+  if (!faqs.length) {
+    container.innerHTML = '<p class="faq-empty">FAQ를 준비하고 있습니다.</p>';
+    return;
+  }
+  container.innerHTML = faqs.slice(0, 4).map((faq) => `
+    <details class="faq-preview-item">
+      <summary><strong>${escapeHtml(faq.question)}</strong><span class="faq-preview-indicator" aria-hidden="true"></span></summary>
+      <p>${escapeHtml(faq.answer)}</p>
+    </details>
+  `).join('');
+
+  const items = Array.from(container.querySelectorAll('.faq-preview-item'));
+  items.forEach((item) => {
+    item.addEventListener('toggle', () => {
+      if (!item.open) return;
+      items.forEach((other) => {
+        if (other !== item) other.open = false;
+      });
+    });
+  });
+}
+
 document.querySelectorAll('.explore-pill').forEach((button) => {
   button.setAttribute('aria-pressed', button.classList.contains('active') ? 'true' : 'false');
   button.addEventListener('click', () => {
@@ -194,6 +220,7 @@ function mountAllAdCarousels() {
 mountAllAdCarousels();
 document.querySelectorAll('[data-carousel]').forEach(initializeCarousel);
 renderUniversities('전체');
+renderFaqPreview();
 window.addEventListener('unichat:universities-updated', () => {
   const selectedField = document.querySelector('.explore-pill.active')?.dataset.field || '전체';
   renderUniversities(selectedField);

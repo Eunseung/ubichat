@@ -19,10 +19,12 @@
         <a href="university-explore.html">대학 탐색</a>
         <a data-student-nav="chats" href="login.html">상담하기</a>
         <a href="content.html">콘텐츠</a>
+        <a href="faq.html">FAQ</a>
+        <a data-public-notice href="login.html?returnTo=student-desktop.html%3Fview%3Dnotices">공지사항</a>
       </nav>
       <div class="header-actions">
         <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">🏫</span> 학교 서비스</a>
-        <a class="student-login-link" data-student-login href="login.html">학생 로그인</a>
+        <a class="student-login-link" data-student-login href="login.html">로그인/회원가입</a>
         <div class="profile-menu" data-profile-menu hidden>
           <button class="profile-trigger" type="button" data-profile-trigger aria-haspopup="menu" aria-expanded="false">
             <span class="profile-avatar" data-profile-avatar>🇹🇭</span><span data-profile-name>NAPAT</span><span aria-hidden="true">⌄</span>
@@ -43,6 +45,12 @@
         <div class="hero-content">
           <h1 id="hero-title">나에게 맞는 한국 전문대학을<br>탐색해 보세요</h1>
           <p class="hero-lead">관심 분야를 둘러보고, 궁금한 대학에 바로 상담을 신청하세요.</p>
+          <form class="hero-search" action="university-explore.html" method="get" role="search">
+            <label class="sr-only" for="hero-search-input">대학명, 지역 또는 분야 검색</label>
+            <span class="hero-search-icon" aria-hidden="true">⌕</span>
+            <input id="hero-search-input" name="q" type="search" placeholder="대학명, 지역, 분야를 검색하세요" autocomplete="off">
+            <button type="submit">검색</button>
+          </form>
         </div>
       </section>
 
@@ -88,6 +96,16 @@
         <div class="all-link"><a class="button-secondary" href="university-explore.html">전체 대학 탐색 <span aria-hidden="true">→</span></a></div>
       </section>
 
+      <section class="wrap faq-preview" aria-labelledby="faq-preview-title">
+        <div class="faq-preview-intro">
+          <p class="section-kicker">FAQ</p>
+          <h2 class="section-title" id="faq-preview-title">자주 묻는 질문</h2>
+          <p>대학 탐색과 상담 시작에 필요한 답변을 확인하세요.</p>
+          <a class="button-secondary" href="faq.html">FAQ 전체 보기 <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="faq-preview-list" id="faq-preview-list" aria-label="자주 묻는 질문 목록"></div>
+      </section>
+
       <section class="wrap owned-section" aria-labelledby="topik-title">
         <div>
           <p class="owned-kicker">ubichat 부가 서비스</p>
@@ -117,8 +135,10 @@
   <script src="university-data.js"></script>
   <script src="university-public-prototype.js"></script>
   <script src="ad-slot-data.js"></script>
+  <script src="faq-data.js"></script>
   <script src="landing.js"></script>
   <script src="student-session.js"></script>
+  <script src="public-navigation.js"></script>
   <script src="language-selector.js"></script>
 </body>
 </html>

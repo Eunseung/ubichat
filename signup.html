@@ -198,7 +198,7 @@
       event.preventDefault();
       if (verificationState !== 'success' || !event.currentTarget.reportValidity()) return;
       window.UniChatStudentSession.signIn({ email: email.value.trim() });
-      window.location.href = returnTo;
+      window.location.href = requestedUniversity && requestedAffiliation ? returnTo : 'index.html';
     });
 
     renderCities();

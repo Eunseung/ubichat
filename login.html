@@ -103,7 +103,7 @@
     document.querySelector('#student-login-form').addEventListener('submit', (event) => {
       event.preventDefault();
       window.UniChatStudentSession.signIn({ email: document.querySelector('#student-email').value.trim() || 'napat@example.com' });
-      window.location.href = returnTo;
+      window.location.href = requestedUniversity && requestedAffiliation ? returnTo : 'index.html';
     });
   </script>
   <script src="language-selector.js"></script>

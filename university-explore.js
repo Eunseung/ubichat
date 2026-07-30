@@ -8,7 +8,7 @@ const descriptions = {
 
 const pageSize = 8;
 let selectedField = '전체';
-let searchTerm = '';
+let searchTerm = new URLSearchParams(window.location.search).get('q')?.trim() || '';
 let currentPage = 1;
 
 const grid = document.querySelector('#directory-grid');
@@ -16,6 +16,8 @@ const pagination = document.querySelector('#pagination');
 const description = document.querySelector('#directory-description');
 const resultCount = document.querySelector('#result-count');
 const search = document.querySelector('#university-search');
+
+if (search) search.value = searchTerm;
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>&"']/g, (character) => ({
@@ -84,7 +86,8 @@ function renderDirectory() {
   resultCount.textContent = `총 ${matching.length}개 공개 소속구분`;
 
   if (!matching.length) {
-    grid.innerHTML = '<div class="empty-state"><b>공개된 대학 정보가 아직 없습니다.</b>다른 검색어 또는 관심 분야를 선택해 보세요.</div>';
+    const heading = searchTerm.trim() ? '검색 결과가 없습니다.' : '공개된 대학 정보가 아직 없습니다.';
+    grid.innerHTML = `<div class="empty-state"><b>${heading}</b>다른 검색어 또는 관심 분야를 선택해 보세요.</div>`;
     renderPagination(0);
     return;
   }
@@ -111,6 +114,10 @@ document.querySelectorAll('.explore-pill').forEach((button) => {
 search.addEventListener('input', () => {
   searchTerm = search.value;
   currentPage = 1;
+  const url = new URL(window.location.href);
+  if (searchTerm.trim()) url.searchParams.set('q', searchTerm.trim());
+  else url.searchParams.delete('q');
+  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
   renderDirectory();
 });
 
