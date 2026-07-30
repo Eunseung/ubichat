@@ -1,8 +1,8 @@
 (function (global) {
   'use strict';
 
-  // 공개 계약 확정 전, CR-2026-07-29-gumi-university-public-content-sync의 검증용 공개 스냅샷입니다.
-  // 학교 운영 화면의 상태를 읽지 않으며 계약 데이터가 연결되면 교체합니다.
+  // D-026의 기본 공개 fixture입니다. 구미 직접 게시 스냅샷은 읽기 시점에 이 값보다 우선합니다.
+  // 학교 운영 UI 상태는 읽지 않고, 계약상 허용된 게시 스냅샷만 소비합니다.
   const gumiAssetBase = 'squads/university/prototype-assets/gumi/';
   const gumiVisual = Object.freeze({
     logo: `${gumiAssetBase}gumi-logo.svg`,
@@ -22,8 +22,48 @@
       href: `${gumiAssetBase}gumi-brochure.pdf`
     }
   ]);
-  // 학교 스쿼드의 공개 탭 기본값을 반영한 프로토타입 스냅샷입니다.
-  // 학교 운영 UI를 직접 읽지 않으며, 공통 계약 확정 후 계약 데이터로 교체합니다.
+  const gumiPublicInfo = Object.freeze({
+    website: {
+      url: 'https://www.gumi.ac.kr/',
+      label: '구미대학교 홈페이지'
+    },
+    location: {
+      address: '경북 구미 · 구미대학교 캠퍼스',
+      mapQuery: '구미대학교 경북 구미'
+    },
+    admissionSchedules: [
+      {
+        id: 'gumi-2027-application',
+        type: 'application',
+        startAt: '2026-08-10',
+        endAt: '2026-08-23',
+        title: '2027학년도 외국인 유학생 원서 접수',
+        description: '온라인 원서와 기본 제출 서류를 접수합니다.'
+      },
+      {
+        id: 'gumi-2027-documents',
+        type: 'documents',
+        startAt: '2026-08-28',
+        title: '1차 서류 제출 마감',
+        description: '번역본을 포함한 입학 서류를 제출해 주세요.'
+      },
+      {
+        id: 'gumi-2027-session',
+        type: 'info-session',
+        startAt: '2026-09-03',
+        title: '외국인 유학생 온라인 입학설명회',
+        description: '지원 절차와 학과 선택을 안내합니다.'
+      },
+      {
+        id: 'gumi-2027-result',
+        type: 'result',
+        startAt: '2026-09-18',
+        title: '1차 합격자 발표',
+        description: '합격자에게 등록 절차를 개별 안내합니다.'
+      }
+    ]
+  });
+  // 저장값이 없거나 올바르지 않을 때 사용하는 구미 공개 탭 기본값입니다.
   const gumiPublicDetailTabs = Object.freeze([
     {
       id: 'detail-intro',
@@ -53,7 +93,7 @@
       id: 'dormitory-intro',
       title: '기숙사',
       content: '<p>기숙사 신청 안내와 성적·국가별 장학금 정보를 제공합니다.</p>',
-      order: 5,
+      order: 6,
       enabled: true,
       basic: true,
       kind: 'dormitory'
@@ -66,6 +106,15 @@
       enabled: true,
       basic: true,
       kind: 'admission-materials'
+    },
+    {
+      id: 'admission-calendar',
+      title: '입학 일정',
+      content: '<p>외국인 유학생 모집과 입학 절차의 주요 일정을 확인하세요.</p>',
+      order: 5,
+      enabled: true,
+      basic: true,
+      kind: 'admission-calendar'
     }
   ]);
   const gumiProfile = Object.freeze({
@@ -76,7 +125,8 @@
     photos: gumiPhotos,
     brochures: gumiBrochures,
     tabs: gumiPublicDetailTabs,
-    dormitoryPhotos: []
+    dormitoryPhotos: [],
+    publicInfo: gumiPublicInfo
   });
   const affiliationFixtures = Object.freeze({
     gumi: [
@@ -122,6 +172,185 @@
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const normalize = (value) => String(value || '').trim();
   const safeArray = (value) => Array.isArray(value) ? value.filter(Boolean) : [];
+  const GUMI_PUBLICATION_STORAGE_KEY = 'unichat.mock.gumi-publication.v1';
+  const GUMI_PUBLICATION_UPDATED_EVENT = 'unichat:gumi-publication-updated';
+  const GUMI_AFFILIATION_IDS = new Set(['undergraduate', 'language-center', 'graduate-school']);
+  const GUMI_AFFILIATION_ALIASES = Object.freeze({
+    '학부·학사': 'undergraduate',
+    '언어교육원': 'language-center',
+    '대학원': 'graduate-school'
+  });
+
+  function isRecord(value) {
+    return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  function hasOwn(value, key) {
+    return isRecord(value) && Object.prototype.hasOwnProperty.call(value, key);
+  }
+
+  function normalizedGumiAffiliationId(value) {
+    const id = normalize(value);
+    return GUMI_AFFILIATION_ALIASES[id] || id;
+  }
+
+  function readPublishedGumiData() {
+    try {
+      const raw = global.localStorage?.getItem(GUMI_PUBLICATION_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return isRecord(parsed) || Array.isArray(parsed) ? parsed : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function publicationRecords(value) {
+    if (Array.isArray(value)) return value.filter(isRecord);
+    if (!isRecord(value)) return [];
+    if (value.affiliationId || value.id) return [value];
+    return Object.entries(value)
+      .filter(([, record]) => isRecord(record))
+      .map(([affiliationId, record]) => ({ ...record, affiliationId: record.affiliationId || affiliationId }));
+  }
+
+  function publishedGumiSnapshots() {
+    const saved = readPublishedGumiData();
+    if (!saved) return new Map();
+    const root = isRecord(saved) && isRecord(saved.gumi) ? saved.gumi : saved;
+    const recordsSource = isRecord(root)
+      ? root.snapshots || root.affiliations || root.publications || root.records || root
+      : root;
+    const rootUniversityId = isRecord(root) ? normalize(root.universityId) : '';
+    const snapshots = new Map();
+
+    publicationRecords(recordsSource).forEach((record) => {
+      const universityId = normalize(record.universityId || rootUniversityId || 'gumi');
+      const affiliationId = normalizedGumiAffiliationId(record.affiliationId || record.id);
+      if (universityId !== 'gumi' || !GUMI_AFFILIATION_IDS.has(affiliationId)) return;
+      snapshots.set(affiliationId, record);
+    });
+    return snapshots;
+  }
+
+  function firstPublishedValue(snapshot, keys) {
+    const profile = isRecord(snapshot.profile) ? snapshot.profile : {};
+    for (const key of keys) {
+      if (hasOwn(profile, key)) return profile[key];
+      if (hasOwn(snapshot, key)) return snapshot[key];
+    }
+    return undefined;
+  }
+
+  function publishedText(snapshot, keys) {
+    const value = firstPublishedValue(snapshot, keys);
+    return typeof value === 'string' && value.trim() ? value.trim() : '';
+  }
+
+  function publishedStringList(snapshot, keys) {
+    const value = firstPublishedValue(snapshot, keys);
+    return safeArray(value).map((item) => String(item || '').trim()).filter(Boolean);
+  }
+
+  function existingGumiAsset(value) {
+    const path = normalize(value);
+    return path.startsWith(gumiAssetBase) ? path : '';
+  }
+
+  function publishedPhotos(snapshot, keys) {
+    const value = firstPublishedValue(snapshot, keys);
+    if (!Array.isArray(value)) return undefined;
+    return value.map((photo) => {
+      const source = existingGumiAsset(isRecord(photo) ? photo.src || photo.url : '');
+      if (!source) return null;
+      return {
+        src: source,
+        alt: normalize(isRecord(photo) ? photo.alt || photo.name : '') || '구미대학교 대학 사진'
+      };
+    }).filter(Boolean);
+  }
+
+  function publishedBrochures(snapshot) {
+    const value = firstPublishedValue(snapshot, ['brochures']);
+    if (!Array.isArray(value)) return undefined;
+    return value.map((brochure) => {
+      const href = existingGumiAsset(isRecord(brochure) ? brochure.href || brochure.url : '');
+      if (!href) return null;
+      return {
+        title: normalize(isRecord(brochure) ? brochure.title || brochure.name : '') || '입학 안내 자료',
+        description: normalize(isRecord(brochure) ? brochure.description : '') || 'PDF · PC와 모바일에서 바로 보기',
+        href
+      };
+    }).filter(Boolean);
+  }
+
+  function publishedTabs(snapshot) {
+    const profile = isRecord(snapshot.profile) ? snapshot.profile : {};
+    const hasTabs = hasOwn(profile, 'tabs') || hasOwn(profile, 'publicDetailTabs') || hasOwn(snapshot, 'tabs') || hasOwn(snapshot, 'publicDetailTabs');
+    if (!hasTabs) return undefined;
+    const source = profile.tabs || profile.publicDetailTabs || snapshot.tabs || snapshot.publicDetailTabs;
+    return safeArray(source).filter(isRecord).map((tab, index) => ({
+      id: normalize(tab.id) || `tab-${index + 1}`,
+      title: normalize(tab.title) || '상세 정보',
+      content: typeof tab.content === 'string' ? tab.content : '',
+      order: Number(tab.order) || index + 1,
+      enabled: tab.enabled !== false,
+      kind: normalize(tab.kind)
+    }));
+  }
+
+  function publishedConsultation(snapshot) {
+    const source = isRecord(snapshot.consultation) ? snapshot.consultation : snapshot;
+    const result = {};
+    ['status', 'responseLabel', 'hours', 'offlineMessage', 'pausedMessage'].forEach((key) => {
+      if (typeof source[key] === 'string' && source[key].trim()) result[key] = source[key].trim();
+    });
+    if (Array.isArray(source.languages)) {
+      result.languages = source.languages.map((language) => String(language || '').trim()).filter(Boolean);
+    }
+    return result;
+  }
+
+  function publishedVisual(snapshot) {
+    const profile = isRecord(snapshot.profile) ? snapshot.profile : {};
+    const source = isRecord(snapshot.visual) ? snapshot.visual : isRecord(profile.visual) ? profile.visual : {};
+    const visual = {};
+    const logo = existingGumiAsset(source.logo || source.logoPreview);
+    const heroImage = existingGumiAsset(source.heroImage || source.heroPreview);
+    if (logo) visual.logo = logo;
+    if (heroImage) visual.heroImage = heroImage;
+    return visual;
+  }
+
+  function mergePublishedGumiFixture(fixture, snapshot) {
+    if (!snapshot) return fixture;
+    const profile = { ...(fixture.profile || {}) };
+    const headline = publishedText(snapshot, ['headline']);
+    const intro = publishedText(snapshot, ['intro']);
+    const programs = publishedStringList(snapshot, ['programs']);
+    const benefits = publishedStringList(snapshot, ['benefits']);
+    const tabs = publishedTabs(snapshot);
+    const photos = publishedPhotos(snapshot, ['photos', 'photoPreviews']);
+    const dormitoryPhotos = publishedPhotos(snapshot, ['dormitoryPhotos']);
+    const brochures = publishedBrochures(snapshot);
+    if (headline) profile.headline = headline;
+    if (intro) profile.intro = intro;
+    if (programs.length) profile.programs = programs;
+    if (benefits.length) profile.benefits = benefits;
+    if (tabs !== undefined) profile.tabs = tabs;
+    if (photos !== undefined) profile.photos = photos;
+    if (dormitoryPhotos !== undefined) profile.dormitoryPhotos = dormitoryPhotos;
+    if (brochures !== undefined) profile.brochures = brochures;
+
+    return {
+      ...fixture,
+      displayName: publishedText(snapshot, ['displayName', 'publicDisplayName']) || fixture.displayName,
+      fields: publishedStringList(snapshot, ['fields']).length ? publishedStringList(snapshot, ['fields']) : fixture.fields,
+      visual: { ...(fixture.visual || {}), ...publishedVisual(snapshot) },
+      profile,
+      consultation: { ...(fixture.consultation || {}), ...publishedConsultation(snapshot) }
+    };
+  }
 
   function generatedHeadline(university) {
     const fields = safeArray(university.fields);
@@ -132,6 +361,44 @@
     return `${university.name?.ko || '이 대학'}에서 ${subject}`;
   }
 
+  const defaultAdmissionSchedules = (university) => ([
+    {
+      id: `${university.id}-application`,
+      type: 'application',
+      startAt: '2026-08-11',
+      endAt: '2026-08-24',
+      title: '2027학년도 외국인 유학생 원서 접수',
+      description: '입학 지원 일정과 제출 서류를 확인해 주세요.'
+    },
+    {
+      id: `${university.id}-documents`,
+      type: 'documents',
+      startAt: '2026-08-29',
+      title: '서류 제출 마감',
+      description: '지원에 필요한 서류를 마감일 전까지 제출해 주세요.'
+    },
+    {
+      id: `${university.id}-session`,
+      type: 'info-session',
+      startAt: '2026-09-05',
+      title: '외국인 유학생 입학설명회',
+      description: '지원 절차와 학과 정보를 온라인으로 안내합니다.'
+    }
+  ]);
+
+  const defaultPublicInfo = (university) => {
+    const universityName = university.name?.ko || '대학';
+    const region = university.location?.label || '지역 정보 준비 중';
+    return {
+      website: { url: '', label: '홈페이지 정보 준비 중' },
+      location: {
+        address: `${region} · ${universityName} 캠퍼스`,
+        mapQuery: `${universityName} ${region}`
+      },
+      admissionSchedules: defaultAdmissionSchedules(university)
+    };
+  };
+
   const defaultProfile = (university) => ({
     headline: generatedHeadline(university),
     intro: university.profile?.intro || '대학 소개를 준비하고 있습니다.',
@@ -140,7 +407,8 @@
     photos: [],
     brochures: university.profile?.brochure ? [university.profile.brochure] : [],
     tabs: [],
-    dormitoryPhotos: []
+    dormitoryPhotos: [],
+    publicInfo: defaultPublicInfo(university)
   });
 
   function prototypeAffiliations(university) {
@@ -160,6 +428,19 @@
     const profile = { ...defaultProfile(university), ...(fixture.profile || {}) };
     const visual = { ...(university.visual || {}), ...(fixture.visual || {}) };
     const id = normalize(fixture.id);
+    const defaultInfo = defaultPublicInfo(university);
+    const fixtureInfo = fixture.profile?.publicInfo || {};
+    const publicInfo = {
+      ...defaultInfo,
+      ...fixtureInfo,
+      website: { ...defaultInfo.website, ...(fixtureInfo.website || {}) },
+      location: { ...defaultInfo.location, ...(fixtureInfo.location || {}) },
+      admissionSchedules: safeArray(fixtureInfo.admissionSchedules).length
+        ? safeArray(fixtureInfo.admissionSchedules)
+        : safeArray(profile.publicInfo?.admissionSchedules).length
+          ? safeArray(profile.publicInfo.admissionSchedules)
+          : defaultInfo.admissionSchedules
+    };
 
     return {
       universityId: university.id,
@@ -182,7 +463,12 @@
         photos: safeArray(profile.photos),
         brochures: safeArray(profile.brochures),
         tabs: safeArray(profile.tabs),
-        dormitoryPhotos: safeArray(profile.dormitoryPhotos)
+        dormitoryPhotos: safeArray(profile.dormitoryPhotos),
+        publicInfo: {
+          website: { ...publicInfo.website },
+          location: { ...publicInfo.location },
+          admissionSchedules: safeArray(publicInfo.admissionSchedules)
+        }
       },
       consultation: {
         status: consultation.status || 'offline',
@@ -197,9 +483,15 @@
 
   function listCards() {
     const universities = global.UniversityDirectory?.listPublic?.() || [];
+    const publishedGumi = publishedGumiSnapshots();
     return universities.flatMap((university) => prototypeAffiliations(university)
       .filter((fixture) => fixture.publication?.status === 'published')
-      .map((fixture) => createCard(university, fixture)));
+      .map((fixture) => {
+        const snapshot = university.id === 'gumi'
+          ? publishedGumi.get(normalizedGumiAffiliationId(fixture.id))
+          : null;
+        return createCard(university, mergePublishedGumiFixture(fixture, snapshot));
+      }));
   }
 
   function resolve(universityId, affiliationId) {
@@ -210,7 +502,37 @@
     return cards.find((card) => card.universityId === requestedUniversity && card.affiliationId === requestedAffiliation) || null;
   }
 
+  function dispatchUpdate(name, detail) {
+    if (typeof global.dispatchEvent !== 'function' || typeof global.CustomEvent !== 'function') return;
+    global.dispatchEvent(new global.CustomEvent(name, { detail }));
+  }
+
+  function publicationUpdateDetail(source) {
+    return {
+      source,
+      universityId: 'gumi',
+      affiliationIds: Array.from(publishedGumiSnapshots().keys())
+    };
+  }
+
+  if (typeof global.addEventListener === 'function') {
+    global.addEventListener(GUMI_PUBLICATION_UPDATED_EVENT, (event) => {
+      const detail = isRecord(event.detail) ? event.detail : {};
+      dispatchUpdate('unichat:universities-updated', {
+        ...publicationUpdateDetail(detail.source || 'direct'),
+        ...detail,
+        universityId: 'gumi'
+      });
+    });
+    global.addEventListener('storage', (event) => {
+      if (event.key !== GUMI_PUBLICATION_STORAGE_KEY) return;
+      dispatchUpdate(GUMI_PUBLICATION_UPDATED_EVENT, publicationUpdateDetail('storage'));
+    });
+  }
+
   global.UniChatPublicUniversityPrototype = Object.freeze({
+    publicationStorageKey: GUMI_PUBLICATION_STORAGE_KEY,
+    publicationUpdatedEvent: GUMI_PUBLICATION_UPDATED_EVENT,
     listCards: () => clone(listCards()),
     resolve: (universityId, affiliationId) => {
       const card = resolve(universityId, affiliationId);

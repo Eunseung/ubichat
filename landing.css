@@ -544,6 +544,40 @@ h1 { max-width: 770px; margin: 19px auto 0; color: var(--navy); font-size: clamp
 .detail-tab-panel[hidden] { display: none; }
 .detail-tab-panel > p { margin: 0; }
 .detail-tab-panel h2 { margin: 23px 0 8px; color: var(--navy); font-size: 17px; letter-spacing: -.035em; }
+.detail-university-info { margin-top: 22px; padding: 17px; border: 1px solid #d9e4f4; border-radius: 14px; background: #f8fbff; }
+.detail-university-info-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.detail-university-info h2 { margin: 0; }
+.detail-university-info-head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+.detail-info-link, .detail-map-link { display: inline-flex; align-items: center; justify-content: center; gap: 6px; color: var(--blue-dark); font-size: 12px; font-weight: 800; text-decoration: none; }
+.detail-info-link { flex: 0 0 auto; min-height: 32px; padding: 0 10px; border: 1px solid #bed1f3; border-radius: 8px; background: #fff; }
+.detail-info-link:hover, .detail-map-link:hover { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
+.detail-info-link.is-disabled { border-color: #d9e1ec; color: #98a2b3; background: #f4f6f8; }
+.detail-map-frame { position: relative; overflow: hidden; margin-top: 14px; border: 1px solid #d9e4f4; border-radius: 10px; background: #eaf1fb; }
+.detail-map-frame iframe { display: block; width: 100%; height: 210px; border: 0; }
+.detail-map-link { margin-top: 10px; }
+.admission-calendar { margin-top: 17px; padding: 17px; border: 1px solid #d9e4f4; border-radius: 14px; background: #f8fbff; }
+.admission-calendar-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; color: var(--navy); }
+.admission-calendar-head strong { font-size: 16px; letter-spacing: -.03em; }
+.admission-calendar-head button { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #c7d7ef; border-radius: 8px; background: #fff; color: var(--blue-dark); font-size: 21px; line-height: 1; }
+.admission-calendar-head button:hover { border-color: var(--blue); background: #eef4ff; }
+.admission-calendar-weekdays, .admission-calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.admission-calendar-weekdays { margin-bottom: 4px; color: #7b8493; font-size: 10px; font-weight: 800; text-align: center; }
+.admission-calendar-day, .admission-calendar-blank { min-height: 43px; border-radius: 8px; }
+.admission-calendar-day { position: relative; display: grid; place-items: center; border: 1px solid transparent; background: #fff; color: #4f5d70; font: 800 12px var(--sans); }
+.admission-calendar-day:hover { border-color: #a8c4f3; background: #edf4ff; }
+.admission-calendar-day.is-today { box-shadow: inset 0 0 0 1px #9cbceb; }
+.admission-calendar-day.is-selected { border-color: var(--blue); background: var(--blue); color: #fff; }
+.admission-calendar-day i { position: absolute; bottom: 6px; width: 4px; height: 4px; border-radius: 50%; background: var(--blue); }
+.admission-calendar-day.is-selected i { background: #fff; }
+.admission-calendar-events { margin-top: 15px; padding-top: 14px; border-top: 1px solid #d9e4f4; }
+.admission-calendar-selected { margin: 0 0 7px; color: #69788c; font-size: 11px; font-weight: 800; }
+.admission-calendar-event { display: flex; gap: 9px; padding: 10px 0; border-bottom: 1px solid #e3eaf4; }
+.admission-calendar-event:last-child { padding-bottom: 0; border-bottom: 0; }
+.admission-calendar-event > span { flex: 0 0 auto; align-self: flex-start; padding: 3px 6px; border-radius: 999px; background: #e8f1ff; color: var(--blue-dark); font-size: 10px; font-weight: 850; }
+.admission-calendar-event div { min-width: 0; }
+.admission-calendar-event b { display: block; color: var(--navy); font-size: 13px; line-height: 1.45; }
+.admission-calendar-event small { display: block; margin-top: 1px; color: #69788c; font-size: 11px; }
+.admission-calendar-event p { margin: 3px 0 0; color: #607088; font-size: 12px; line-height: 1.55; }
 .detail-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
 .detail-tags .tag { min-height: 27px; padding: 0 10px; font-size: 11px; }
 .detail-list { display: grid; gap: 8px; margin: 0; padding-left: 20px; color: #4f5d70; font-size: 14px; line-height: 1.65; }
@@ -778,6 +812,12 @@ a:focus-visible, button:focus-visible { outline: 3px solid rgba(37,99,235,.34); 
   .detail-panel, .detail-aside { border-radius: 17px; }
   .detail-panel { padding: 24px; }
   .university-profile h1 { font-size: 23px; }
+  .detail-university-info { padding: 15px; }
+  .detail-university-info-head { display: block; }
+  .detail-info-link { margin-top: 10px; }
+  .detail-map-frame iframe { height: 184px; }
+  .admission-calendar { padding: 14px; }
+  .admission-calendar-day, .admission-calendar-blank { min-height: 39px; }
   .detail-gallery-item { flex-basis: clamp(148px, 58vw, 220px); }
   .detail-gallery-controls { right: 7px; left: 7px; }
   .footer-inner { display: block; }

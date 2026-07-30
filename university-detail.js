@@ -60,6 +60,97 @@ if (!profile) {
     return safeArray(value).filter((photo) => photo && String(photo.src || '').trim());
   }
 
+  function publicInfo() {
+    const source = profile.profile.publicInfo || {};
+    return {
+      website: source.website || {},
+      location: source.location || {},
+      admissionSchedules: safeArray(source.admissionSchedules)
+    };
+  }
+
+  function isSafeExternalUrl(value) {
+    return /^https:\/\//i.test(String(value || '').trim());
+  }
+
+  function universityInfoMarkup() {
+    const info = publicInfo();
+    const websiteUrl = String(info.website.url || '').trim();
+    const websiteLabel = String(info.website.label || '학교 홈페이지').trim() || '학교 홈페이지';
+    const address = String(info.location.address || profile.location || '위치 정보 준비 중').trim();
+    const mapQuery = String(info.location.mapQuery || `${profile.displayName} ${profile.location}`).trim();
+    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+    const mapEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`;
+    const homepage = isSafeExternalUrl(websiteUrl)
+      ? `<a class="detail-info-link" href="${escapeHtml(websiteUrl)}" target="_blank" rel="noopener">${escapeHtml(websiteLabel)} <span aria-hidden="true">↗</span></a>`
+      : '<span class="detail-info-link is-disabled" aria-disabled="true">홈페이지 정보 준비 중</span>';
+    return `<section class="detail-university-info" aria-labelledby="detail-university-info-title">
+      <div class="detail-university-info-head">
+        <div><h2 id="detail-university-info-title">대학 정보</h2><p>${escapeHtml(address)}</p></div>
+        ${homepage}
+      </div>
+      <div class="detail-map-frame">
+        <iframe title="${escapeHtml(profile.displayName)} 위치 지도" src="${escapeHtml(mapEmbedUrl)}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+      <a class="detail-map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener">Google 지도에서 보기 <span aria-hidden="true">↗</span></a>
+    </section>`;
+  }
+
+  function dateFromIso(value) {
+    const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return null;
+    const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function isoDate(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  function normalizeAdmissionSchedules() {
+    return publicInfo().admissionSchedules
+      .map((schedule) => {
+        const start = dateFromIso(schedule.startAt);
+        const end = dateFromIso(schedule.endAt) || start;
+        if (!start || !end || end < start) return null;
+        return {
+          id: String(schedule.id || `${isoDate(start)}-${schedule.title || 'schedule'}`),
+          type: String(schedule.type || 'other'),
+          start,
+          end,
+          title: String(schedule.title || '입학 일정').trim(),
+          description: String(schedule.description || '').trim()
+        };
+      })
+      .filter(Boolean)
+      .sort((left, right) => left.start - right.start);
+  }
+
+  function scheduleTypeLabel(type) {
+    return ({
+      application: '원서 접수',
+      documents: '서류 제출',
+      'info-session': '입학설명회',
+      scholarship: '장학금',
+      result: '합격 발표',
+      registration: '등록'
+    }[type] || '입학 일정');
+  }
+
+  function admissionCalendarMarkup() {
+    if (!normalizeAdmissionSchedules().length) return '<p class="detail-empty">게시된 입학 일정이 없습니다.</p>';
+    return `<section class="admission-calendar" data-admission-calendar aria-label="입학 일정 캘린더">
+      <div class="admission-calendar-head">
+        <button type="button" data-admission-calendar-previous aria-label="이전 달">‹</button>
+        <strong data-admission-calendar-month></strong>
+        <button type="button" data-admission-calendar-next aria-label="다음 달">›</button>
+      </div>
+      <div class="admission-calendar-weekdays" aria-hidden="true"><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span></div>
+      <div class="admission-calendar-grid" data-admission-calendar-grid></div>
+      <div class="admission-calendar-events" data-admission-calendar-events aria-live="polite"></div>
+    </section>`;
+  }
+
   function fallbackTabs() {
     return [
       {
@@ -98,6 +189,14 @@ if (!profile) {
         order: 4,
         enabled: true,
         kind: 'admission-materials'
+      },
+      {
+        id: 'admission-calendar',
+        title: '입학 일정',
+        content: '<p>외국인 유학생 모집과 입학 절차의 주요 일정을 확인하세요.</p>',
+        order: 5,
+        enabled: true,
+        kind: 'admission-calendar'
       }
     ];
   }
@@ -156,6 +255,7 @@ if (!profile) {
     const body = tab.content || '<p class="detail-empty">등록된 정보가 없습니다.</p>';
     const isIntroduction = tab.key === 'detail-intro';
     const isAdmissionMaterials = tab.kind === 'admission-materials' || tab.key === 'admission-materials';
+    const isAdmissionCalendar = tab.kind === 'admission-calendar' || tab.key === 'admission-calendar';
     const isDormitory = tab.kind === 'dormitory' || tab.key === 'dormitory-intro';
     const tags = isIntroduction && profile.fields.length
       ? `<div class="detail-tags">${profile.fields.map((field) => `<span class="tag">${escapeHtml(field)}</span>`).join('')}</div>`
@@ -164,10 +264,12 @@ if (!profile) {
       ? galleryMarkup('intro', normalizePhotos(profile.profile.photos), '소개 사진', '등록된 소개 사진이 없습니다.')
       : '';
     const admissionMaterials = isAdmissionMaterials ? brochureMarkup() : '';
+    const universityInfo = isIntroduction ? universityInfoMarkup() : '';
+    const admissionCalendar = isAdmissionCalendar ? admissionCalendarMarkup() : '';
     const dormitoryGallery = isDormitory
       ? galleryMarkup('dormitory', normalizePhotos(profile.profile.dormitoryPhotos), '기숙사 사진', '등록된 기숙사 사진이 없습니다.')
       : '';
-    return `${body}${tags}${introductionGallery}${admissionMaterials}${dormitoryGallery}`;
+    return `${body}${tags}${universityInfo}${introductionGallery}${admissionMaterials}${admissionCalendar}${dormitoryGallery}`;
   }
 
   function openPhotoDetail(photo, heading) {
@@ -222,11 +324,95 @@ if (!profile) {
     requestAnimationFrame(updateControls);
   }
 
+  function setupAdmissionCalendar() {
+    const calendar = document.querySelector('[data-admission-calendar]');
+    if (!calendar) return;
+    const schedules = normalizeAdmissionSchedules();
+    const monthLabel = calendar.querySelector('[data-admission-calendar-month]');
+    const grid = calendar.querySelector('[data-admission-calendar-grid]');
+    const eventList = calendar.querySelector('[data-admission-calendar-events]');
+    const previous = calendar.querySelector('[data-admission-calendar-previous]');
+    const next = calendar.querySelector('[data-admission-calendar-next]');
+    const today = new Date();
+    const todayIso = isoDate(today);
+    const firstUpcoming = schedules.find((schedule) => schedule.end >= new Date(today.getFullYear(), today.getMonth(), today.getDate())) || schedules[0];
+    let month = new Date(firstUpcoming.start.getFullYear(), firstUpcoming.start.getMonth(), 1);
+    let selectedDate = isoDate(firstUpcoming.start);
+
+    const scheduleOn = (date) => {
+      const target = date.getTime();
+      return schedules.filter((schedule) => target >= schedule.start.getTime() && target <= schedule.end.getTime());
+    };
+    const formatRange = (schedule) => {
+      const start = `${schedule.start.getMonth() + 1}.${schedule.start.getDate()}`;
+      const end = `${schedule.end.getMonth() + 1}.${schedule.end.getDate()}`;
+      return start === end ? start : `${start}–${end}`;
+    };
+    const renderEvents = () => {
+      const selected = dateFromIso(selectedDate);
+      const items = selected ? scheduleOn(selected) : [];
+      const dateLabel = selected ? `${selected.getMonth() + 1}월 ${selected.getDate()}일` : '선택한 날짜';
+      if (!items.length) {
+        eventList.innerHTML = `<p class="detail-empty">${dateLabel}에 예정된 입학 일정이 없습니다.</p>`;
+        return;
+      }
+      eventList.innerHTML = `<p class="admission-calendar-selected">${escapeHtml(dateLabel)} 일정</p>${items.map((schedule) => `<article class="admission-calendar-event"><span>${escapeHtml(scheduleTypeLabel(schedule.type))}</span><div><b>${escapeHtml(schedule.title)}</b><small>${escapeHtml(formatRange(schedule))}</small>${schedule.description ? `<p>${escapeHtml(schedule.description)}</p>` : ''}</div></article>`).join('')}`;
+    };
+    const renderMonth = () => {
+      const year = month.getFullYear();
+      const monthIndex = month.getMonth();
+      const firstDay = new Date(year, monthIndex, 1);
+      const leadingDays = (firstDay.getDay() + 6) % 7;
+      const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+      monthLabel.textContent = `${year}년 ${monthIndex + 1}월`;
+      const days = [];
+      for (let index = 0; index < leadingDays; index += 1) days.push('<span class="admission-calendar-blank" aria-hidden="true"></span>');
+      for (let day = 1; day <= daysInMonth; day += 1) {
+        const date = new Date(year, monthIndex, day);
+        const key = isoDate(date);
+        const count = scheduleOn(date).length;
+        const classes = ['admission-calendar-day'];
+        if (key === selectedDate) classes.push('is-selected');
+        if (key === todayIso) classes.push('is-today');
+        if (count) classes.push('has-event');
+        const eventSuffix = count ? `, 입학 일정 ${count}개` : '';
+        days.push(`<button class="${classes.join(' ')}" type="button" data-admission-calendar-date="${key}" aria-pressed="${key === selectedDate}" aria-label="${monthIndex + 1}월 ${day}일${eventSuffix}"><span>${day}</span>${count ? '<i aria-hidden="true"></i>' : ''}</button>`);
+      }
+      grid.innerHTML = days.join('');
+      renderEvents();
+    };
+    const selectFirstDateInMonth = () => {
+      const firstEvent = schedules.find((schedule) => schedule.start.getFullYear() === month.getFullYear() && schedule.start.getMonth() === month.getMonth());
+      selectedDate = firstEvent ? isoDate(firstEvent.start) : isoDate(new Date(month.getFullYear(), month.getMonth(), 1));
+    };
+    calendar.addEventListener('click', (event) => {
+      const dateButton = event.target.closest('[data-admission-calendar-date]');
+      if (!dateButton) return;
+      selectedDate = dateButton.dataset.admissionCalendarDate;
+      renderMonth();
+    });
+    previous.addEventListener('click', () => {
+      month = new Date(month.getFullYear(), month.getMonth() - 1, 1);
+      selectFirstDateInMonth();
+      renderMonth();
+    });
+    next.addEventListener('click', () => {
+      month = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+      selectFirstDateInMonth();
+      renderMonth();
+    });
+    renderMonth();
+  }
+
   const detailTabs = normalizeTabs();
   const tabList = document.querySelector('#detail-tabs');
   const tabPanels = document.querySelector('#detail-tab-panels');
-  tabList.innerHTML = detailTabs.map((tab, index) => `<button class="${index === 0 ? 'on' : ''}" type="button" role="tab" aria-selected="${index === 0}" aria-controls="detail-panel-${escapeHtml(tab.key)}" id="detail-tab-${escapeHtml(tab.key)}" data-detail-tab="${escapeHtml(tab.key)}" tabindex="${index === 0 ? '0' : '-1'}">${escapeHtml(tab.title)}</button>`).join('');
-  tabPanels.innerHTML = detailTabs.map((tab, index) => `<section class="detail-tab-panel" role="tabpanel" id="detail-panel-${escapeHtml(tab.key)}" aria-labelledby="detail-tab-${escapeHtml(tab.key)}" data-detail-panel="${escapeHtml(tab.key)}"${index === 0 ? '' : ' hidden'}>${tabPanelMarkup(tab)}</section>`).join('');
+  tabList.innerHTML = detailTabs.length
+    ? detailTabs.map((tab, index) => `<button class="${index === 0 ? 'on' : ''}" type="button" role="tab" aria-selected="${index === 0}" aria-controls="detail-panel-${escapeHtml(tab.key)}" id="detail-tab-${escapeHtml(tab.key)}" data-detail-tab="${escapeHtml(tab.key)}" tabindex="${index === 0 ? '0' : '-1'}">${escapeHtml(tab.title)}</button>`).join('')
+    : '<span class="detail-tabs-empty">공개된 상세 정보가 없습니다.</span>';
+  tabPanels.innerHTML = detailTabs.length
+    ? detailTabs.map((tab, index) => `<section class="detail-tab-panel" role="tabpanel" id="detail-panel-${escapeHtml(tab.key)}" aria-labelledby="detail-tab-${escapeHtml(tab.key)}" data-detail-panel="${escapeHtml(tab.key)}"${index === 0 ? '' : ' hidden'}>${tabPanelMarkup(tab)}</section>`).join('')
+    : '<section class="detail-tab-panel"><p class="detail-empty">대학이 공개한 상세 정보를 준비하고 있습니다.</p></section>';
 
   const renderedTabs = Array.from(tabList.querySelectorAll('[data-detail-tab]'));
   const renderedPanels = Array.from(tabPanels.querySelectorAll('[data-detail-panel]'));
@@ -257,6 +443,7 @@ if (!profile) {
 
   setupGallery('intro', normalizePhotos(profile.profile.photos), '소개 사진');
   setupGallery('dormitory', normalizePhotos(profile.profile.dormitoryPhotos), '기숙사 사진');
+  setupAdmissionCalendar();
   document.querySelector('[data-photo-dialog-close]').addEventListener('click', closePhotoDetail);
   photoDialog.addEventListener('click', (event) => {
     if (event.target === photoDialog) closePhotoDetail();
@@ -320,4 +507,14 @@ if (!profile) {
     consultationLink.setAttribute('tabindex', '-1');
     consultationLink.textContent = consultationCopy.action;
   }
+
+  window.addEventListener('unichat:gumi-publication-updated', (event) => {
+    if (profile.universityId !== 'gumi') return;
+    const detail = event.detail && typeof event.detail === 'object' ? event.detail : {};
+    const updatedIds = Array.isArray(detail.affiliationIds) ? detail.affiliationIds : [];
+    const updatedId = String(detail.affiliationId || '').trim();
+    if (updatedId && updatedId !== profile.affiliationId) return;
+    if (updatedIds.length && !updatedIds.includes(profile.affiliationId) && !updatedId) return;
+    window.location.reload();
+  });
 }

@@ -10,7 +10,7 @@
 <body>
   <div class="page">
     <header class="wrap header public-header" data-public-header>
-      <a class="brand" href="기업용_배너_포함.html" aria-label="UBIChat 홈">
+      <a class="brand" href="index.html" aria-label="UBIChat 홈">
         <span class="brand-mark" aria-hidden="true"></span><span>UBIChat</span>
       </a>
       <button class="mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
@@ -18,10 +18,12 @@
         <a href="university-explore.html">대학 탐색</a>
         <a data-student-nav="chats" href="login.html">상담하기</a>
         <a href="content.html">콘텐츠</a>
+        <a href="faq.html">FAQ</a>
+        <a data-public-notice href="login.html?returnTo=student-desktop.html%3Fview%3Dnotices">공지사항</a>
       </nav>
       <div class="header-actions">
-        <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">⌂</span> 대학 서비스</a>
-        <a class="student-login-link" data-student-login href="login.html">로그인</a>
+        <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">🏫</span> 학교 서비스</a>
+        <a class="student-login-link" data-student-login href="login.html">로그인/회원가입</a>
         <div class="profile-menu" data-profile-menu hidden>
           <button class="profile-trigger" type="button" data-profile-trigger aria-haspopup="menu" aria-expanded="false">
             <span class="profile-avatar" data-profile-avatar>🇹🇭</span><span data-profile-name>NAPAT</span><span aria-hidden="true">⌄</span>
@@ -204,6 +206,7 @@
     renderCities();
     setVerificationState('idle');
   </script>
+  <script src="public-navigation.js"></script>
   <script src="language-selector.js"></script>
 </body>
 </html>

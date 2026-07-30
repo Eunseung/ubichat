@@ -71,4 +71,10 @@
 | `notice-data.js` | 어드민 Developer | 학생·학교 Developer |
 | `unichat-brand.css` | 메인 Designer·Developer | 학생·학교·어드민 Designer |
 
+## 공동 프로토타입 동기화 파일
+
+| 파일 | Owner | Required reviewers |
+|---|---|---|
+| `shared/prototype/gumi-publication-sync.js` | 학교 Developer | 메인 Developer·학생 Developer |
+
 `Steward`는 계약 구현을 관리한다. 사업 규칙 변경은 Product Owner 승인이 추가로 필요하다.
