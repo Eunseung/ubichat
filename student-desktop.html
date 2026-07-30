@@ -301,19 +301,20 @@
 <body>
   <header id="appHeader" class="student-public-header" data-public-header style="display:none">
     <div class="student-header-inner">
-      <a class="unichat-brand student-brand" href="기업용_배너_포함.html" aria-label="UBIChat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">UBIChat</span></a>
+      <a class="unichat-brand student-brand" href="index.html" aria-label="UBIChat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">UBIChat</span></a>
       <button class="student-mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
       <nav class="student-header-nav" aria-label="주 메뉴">
         <a href="university-explore.html">대학 탐색</a>
-        <a data-student-nav="chats" href="student-desktop.html?view=chats" aria-current="page">내 상담</a>
+        <a data-student-nav="chats" data-student-page-nav="chats" href="student-desktop.html?view=chats">내 상담</a>
         <a href="content.html">콘텐츠</a>
+        <a href="faq.html">FAQ</a>
+        <a data-student-context="notices" data-student-page-nav="notices" href="student-desktop.html?view=notices">공지사항</a>
       </nav>
       <div class="student-header-actions">
         <div class="student-profile-menu" id="desktopProfileMenu">
           <button class="userchip" id="desktopProfileTrigger" type="button" aria-haspopup="menu" aria-expanded="false" onclick="toggleDesktopProfileMenu()"><span class="av" data-profile-avatar>🇹🇭</span><span class="user-name" data-profile-name>NAPAT</span><span aria-hidden="true">⌄</span></button>
           <div class="student-profile-dropdown" id="desktopProfileDropdown" role="menu" hidden>
             <div class="student-profile-summary"><strong data-profile-full-name>NAPAT SUKSAI</strong><span data-profile-email>napat@example.com</span></div>
-            <button type="button" role="menuitem" onclick="showPage('pNotices');closeDesktopProfileMenu()">공지사항</button>
             <button type="button" role="menuitem" onclick="showPage('pDocs');closeDesktopProfileMenu()">문서 보관함</button>
             <button type="button" role="menuitem" onclick="showPage('pMy');closeDesktopProfileMenu()">마이페이지</button>
             <button class="logout" type="button" role="menuitem" onclick="logoutDesktopStudent()">로그아웃</button>
@@ -728,6 +729,7 @@
     document.getElementById(id).classList.add('show');
     if(id==='pNotices') renderStudentNotices();
     if(id==='pChats' && window.innerWidth<=760) document.querySelector('.msgr')?.classList.remove('show-conversation');
+    window.UniChatStudentSession?.setActiveNavigation(id==='pChats'?'chats':id==='pNotices'?'notices':'');
     document.getElementById('appHeader').style.display=(id==='pLogin'||id==='pSignup')?'none':'';
   }
   function escapeStudentNotice(value){
@@ -1401,7 +1403,7 @@
     window.UniChatStudentSession?.signOut();
     studentAuthenticated=false;
     closeDesktopProfileMenu();
-    window.location.href='기업용_배너_포함.html';
+    window.location.href='index.html';
   }
   document.addEventListener('click',event=>{
     const menu=document.getElementById('desktopProfileMenu');

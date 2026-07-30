@@ -15,6 +15,12 @@
     { src: `${gumiAssetBase}gumi-campus-03.jpeg`, alt: '구미대학교 캠퍼스 생활' },
     { src: `${gumiAssetBase}gumi-campus-04.jpeg`, alt: '구미대학교 캠퍼스 안내' }
   ]);
+  const gumiDormitoryPhotos = Object.freeze([
+    { src: `${gumiAssetBase}gumi-dormitory-01.png`, alt: '구미대학교 생활관 전경 1' },
+    { src: `${gumiAssetBase}gumi-dormitory-02.png`, alt: '구미대학교 생활관 전경 2' },
+    { src: `${gumiAssetBase}gumi-dormitory-03.png`, alt: '구미대학교 생활관 내부 1' },
+    { src: `${gumiAssetBase}gumi-dormitory-04.png`, alt: '구미대학교 생활관 내부 2' }
+  ]);
   const gumiBrochures = Object.freeze([
     {
       title: '2027 외국인 유학생 모집 브로셔',
@@ -84,7 +90,7 @@
     {
       id: 'admission-process',
       title: '지원 과정',
-      content: '<p>전공별 입학 요건과 준비 서류는 상담을 통해 안내합니다.</p>',
+      content: '<h2>지원 과정 (2027학년도 기준)</h2><table><thead><tr><th>모집 구분</th><th>원서접수</th><th>면접</th><th>합격자 발표</th></tr></thead><tbody><tr><td>수시 1차</td><td>2026.09.07 ~ 09.30</td><td>10.16 ~ 10.17</td><td>10.23</td></tr><tr><td>수시 2차</td><td>2026.11.11 ~ 11.25</td><td>12.04</td><td>12.09</td></tr><tr><td>정시모집</td><td>2027.01.04 ~ 01.20</td><td>01.22</td><td>01.27</td></tr><tr><td>자율모집</td><td>결원 발생 시 ~ 02.27</td><td>-</td><td>-</td></tr></tbody></table><h3>외국인(유학생) 전형 안내</h3><p>구미대학교는 정원외 특별전형으로 외국인 학생을 별도 모집합니다. 지원 자격은 관련 법령(고등교육법 시행령 제29조제2항제2호·제6호·제7호)에 근거해 다음과 같습니다.</p><ul><li>재외국민 및 외국인</li><li>부모가 모두 외국인인 외국인</li><li>북한이탈주민</li><li>외국에서 우리나라 초·중등교육에 상응하는 교육과정을 전부 이수한 자</li><li>귀화허가를 받은 결혼이주민</li></ul>',
       order: 3,
       enabled: true,
       basic: true
@@ -92,7 +98,7 @@
     {
       id: 'dormitory-intro',
       title: '기숙사',
-      content: '<p>기숙사 신청 안내와 성적·국가별 장학금 정보를 제공합니다.</p>',
+      content: '<h2>기숙사 (생활관)</h2><p>구미대학교 생활관은 수도권 및 지방 출신 학생들의 편의를 위해 운영되며, 공동생활을 통한 생활 기풍 확립과 면학 분위기 조성을 목표로 합니다.</p><ul><li><strong>정원:</strong> 교내생활관 총 1,058명 (남학생 714명 / 여학생 344명, 학년별 배정)</li><li><strong>선발 방법:</strong> 성적 및 거리순</li><li><strong>문의:</strong> 남 054-440-1470 / 여 054-440-1473</li></ul><h3>관리비 (2026학년도 1학기 기준)</h3><table><thead><tr><th>구분</th><th>4인 1실(구관)</th><th>2인 1실(구관)</th><th>4인 1실(신관)</th><th>2인 1실(신관)</th><th>교외생활관(아파트)</th></tr></thead><tbody><tr><td>합계</td><td>854,000원</td><td>1,084,000원</td><td>994,000원</td><td>1,194,000원</td><td>1,179,000~1,295,000원</td></tr></tbody></table><ul><li><strong>식사:</strong> 1일 2식(조식·석식, 주말 제외), 별도 식비 390,500원/학기</li><li><strong>부대시설:</strong> 세탁실, 샤워실, PC실, 체력단련실, 족구장·농구장 등</li></ul>',
       order: 6,
       enabled: true,
       basic: true,
@@ -125,7 +131,7 @@
     photos: gumiPhotos,
     brochures: gumiBrochures,
     tabs: gumiPublicDetailTabs,
-    dormitoryPhotos: [],
+    dormitoryPhotos: gumiDormitoryPhotos,
     publicInfo: gumiPublicInfo
   });
   const affiliationFixtures = Object.freeze({

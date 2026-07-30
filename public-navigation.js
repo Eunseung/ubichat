@@ -10,10 +10,6 @@
     document.querySelectorAll('[data-public-notice]').forEach((link) => {
       link.href = href;
     });
-
-    document.querySelectorAll('[data-profile-menu] [data-student-context="chats"], [data-profile-menu] [data-student-context="notices"]').forEach((link) => {
-      link.remove();
-    });
   };
 
   refreshNoticeLinks();

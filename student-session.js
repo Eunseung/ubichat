@@ -65,7 +65,7 @@
   }
 
   function currentPath() {
-    const file = window.location.pathname.split('/').pop() || '기업용_배너_포함.html';
+    const file = window.location.pathname.split('/').pop() || 'index.html';
     return `${file}${window.location.search}${window.location.hash}`;
   }
 
@@ -98,9 +98,8 @@
     const dropdown = menu.querySelector('[data-profile-dropdown]');
     if (!dropdown) return;
     const logout = dropdown.querySelector('[data-student-logout]');
+    [...dropdown.querySelectorAll('[data-student-context="chats"], [data-student-context="notices"]')].forEach((item) => item.remove());
     const links = [
-      { key: 'chats', label: '내 상담' },
-      { key: 'notices', label: '공지사항' },
       { key: 'docs', label: '문서 보관함' },
       { key: 'my', label: '마이페이지' }
     ];
@@ -144,15 +143,33 @@
           </span>
         </div>
         <div class="mobile-student-links">
-          <a data-student-context="notices" href="${destinations.notices}">공지사항</a>
           <a data-student-context="docs" href="${destinations.docs}">문서 보관함</a>
           <a data-student-context="my" href="${destinations.my}">마이페이지</a>
           <button type="button" data-student-logout>로그아웃</button>
         </div>
       `;
     }
+    menu.querySelectorAll('[data-student-context="notices"]').forEach((item) => item.remove());
     const mobileLanguage = nav.querySelector('[data-language-selector-placement="mobile"]');
     nav.insertBefore(menu, mobileLanguage || null);
+  }
+
+  function setActiveNavigation(key = '') {
+    document.querySelectorAll('[data-student-page-nav]').forEach((link) => {
+      const active = link.dataset.studentPageNav === key;
+      link.toggleAttribute('aria-current', active);
+      if (active) link.setAttribute('aria-current', 'page');
+    });
+  }
+
+  function currentStudentNavigation() {
+    const file = window.location.pathname.split('/').pop();
+    if (file !== 'student-desktop.html') return '';
+    const query = new URLSearchParams(window.location.search);
+    const view = query.get('view');
+    if (view === 'notices') return 'notices';
+    if (view === 'chats' || (!view && query.get('universityId') && query.get('affiliationId'))) return 'chats';
+    return '';
   }
 
   function closeMobileMenus() {
@@ -213,6 +230,8 @@
       menu.hidden = !authenticated;
     });
 
+    setActiveNavigation(currentStudentNavigation());
+
     if (!authenticated) closeMobileMenus();
   }
 
@@ -233,7 +252,7 @@
     if (logout) {
       event.preventDefault();
       signOut();
-      window.location.href = '기업용_배너_포함.html';
+      window.location.href = 'index.html';
       return;
     }
 
@@ -264,6 +283,7 @@
     isSignedIn: () => Boolean(readSession()),
     destinations,
     loginHref,
+    setActiveNavigation,
     refreshHeaders
   };
 
