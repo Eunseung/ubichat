@@ -65,3 +65,11 @@
 - Designer: 게시 완료 문구는 “공개 화면에 반영됨”으로 바꾸고, 저장 실패·브라우저 저장소 미지원·다른 소속구분 미반영 상태를 제공한다.
 - Developer: `university-admin.html`의 `publishUniversityProfile()`을 `unichat.mock.gumi-publication.v1` 저장·`unichat:gumi-publication-updated` 발생과 연결한다. 키는 `gumi + affiliationId`, 값은 공개 텍스트·탭·상담 상태·기존 정적 자산 참조만 저장한다. 새 이미지·PDF 객체 URL은 저장하지 않는다.
 - 수용 기준: 학부·언어교육원·대학원 중 게시한 소속구분만 공개 소비자에 반영됨; 다른 대학 데이터는 쓰지 않음; 직접 게시 실패가 성공처럼 표시되지 않음.
+
+## 8. 구미대학교 기존 게시 데이터 무손실 확장 — D-027
+
+- 상태: P1 실행 · Owner: 학교 Developer
+- PM: Vercel 배포 주소에 이미 있는 구미 게시값은 보존한다. 새 저장 schema와 탭 호환 규칙을 명세하고, 초기화 기능은 제공하지 않는다.
+- Designer: 기존 `기숙사` 콘텐츠는 `기숙사 소개`로 계속 보이게 하고, 사진이 없는 `기숙사 사진`은 기본 비활성 상태로 표시한다. 기존 추가 탭의 순서·활성 상태는 그대로 보인다.
+- Developer: `unichat.mock.gumi-publication.v1`을 읽을 때 `schemaVersion`과 기존 값을 호환 변환한다. 기존 탭/본문/상담 정보/정적 자산 참조를 복사 보존하고, 누락된 `dormitory-photos`만 `enabled:false`, `dormitoryPhotos:[]`로 추가한다. 다음 `직접 게시`부터만 새 schema를 저장한다.
+- 수용 기준: 기존 데이터 삭제 0건; 기존 추가 탭 유지; 사진 없는 새 탭 미공개; 직접 게시 뒤 저장·동기화 성공.

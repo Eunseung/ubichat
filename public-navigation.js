@@ -11,7 +11,7 @@
       link.href = href;
     });
 
-    document.querySelectorAll('.public-header .profile-dropdown [data-student-context="chats"], .public-header .profile-dropdown [data-student-context="notices"]').forEach((link) => {
+    document.querySelectorAll('[data-profile-menu] [data-student-context="chats"], [data-profile-menu] [data-student-context="notices"]').forEach((link) => {
       link.remove();
     });
   };

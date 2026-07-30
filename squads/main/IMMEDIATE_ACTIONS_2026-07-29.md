@@ -54,3 +54,10 @@
 - Designer: 열린 랜딩·탐색·상세에서 갱신 뒤 정보가 바뀌어도 카드/탭 상태가 깨지지 않게 한다. 로딩·저장값 없음 상태는 기존 공개 정보 기본값을 사용한다.
 - Developer: `university-public-prototype.js`가 `unichat.mock.gumi-publication.v1`의 구미 소속구분 스냅샷을 fixture보다 우선 병합하게 한다. `storage` 이벤트를 `unichat:gumi-publication-updated`로 변환하고, 랜딩·탐색·열린 구미 상세를 다시 렌더링한다. 새 로컬 이미지·PDF 파일을 공개 화면에 읽지 않는다.
 - 수용 기준: 구미 한 소속구분 게시 뒤 랜딩·탐색·상세가 즉시 갱신됨; 다른 탭도 갱신됨; 다른 대학과 업로드 파일은 변경되지 않음.
+
+## 7. 구미대학교 기존 스냅샷 호환 소비 — D-027
+
+- 상태: P1 실행 · Owner: 메인 Developer
+- PM: Vercel에 이미 저장된 구미 공개정보는 학교 직접 게시의 유효한 원본으로 유지한다. 소스 fixture가 이를 덮어쓰지 않는다.
+- Developer: `university-public-prototype.js`와 `university-detail.js`가 구·신 schema를 모두 읽도록 한다. 구 `dormitory`는 `기숙사 소개`로 표시하고, 누락된 사진 탭은 비활성으로 처리한다. 기존 `입학 안내 자료·입학 일정` 등 추가 탭은 제거하지 않고 저장소에 쓰지 않는다.
+- 수용 기준: 기존 구미 상세 본문·4개 탭·상담 정보 보존; 새 사진 탭은 사진 등록·활성화 전까지 공개되지 않음; 다른 대학 fixture 미변경.
