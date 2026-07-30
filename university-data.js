@@ -140,23 +140,23 @@
     createUniversity({
       id: 'demo-garam-health', ko: '가람보건전문대학', en: 'Garam Health College', region: '경기 수원', initials: 'GH',
       fields: ['요양보호'], responseLabel: '응답 시간 설정 필요', consultationStatus: 'offline',
-      publicationStatus: 'hidden', publicationReason: '공개 프로필 작성 중', isDemo: true,
-      headline: '보건 분야 유학 정보를 준비하고 있습니다',
-      intro: '시연용 대학 데이터입니다. 공개 대학 소개와 상담 운영 정보를 준비 중입니다.'
+      publicationStatus: 'published', isDemo: true,
+      headline: '보건 분야 유학 정보를 안내합니다',
+      intro: '시연용 대학 데이터입니다. 보건 분야 유학과 상담 운영 정보를 안내합니다.'
     }),
     createUniversity({
       id: 'demo-daon-technology', ko: '다온기술전문대학', en: 'Daon Technology College', region: '충남 아산', initials: 'DT',
       fields: ['육성형전문기술'], responseLabel: '응답 시간 설정 필요', consultationStatus: 'offline',
-      publicationStatus: 'hidden', publicationReason: '공개 대학 정보 보완 요청', isDemo: true,
+      publicationStatus: 'published', isDemo: true,
       headline: '현장 중심 기술교육 과정을 준비하고 있습니다',
-      intro: '시연용 대학 데이터입니다. 공개 대학 정보 보완 후 탐색 화면에 게시됩니다.'
+      intro: '시연용 대학 데이터입니다. 현장 중심 기술교육과 상담 운영 정보를 안내합니다.'
     }),
     createUniversity({
       id: 'demo-nuri-tourism', ko: '누리관광전문대학', en: 'Nuri Tourism College', region: '강원 춘천', initials: 'NT',
       fields: ['기타'], responseLabel: '응답 시간 설정 필요', consultationStatus: 'offline',
-      publicationStatus: 'hidden', publicationReason: '게시 검토 대기', isDemo: true,
+      publicationStatus: 'published', isDemo: true,
       headline: '관광 분야 유학 정보를 준비하고 있습니다',
-      intro: '시연용 대학 데이터입니다. 프로필 검토를 마친 뒤 공개 탐색에 게시됩니다.'
+      intro: '시연용 대학 데이터입니다. 관광 분야 유학과 상담 운영 정보를 안내합니다.'
     }),
     createUniversity({
       id: 'suncheon-jeil', ko: '순천제일대학교', en: 'Suncheon Jeil College', region: '전남 순천', initials: 'SJ',
@@ -217,15 +217,25 @@
     };
   };
 
+  // D-017: 프로토타입에서는 모든 현재 대학을 공개한다. 실서비스에서는
+  // 학교가 직접 정한 대학·소속구분의 published 상태만 사용한다.
+  const publishForPrototype = (value) => {
+    const university = hydrateUniversity(value);
+    return {
+      ...university,
+      publication: { ...university.publication, status: 'published', reason: '' }
+    };
+  };
+
   const readStoredUniversities = () => {
     try {
       const stored = global.localStorage?.getItem(STORAGE_KEY);
       const parsed = stored ? JSON.parse(stored) : null;
-      if (Array.isArray(parsed) && parsed.length) return sortUniversities(parsed.map(hydrateUniversity));
+      if (Array.isArray(parsed) && parsed.length) return sortUniversities(parsed.map(publishForPrototype));
     } catch (error) {
       // Local file previews can block storage. The seeded data remains usable.
     }
-    return sortUniversities(seedUniversities.map(hydrateUniversity));
+    return sortUniversities(seedUniversities.map(publishForPrototype));
   };
 
   let universities = readStoredUniversities();
@@ -264,7 +274,7 @@
     if (index < 0) return null;
     const current = universities[index];
     const safePatch = patch && typeof patch === 'object' ? clone(patch) : {};
-    universities[index] = hydrateUniversity({
+    universities[index] = publishForPrototype({
       ...current,
       ...safePatch,
       id: current.id,
@@ -285,7 +295,7 @@
     return getById(current.id);
   };
   const add = (record) => {
-    const university = hydrateUniversity(record);
+    const university = publishForPrototype(record);
     if (!university.id || universities.some((item) => item.id === university.id)) return null;
     universities.push(university);
     sortUniversities(universities);
@@ -293,7 +303,7 @@
     return getById(university.id);
   };
   const reset = () => {
-    universities = sortUniversities(seedUniversities.map(hydrateUniversity));
+    universities = sortUniversities(seedUniversities.map(publishForPrototype));
     try {
       global.localStorage?.removeItem(STORAGE_KEY);
     } catch (error) {

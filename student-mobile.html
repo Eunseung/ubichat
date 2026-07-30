@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UniChat 학생 포털 — 모바일</title>
+<title>ubichat 학생 포털 — 모바일</title>
 <script>
   // 학생 포털은 student-desktop.html 하나의 반응형 화면으로 통합되었습니다.
   // 기존 모바일 목업 주소도 로그인 반환 경로를 유지한 채 통합 화면으로 보냅니다.
@@ -19,21 +19,11 @@
     --mono:"JetBrains Mono",monospace;--sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#dde3ec;font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px;padding-top:40px}
-  .wf-flag{position:fixed;top:40px;left:0;right:0;z-index:5;background:repeating-linear-gradient(45deg,#fff6e6,#fff6e6 12px,#ffedcc 12px,#ffedcc 24px);border-bottom:1px solid #e8c97a;padding:6px 16px;font-size:12px;color:#7a5b16;text-align:center}
-  .wf-flag b{color:#5a4310}
+  body{background:#dde3ec;font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px}
   .ix{font-size:10px;color:#fff;background:var(--accent);border-radius:4px;padding:1px 6px;font-family:var(--mono)}
 
-  .scn{position:fixed;top:0;left:0;right:0;z-index:50;background:#121720}
-  .scn-in{max-width:1120px;margin:0 auto;padding:8px 16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-  .scn-in .lab{font-size:11.5px;color:#dfe6f2;font-family:var(--mono)}
-  .scn button{font-size:12px;border:1px solid #4a5a75;background:#1b2436;color:#cdd8e4;border-radius:999px;padding:4px 11px;cursor:pointer}
-  .scn button.on{background:var(--brand2);color:#fff;border-color:var(--brand2)}
-  .landing-back{margin-left:auto;font-size:12px;font-weight:700;color:#fff;text-decoration:none;border:1px solid #71809a;border-radius:999px;padding:4px 11px;white-space:nowrap}
-  .landing-back:hover{background:#26334a}
-
   /* 폰 프레임 */
-  .stage{display:flex;justify-content:center;padding:64px 16px 40px}
+  .stage{display:flex;justify-content:center;padding:32px 16px 40px}
   .phone{width:392px;height:760px;background:var(--bg);border-radius:32px;border:10px solid #1b2230;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(16,24,40,.35);position:relative}
 
   .app-head{background:#fff;border-bottom:1px solid var(--line2);padding:12px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -164,6 +154,7 @@
   .attmenu button{display:flex;align-items:center;gap:9px;width:200px;border:none;background:#fff;padding:11px 14px;font-size:12.5px;cursor:pointer;font-family:var(--sans);text-align:left}
   .attmenu button:hover{background:var(--soft)}
   .attmenu button small{display:block;font-size:10px;color:var(--ink2)}
+  .document-re-request-box{border:1px solid #b9cae8;background:#f4f8ff!important;color:#203f70!important}.document-re-request-box b{display:block;font-size:12px}.document-re-request-box span{display:block;margin-top:5px;font-size:11px;line-height:1.5;color:#526b90}.document-re-request-box .doc-request-action{display:block;width:100%;margin-top:8px;border:1px solid #6b8fc7;border-radius:8px;background:#fff;color:#1f4f91;padding:7px;font:800 11px var(--sans)}
 
   /* ST-4 문서 보관함 */
   .doc-cat{font-size:11px;color:var(--ink2);font-weight:700;margin:14px 0 7px;text-transform:uppercase;letter-spacing:.4px}
@@ -214,33 +205,10 @@
 </style>
 </head>
 <body>
-  <div class="scn">
-    <div class="scn-in">
-      <span class="lab">ST 시나리오</span>
-      <button data-v="vSignup">ST-0 가입</button>
-      <button type="button" onclick="window.location.href='university-explore.html'">공개 대학 탐색</button>
-      <button data-v="vChats">ST-2 내 상담</button>
-      <button data-v="vChat">ST-3 채팅방</button>
-      <button data-v="vDocs">ST-4 문서</button>
-      <button data-v="vMy">ST-5 마이</button>
-      <span class="lab">인증 상태</span>
-      <button data-auth-state="pending">대기</button>
-      <button data-auth-state="success">성공</button>
-      <button data-auth-state="failure">실패</button>
-      <button data-auth-state="expired">만료</button>
-      <span class="lab">상담 상태</span>
-      <button data-chat-state="대기">대기</button>
-      <button data-chat-state="진행중">진행</button>
-      <button data-chat-state="종료">종료</button>
-      <a class="landing-back" href="university-explore.html">← 대학 탐색</a>
-    </div>
-  </div>
-  <div class="wf-flag"><b>WIREFRAME</b> · 학생 포털(유학생) 목업 — 모바일 우선 · 페르소나: 나팟 수크사이 🇹🇭 (방콕, KST-2)</div>
-
   <div class="stage">
     <div class="phone">
       <div class="app-head">
-        <a class="unichat-brand" href="기업용_배너_포함.html" aria-label="UniChat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">UniChat</span></a>
+        <a class="unichat-brand" href="기업용_배너_포함.html" aria-label="ubichat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">ubichat</span></a>
         <span class="lang" onclick="toggleLang(this)"><b>한국어</b> / EN</span>
         <div class="mobile-profile-menu" id="mobileProfileMenu" hidden>
           <button class="mobile-profile-trigger" id="mobileProfileTrigger" type="button" aria-label="프로필 메뉴" aria-haspopup="menu" aria-expanded="false" onclick="toggleMobileProfileMenu()">🇹🇭</button>
@@ -317,10 +285,10 @@
         <div class="view" id="vChats">
           <div style="padding:14px 16px 4px"><span class="ix">ST-2</span><h2 class="vt" style="margin-top:8px">내 상담</h2></div>
           <div style="padding-bottom:90px">
-            <div class="citem" onclick="openChat('서정대학교','진행중')">
+            <div class="citem" onclick="openChat('구미대학교','진행중')">
               <div class="ulogo">🏛️</div>
               <div class="cb">
-                <div class="r1"><span class="nm">서정대학교</span><span class="tm">방금</span></div>
+                <div class="r1"><span class="nm">구미대학교</span><span class="tm">방금</span></div>
                 <div class="prev">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div>
                 <div class="r2"><span class="stchip st-live">진행중</span><span class="unread">2</span></div>
               </div>
@@ -350,7 +318,7 @@
             <button class="back" onclick="showView('vChats')">‹</button>
             <div class="ulogo">🏛️</div>
             <div class="tt">
-              <b id="chatUniv">서정대학교</b>
+              <b id="chatUniv">구미대학교</b>
               <small>이수진 입학팀 · <span style="color:#1a7f43">●</span> 운영중</small>
               <small>운영 09:00–18:00 KST · 내 시간 07:00–16:00</small>
             </div>
@@ -359,13 +327,13 @@
           <div class="thread" id="thread">
             <div class="day">오늘</div>
             <div class="msg sys"><div class="bub">입학 상담이 시작되었어요 · 프로필(🇹🇭 태국 · 방콕 제1고)이 대학에 전달되었습니다</div></div>
-            <div class="msg"><div class="av">서정</div><div><div class="bub">Napat님 안녕하세요! 입학팀 이수진입니다. 2027년 3월 학부 입학을 준비하시는군요 😊</div><div class="meta">10:02</div></div></div>
+            <div class="msg"><div class="av">GM</div><div><div class="bub">Napat님 안녕하세요! 구미대학교 입학팀입니다. 2027년 3월 학부 입학을 준비하시는군요 😊</div><div class="meta">10:02</div></div></div>
             <div class="msg me"><div><div class="bub">네! 컴퓨터공학과 지원 조건이 궁금해요. Do you have English materials?</div><div class="meta">읽음 · 10:03</div></div></div>
-            <div class="msg"><div class="av">서정</div><div><div class="bub">물론이죠. 우선 최근 성적증명서를 보내주시면 지원 가능 여부를 확인해드릴게요.</div><div class="meta">10:05</div></div></div>
+            <div class="msg"><div class="av">GM</div><div><div class="bub">물론이죠. 우선 최근 성적증명서를 보내주시면 지원 가능 여부를 확인해드릴게요.</div><div class="meta">10:05</div></div></div>
             <div class="msg me"><div><div class="bub">📎 문서 보관함에서 전송
               <div class="doccard"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일 업로드</div></div></div>
             </div><div class="meta">읽음 · 10:06</div></div></div>
-            <div class="msg"><div class="av">서정</div><div><div class="bub">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div><div class="meta">10:08</div></div></div>
+            <div class="msg"><div class="av">GM</div><div><div class="bub">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div><div class="meta">10:08</div></div></div>
           </div>
           <div class="composer">
             <div class="attmenu" id="attMenu">
@@ -387,7 +355,7 @@
             <div id="mobileDocList">
               <div class="doc-group" data-category="성적증명서">
                 <div class="doc-cat">성적증명서</div>
-                <div class="dcard"><div class="di">📄</div><div class="db"><div class="dn">성적증명서_2026.pdf</div><div class="dm">6월 28일 업로드 · 840KB</div><div class="sent">서정대학교에 전송됨 (v2)</div></div><span class="vch">v2</span></div>
+                <div class="dcard"><div class="di">📄</div><div class="db"><div class="dn">성적증명서_2026.pdf</div><div class="dm">6월 28일 업로드 · 840KB</div><div class="sent">구미대학교에 전송됨 (v2)</div></div><span class="vch">v2</span></div>
               </div>
               <div class="doc-group" data-category="어학성적">
                 <div class="doc-cat">어학성적</div>
@@ -421,7 +389,7 @@
             </div>
             <div class="sect">알림</div>
             <div class="noti">
-              <div class="ni">💬 <div>서정대학교의 새 메시지가 있어요<small>10분 전</small></div></div>
+              <div class="ni">💬 <div>구미대학교의 새 메시지가 있어요<small>10분 전</small></div></div>
               <div class="ni">🏫 <div>요청하신 <b>한양여자대학교</b>가 등록되었어요! 지금 상담을 시작해보세요<small>어제</small></div></div>
               <div class="ni">📄 <div>연성대학교가 어학성적 서류를 요청했어요<small>2일 전</small></div></div>
             </div>
@@ -459,8 +427,8 @@
           <div class="sheet">
             <div class="sheet-hd"><b>문서 보관함에서 전송</b><button onclick="closeSheet('docPick')">✕</button></div>
             <div class="sheet-bd">
-              <div class="pickitem" onclick="sendDoc('성적증명서_2026.pdf','성적증명서 · v2')"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일</div></div></div>
-              <div class="pickitem" onclick="sendDoc('TOPIK_4급_성적표.pdf','어학성적 · v1')"><span class="di">🗣️</span><div><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">어학성적 · v1 · 6월 1일</div></div></div>
+              <div class="pickitem" data-file-name="성적증명서_2026.pdf" data-category="성적증명서" data-document-meta="성적증명서 · v2" onclick="sendSelectedMobileDocument(this)"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일</div></div></div>
+              <div class="pickitem" data-file-name="TOPIK_4급_성적표.pdf" data-category="어학성적" data-document-meta="어학성적 · v1" onclick="sendSelectedMobileDocument(this)"><span class="di">🗣️</span><div><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">어학성적 · v1 · 6월 1일</div></div></div>
             </div>
           </div>
         </div>
@@ -471,9 +439,20 @@
             <div class="sheet-hd"><b>문서 업로드</b><button onclick="closeSheet('uploadSheet')">✕</button></div>
             <div class="sheet-bd">
               <div class="upload-summary">업로드할 문서의 카테고리를 먼저 선택해 주세요. 같은 카테고리에 추가한 문서는 버전별로 보관됩니다.</div>
-              <div class="field"><label for="mobileUploadCategory">카테고리 <span class="req">*</span></label><select id="mobileUploadCategory"><option>성적증명서</option><option>어학성적</option><option>졸업(예정)증명서</option><option>기타</option></select></div>
-              <div class="field"><label for="mobileUploadFile">파일 <span class="req">*</span></label><input id="mobileUploadFile" type="file" accept=".pdf,.jpg,.jpeg,.png"><span class="hint">PDF/JPG/PNG · 최대 10MB</span></div>
+              <div class="field"><label for="mobileUploadCategory">카테고리 <span class="req">*</span></label><select id="mobileUploadCategory"><option>성적증명서</option><option>어학성적</option><option>졸업(예정)증명서</option><option>여권</option><option>가족관계증명서</option><option>재정증명서</option><option value="apostille">공증문서</option><option>기타</option></select></div>
+              <div class="field"><label for="mobileUploadFile">PDF 파일 <span class="req">*</span></label><input id="mobileUploadFile" type="file" accept=".pdf,application/pdf"><span class="hint">PDF · 최대 10MB</span></div>
               <button class="btn btn-primary" onclick="uploadMobileDocument()">선택한 카테고리로 업로드</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-overlay" id="mobileDocumentRequestChoice" onclick="if(event.target===this) closeSheet('mobileDocumentRequestChoice')">
+          <div class="sheet">
+            <div class="sheet-hd"><b>요청 문서 다시 보내기</b><button onclick="closeSheet('mobileDocumentRequestChoice')">✕</button></div>
+            <div class="sheet-bd">
+              <div class="upload-summary" id="mobileDocumentRequestChoiceSummary"></div>
+              <button class="btn btn-primary" style="width:100%" onclick="openMobileRequestedUpload()">새 PDF 업로드</button>
+              <button class="btn" id="mobileRequestedExistingDocumentButton" style="width:100%;margin-top:8px" onclick="openMobileRequestedExistingDocumentPicker()">문서 보관함에서 선택</button>
             </div>
           </div>
         </div>
@@ -579,23 +558,26 @@
     document.getElementById('mobileProfileMenu').hidden=!studentAuthenticated || id==='vSignup'||id==='vLogin';
     closeMobileProfileMenu();
     document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.v===id));
-    document.querySelectorAll('.scn button').forEach(b=>b.classList.toggle('on', b.dataset.v===id));
   }
-  document.querySelectorAll('.scn button[data-v]').forEach(b=> b.addEventListener('click', ()=> showView(b.dataset.v)) );
-  document.querySelectorAll('.scn button[data-auth-state]').forEach(b=> b.addEventListener('click', ()=>{
-    setMobileEmailAuthState(b.dataset.authState); b.classList.add('on');
-  }) );
-  document.querySelectorAll('.scn button[data-chat-state]').forEach(b=> b.addEventListener('click', ()=>{
-    studentAuthenticated=true; window.UniChatStudentSession?.signIn(); openChat('서정대학교',b.dataset.chatState); b.classList.add('on');
-  }) );
   document.querySelectorAll('#tabbar button[data-v]').forEach(b=> b.addEventListener('click', ()=> showView(b.dataset.v)) );
   renderMobileEmailAuth();
 
   const stMap={'대기':'st-wait','진행중':'st-live','종료':'st-done'};
-  const activeThreadMarkup=document.getElementById('thread').innerHTML;
-  const completedThreadMarkup=activeThreadMarkup.replace('<div class="day">오늘</div>','<div class="day">6월 30일</div>');
-  let currentChatStatus='진행중', currentChatUniversity='서정대학교';
+  const mobileBaseThreadMarkup=document.getElementById('thread').innerHTML;
+  let activeThreadMarkup=mobileBaseThreadMarkup;
+  const completedThreadMarkup=mobileBaseThreadMarkup.replace('<div class="day">오늘</div>','<div class="day">6월 30일</div>');
+  const documentRequestStorageKey='unichat.prototype.document-requests.v1';
+  const documentUpdateStorageKey='unichat.prototype.document-updates.v1';
+  const mobileDocumentRequests={};
+  const mobileDocumentCategoryLabels={
+    '성적증명서':'성적증명서','어학성적':'어학성적','졸업(예정)증명서':'졸업(예정)증명서','여권':'여권',
+    '가족관계증명서':'가족관계증명서','재정증명서':'재정증명서',apostille:'공증문서','기타':'기타'
+  };
+  function mobileDocumentCategoryLabel(category){ return mobileDocumentCategoryLabels[category]||category; }
+  let pendingMobileDocumentRequest=null, pendingMobileDocumentRequestChoiceId='';
+  let currentChatStatus='진행중', currentChatUniversity='구미대학교';
   function renderChatState(){
+    syncExternalMobileDocumentRequests();
     const thread=document.getElementById('thread'), input=document.getElementById('chatInput'), composer=document.querySelector('#vChat .composer');
     const contact=document.querySelector('#vChat .chat-hd .tt small');
     composer.style.display='flex'; input.disabled=false;
@@ -612,6 +594,8 @@
       input.placeholder='메시지를 입력하세요';
       thread.innerHTML=activeThreadMarkup;
     }
+    document.getElementById('chatUniv').textContent=currentChatUniversity;
+    syncMobileDocumentRequestActions();
   }
   function openChat(univ, st){
     currentChatUniversity=univ; currentChatStatus=st;
@@ -624,8 +608,82 @@
   function toggleAtt(){ document.getElementById('attMenu').classList.toggle('show'); }
   function closeAtt(){ document.getElementById('attMenu').classList.remove('show'); }
   function openSheet(id){ document.getElementById(id).classList.add('show'); }
-  function closeSheet(id){ document.getElementById(id).classList.remove('show'); }
-  function openUploadSheet(){
+  function closeSheet(id){
+    document.getElementById(id).classList.remove('show');
+    if(id==='docPick') resetMobileDocumentPicker();
+  }
+  function readMobilePrototypeStorage(key){
+    try{
+      const value=JSON.parse(window.localStorage.getItem(key)||'[]');
+      return Array.isArray(value)?value:[];
+    }catch(error){ return []; }
+  }
+  function writeMobilePrototypeStorage(key,value){
+    try{ window.localStorage.setItem(key,JSON.stringify(value)); }catch(error){}
+  }
+  function renderMobileDocumentRequestBox(requestId,request){
+    const label=String(request.label||request.category||'요청 문서').replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character]));
+    return `<div class="msg"><div class="av">GM</div><div><div class="bub document-re-request-box"><b>📄 서류 재업로드 요청</b><span>${label} 문서를 다시 보내 주세요.</span><button class="doc-request-action" type="button" data-mobile-doc-request-choice="${requestId}">업로드 하기</button></div><div class="meta">방금</div></div></div>`;
+  }
+  function syncExternalMobileDocumentRequests(){
+    readMobilePrototypeStorage(documentRequestStorageKey).forEach(event=>{
+      const eventId=String(event?.id||'');
+      if(!event.reRequest||event.studentId!=='napat-siriporn'||event.universityId!=='gumi'||event.affiliationId!=='undergraduate'||!/^[A-Za-z0-9_-]{1,120}$/.test(eventId)) return;
+      const requestId=`mobile-document-request-${eventId}`;
+      if(mobileDocumentRequests[requestId]) return;
+      const category=String(event.category||'기타').slice(0,40);
+      mobileDocumentRequests[requestId]={category,label:category==='apostille'?mobileDocumentCategoryLabel(category):String(event.label||category).slice(0,120),sourceEventId:eventId,completed:false};
+      activeThreadMarkup+=renderMobileDocumentRequestBox(requestId,mobileDocumentRequests[requestId]);
+      currentChatUniversity='구미대학교';
+    });
+  }
+  function syncMobileDocumentRequestActions(){
+    document.querySelectorAll('[data-mobile-doc-request-choice]').forEach(button=>{
+      const request=mobileDocumentRequests[button.dataset.mobileDocRequestChoice];
+      if(!request) return;
+      button.disabled=request.completed;
+      button.textContent=request.completed?'전송 완료':'업로드 하기';
+      button.onclick=()=>openMobileDocumentRequestChoice(button.dataset.mobileDocRequestChoice);
+    });
+  }
+  function resetMobileDocumentPicker(){
+    const picker=document.getElementById('docPick');
+    if(!picker) return;
+    picker.dataset.requestId='';
+    picker.querySelectorAll('.pickitem').forEach(item=>{ item.hidden=false; });
+  }
+  function openMobileDocumentRequestChoice(requestId){
+    const request=mobileDocumentRequests[requestId];
+    if(!request||request.completed) return;
+    pendingMobileDocumentRequestChoiceId=requestId;
+    document.getElementById('mobileDocumentRequestChoiceSummary').textContent=`${request.label} 문서를 새 PDF로 올리거나 문서 보관함의 같은 유형 문서를 선택해 보내세요.`;
+    document.getElementById('mobileRequestedExistingDocumentButton').disabled=!document.querySelector(`#mobileDocList .doc-group[data-category="${request.category}"] .dcard:not(.empty-doc)`);
+    openSheet('mobileDocumentRequestChoice');
+  }
+  function openMobileRequestedUpload(){
+    const requestId=pendingMobileDocumentRequestChoiceId;
+    closeSheet('mobileDocumentRequestChoice');
+    if(requestId) openUploadSheet(requestId);
+  }
+  function openMobileRequestedExistingDocumentPicker(){
+    const requestId=pendingMobileDocumentRequestChoiceId;
+    const request=mobileDocumentRequests[requestId];
+    if(!request) return;
+    const picker=document.getElementById('docPick');
+    const matches=[...picker.querySelectorAll('.pickitem')].filter(item=>item.dataset.category===request.category);
+    if(!matches.length){ openMobileRequestedUpload(); return; }
+    picker.dataset.requestId=requestId;
+    picker.querySelectorAll('.pickitem').forEach(item=>{ item.hidden=item.dataset.category!==request.category; });
+    closeSheet('mobileDocumentRequestChoice');
+    openSheet('docPick');
+  }
+  function openUploadSheet(requestId=''){
+    pendingMobileDocumentRequest=requestId?mobileDocumentRequests[requestId]||null:null;
+    const category=document.getElementById('mobileUploadCategory');
+    category.disabled=Boolean(pendingMobileDocumentRequest);
+    if(pendingMobileDocumentRequest) category.value=pendingMobileDocumentRequest.category;
+    document.querySelector('#uploadSheet .sheet-hd b').textContent=pendingMobileDocumentRequest?'요청 문서 업로드':'문서 업로드';
+    document.querySelector('#uploadSheet .upload-summary').textContent=pendingMobileDocumentRequest?`${pendingMobileDocumentRequest.label} PDF를 올리면 요청한 상담 채널로 바로 전송해요.`:'업로드할 문서의 카테고리를 먼저 선택해 주세요. 같은 카테고리에 추가한 문서는 버전별로 보관됩니다.';
     document.getElementById('mobileUploadFile').value='';
     openSheet('uploadSheet');
   }
@@ -634,7 +692,7 @@
     const input=document.getElementById('mobileUploadFile');
     const file=input.files[0];
     if(!file){ alert('업로드할 파일을 선택해 주세요.'); return; }
-    if(!/\.(pdf|jpe?g|png)$/i.test(file.name)){ alert('PDF/JPG/PNG 파일만 업로드할 수 있어요.'); return; }
+    if(!/\.pdf$/i.test(file.name)){ alert('PDF 파일만 업로드할 수 있어요.'); return; }
     if(file.size>10*1024*1024){ alert('10MB 이하의 파일만 업로드할 수 있어요.'); return; }
 
     const list=document.getElementById('mobileDocList');
@@ -645,7 +703,7 @@
       group.dataset.category=category;
       const heading=document.createElement('div');
       heading.className='doc-cat';
-      heading.textContent=category;
+      heading.textContent=mobileDocumentCategoryLabel(category);
       group.appendChild(heading);
       list.appendChild(group);
     }
@@ -653,7 +711,7 @@
     if(empty) empty.remove();
     const versions=[...group.querySelectorAll('.vch')].map(el=>Number(el.textContent.replace('v',''))||0);
     const version=Math.max(0,...versions)+1;
-    const icons={'성적증명서':'📄','어학성적':'🗣️','졸업(예정)증명서':'🎓','기타':'📎'};
+    const icons={'성적증명서':'📄','어학성적':'🗣️','졸업(예정)증명서':'🎓','여권':'🛂','가족관계증명서':'👪','재정증명서':'💳',apostille:'🏷️','기타':'📎'};
     const card=document.createElement('div');
     card.className='dcard';
     card.innerHTML=`<div class="di">${icons[category]||'📎'}</div><div class="db"><div class="dn"></div><div class="dm">방금 업로드 · ${formatFileSize(file.size)}</div><div class="sent">전송 전</div></div><span class="vch">v${version}</span>`;
@@ -662,11 +720,20 @@
 
     const pick=document.createElement('div');
     pick.className='pickitem';
-    pick.innerHTML=`<span class="di">${icons[category]||'📎'}</span><div><div class="dn"></div><div class="dm">${category} · v${version} · 방금</div></div>`;
+    pick.dataset.fileName=file.name;
+    pick.dataset.category=category;
+    pick.dataset.documentMeta=`${mobileDocumentCategoryLabel(category)} · v${version}`;
+    pick.innerHTML=`<span class="di">${icons[category]||'📎'}</span><div><div class="dn"></div><div class="dm">${mobileDocumentCategoryLabel(category)} · v${version} · 방금</div></div>`;
     pick.querySelector('.dn').textContent=file.name;
-    pick.addEventListener('click',()=>sendDoc(file.name,`${category} · v${version}`));
+    pick.addEventListener('click',()=>sendSelectedMobileDocument(pick));
     document.querySelector('#docPick .sheet-bd').appendChild(pick);
+    const request=pendingMobileDocumentRequest;
+    pendingMobileDocumentRequest=null;
     closeSheet('uploadSheet');
+    if(request){
+      completeMobileDocumentRequest(request,file.name);
+      sendDoc(file.name,`${mobileDocumentCategoryLabel(category)} · v${version}`);
+    }
   }
   function formatFileSize(bytes){
     if(bytes<1024) return `${bytes}B`;
@@ -685,6 +752,30 @@
     closeSheet('docPick');
     const stateMeta=currentChatStatus==='대기'?'보냄 · 아직 읽지 않음':'읽음 · 방금';
     addMe(`<div class="bub">📎 문서 보관함에서 전송<div class="doccard"><span class="di">📄</span><div><div class="dn">${name}</div><div class="dm">${meta}</div></div></div></div><div class="meta">${stateMeta}</div>`);
+  }
+  function publishMobileDocumentUpdate(request,fileName){
+    const updates=readMobilePrototypeStorage(documentUpdateStorageKey);
+    updates.push({
+      id:`document-update-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+      studentId:'napat-siriporn',universityId:'gumi',affiliationId:'undergraduate',requestId:request.sourceEventId,
+      category:request.category,fileName,reRequest:true,updatedAt:new Date().toISOString()
+    });
+    writeMobilePrototypeStorage(documentUpdateStorageKey,updates.slice(-100));
+  }
+  function completeMobileDocumentRequest(request,fileName){
+    request.completed=true;
+    publishMobileDocumentUpdate(request,fileName);
+    syncMobileDocumentRequestActions();
+  }
+  function sendSelectedMobileDocument(element){
+    const requestId=document.getElementById('docPick').dataset.requestId||'';
+    const request=requestId?mobileDocumentRequests[requestId]:null;
+    if(request&&request.category!==element.dataset.category){
+      alert(`${request.label} 유형의 문서를 선택해 주세요.`);
+      return;
+    }
+    if(request) completeMobileDocumentRequest(request,element.dataset.fileName);
+    sendDoc(element.dataset.fileName,element.dataset.documentMeta||element.dataset.category);
   }
   function addMe(inner){
     const t=document.getElementById('thread');
@@ -749,6 +840,12 @@
     if(menu&&!menu.contains(event.target)) closeMobileProfileMenu();
   });
   document.addEventListener('keydown',event=>{ if(event.key==='Escape') closeMobileProfileMenu(); });
+  syncExternalMobileDocumentRequests();
+  window.addEventListener('storage',event=>{
+    if(event.key!==documentRequestStorageKey) return;
+    syncExternalMobileDocumentRequests();
+    if(document.getElementById('vChat').classList.contains('show')) renderChatState();
+  });
   function toggleLang(el){
     const ko = el.innerHTML.includes('<b>한국어</b>');
     el.innerHTML = ko ? '한국어 / <b>EN</b>' : '<b>한국어</b> / EN';

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ubichat 학생 회원가입">
+  <title>ubichat | 학생 회원가입</title>
+  <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+  <div class="page">
+    <header class="wrap header public-header" data-public-header>
+      <a class="brand" href="기업용_배너_포함.html" aria-label="ubichat 홈">
+        <span class="brand-mark" aria-hidden="true"></span><span>ubichat</span>
+      </a>
+      <button class="mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
+      <nav class="header-nav" aria-label="주 메뉴">
+        <a href="university-explore.html">대학 탐색</a>
+        <a data-student-nav="chats" href="login.html">상담하기</a>
+        <a href="content.html">콘텐츠</a>
+      </nav>
+      <div class="header-actions">
+        <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">⌂</span> 대학 서비스</a>
+        <a class="student-login-link" data-student-login href="login.html">로그인</a>
+        <div class="profile-menu" data-profile-menu hidden>
+          <button class="profile-trigger" type="button" data-profile-trigger aria-haspopup="menu" aria-expanded="false">
+            <span class="profile-avatar" data-profile-avatar>🇹🇭</span><span data-profile-name>NAPAT</span><span aria-hidden="true">⌄</span>
+          </button>
+          <div class="profile-dropdown" data-profile-dropdown role="menu" hidden>
+            <div class="profile-summary"><strong data-profile-full-name>NAPAT SUKSAI</strong><span data-profile-email>napat@example.com</span></div>
+            <a data-student-context="docs" href="student-desktop.html?view=docs" role="menuitem">문서 보관함</a>
+            <a data-student-context="my" href="student-desktop.html?view=my" role="menuitem">마이페이지</a>
+            <button type="button" data-student-logout role="menuitem">로그아웃</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap student-signup-main">
+      <section class="student-signup-intro" aria-labelledby="student-signup-title">
+        <p class="section-kicker">Student account</p>
+        <h1 id="student-signup-title">ubichat과 함께<br>한국 유학을 준비하세요</h1>
+        <p id="signup-context">기본 정보를 등록하면 관심 대학에 상담을 신청하고, 문서를 안전하게 보관할 수 있습니다.</p>
+      </section>
+
+      <section class="student-signup-card" aria-label="학생 회원가입 양식">
+        <form id="student-signup-form">
+          <div class="signup-field">
+            <label for="signup-email">이메일 <span aria-hidden="true">*</span></label>
+            <div class="signup-verification-row">
+              <input id="signup-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+              <button type="button" id="send-code">인증 코드 발송</button>
+            </div>
+            <p class="field-help">목업 인증 코드는 123456입니다.</p>
+          </div>
+
+          <div class="signup-verification" aria-live="polite">
+            <div class="signup-verification-row">
+              <input id="verification-code" inputmode="numeric" maxlength="6" placeholder="6자리 인증 코드" disabled>
+              <button type="button" id="verify-code" disabled>인증 확인</button>
+            </div>
+            <p class="signup-status" id="signup-status">이메일 인증을 완료하면 회원가입할 수 있습니다.</p>
+          </div>
+
+          <div class="signup-field">
+            <label for="signup-password">비밀번호 <span aria-hidden="true">*</span></label>
+            <input id="signup-password" type="password" autocomplete="new-password" minlength="8" placeholder="8자 이상" required>
+          </div>
+
+          <div class="signup-row">
+            <div class="signup-field">
+              <label for="signup-country">국가 <span aria-hidden="true">*</span></label>
+              <select id="signup-country" required>
+                <option value="태국" selected>🇹🇭 태국</option>
+                <option value="베트남">🇻🇳 베트남</option>
+                <option value="중국">🇨🇳 중국</option>
+                <option value="우즈베키스탄">🇺🇿 우즈베키스탄</option>
+                <option value="몽골">🇲🇳 몽골</option>
+              </select>
+            </div>
+            <div class="signup-field">
+              <label for="signup-city">도시 <span aria-hidden="true">*</span></label>
+              <select id="signup-city" required></select>
+            </div>
+          </div>
+
+          <div class="signup-field">
+            <label for="signup-school">고등학교 <span aria-hidden="true">*</span></label>
+            <input id="signup-school" type="text" autocomplete="organization" placeholder="재학 중 또는 출신 학교" required>
+          </div>
+
+          <div class="signup-row">
+            <div class="signup-field">
+              <label for="signup-name">이름</label>
+              <input id="signup-name" type="text" autocomplete="name" placeholder="영문 이름 권장">
+            </div>
+            <div class="signup-field">
+              <label for="signup-topik">TOPIK / 한국어 수준</label>
+              <select id="signup-topik">
+                <option value="미입력" selected>미입력</option>
+                <option value="TOPIK 1급">TOPIK 1급</option>
+                <option value="TOPIK 2급">TOPIK 2급</option>
+                <option value="TOPIK 3급">TOPIK 3급</option>
+                <option value="TOPIK 4급 이상">TOPIK 4급 이상</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="signup-consent"><input id="signup-consent" type="checkbox" required> 개인정보 수집·이용 및 상담 상대 대학에 기본 프로필을 제공하는 데 동의합니다.</label>
+          <button class="button-primary signup-submit" id="signup-submit" type="submit" disabled>학생 회원가입 <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="signup-login-link">이미 계정이 있나요? <a id="back-to-login" href="login.html">학생 로그인</a></p>
+      </section>
+    </main>
+
+    <footer class="footer"><div class="wrap footer-inner"><p>© 2026 ubichat</p><p><a href="university-explore.html">대학 탐색으로 돌아가기</a></p></div></footer>
+  </div>
+  <script src="university-data.js"></script>
+  <script src="student-session.js"></script>
+  <script>
+    const cities = {
+      태국: ['방콕', '치앙마이', '콘깬'],
+      베트남: ['하노이', '호치민', '다낭'],
+      중국: ['베이징', '상하이', '칭다오'],
+      우즈베키스탄: ['타슈켄트', '사마르칸트', '부하라'],
+      몽골: ['울란바토르', '에르데네트']
+    };
+    const query = new URLSearchParams(window.location.search);
+    const requestedUniversity = query.get('universityId') || query.get('university');
+    const requestedAffiliation = query.get('affiliationId');
+    const university = window.UniversityDirectory?.resolve(requestedUniversity);
+    const requestedReturn = query.get('returnTo');
+    const fallback = university
+      ? `student-desktop.html?universityId=${encodeURIComponent(university.id)}${requestedAffiliation ? `&affiliationId=${encodeURIComponent(requestedAffiliation)}` : ''}`
+      : 'student-desktop.html?view=chats';
+
+    function safeReturnTo(value) {
+      const allowed = /^(student-(desktop|mobile)\.html|기업용_배너_(포함|미포함)\.html|university-(explore|detail)\.html)(?:[?#].*)?$/;
+      return value && allowed.test(value) ? value : fallback;
+    }
+
+    function preserveConsultationContext(destination) {
+      if (!university || !requestedAffiliation) return destination;
+      const url = new URL(destination, window.location.href);
+      url.searchParams.set('universityId', university.id);
+      url.searchParams.set('affiliationId', requestedAffiliation);
+      return `${url.pathname.split('/').pop()}${url.search}${url.hash}`;
+    }
+
+    const returnTo = preserveConsultationContext(safeReturnTo(requestedReturn));
+    const loginLink = document.querySelector('#back-to-login');
+    loginLink.href = `login.html?returnTo=${encodeURIComponent(returnTo)}${university ? `&universityId=${encodeURIComponent(university.id)}` : ''}${university && requestedAffiliation ? `&affiliationId=${encodeURIComponent(requestedAffiliation)}` : ''}`;
+    if (university) document.querySelector('#signup-context').textContent = `${university.name.ko} 상담을 시작하기 전, 학생 계정을 만들어 주세요.`;
+
+    const country = document.querySelector('#signup-country');
+    const city = document.querySelector('#signup-city');
+    const email = document.querySelector('#signup-email');
+    const code = document.querySelector('#verification-code');
+    const sendCode = document.querySelector('#send-code');
+    const verifyCode = document.querySelector('#verify-code');
+    const status = document.querySelector('#signup-status');
+    const submit = document.querySelector('#signup-submit');
+    let verificationState = 'idle';
+
+    function renderCities() {
+      city.replaceChildren(...cities[country.value].map((name) => new Option(name, name)));
+    }
+
+    function setVerificationState(next) {
+      verificationState = next;
+      const pending = next === 'pending';
+      const success = next === 'success';
+      const error = next === 'error';
+      code.disabled = !pending && !error;
+      verifyCode.disabled = !pending && !error;
+      submit.disabled = !success;
+      status.className = `signup-status${pending ? ' is-pending' : ''}${success ? ' is-success' : ''}${error ? ' is-error' : ''}`;
+      status.textContent = success
+        ? '이메일 인증이 완료되었습니다. 필수 정보를 입력한 뒤 회원가입해 주세요.'
+        : error
+          ? '인증 코드가 일치하지 않습니다. 다시 입력해 주세요.'
+          : pending
+            ? '인증 코드를 발송했습니다. 6자리 코드를 입력해 주세요.'
+            : '이메일 인증을 완료하면 회원가입할 수 있습니다.';
+    }
+
+    country.addEventListener('change', renderCities);
+    sendCode.addEventListener('click', () => {
+      if (!email.reportValidity()) return;
+      code.value = '';
+      setVerificationState('pending');
+      code.focus();
+    });
+    verifyCode.addEventListener('click', () => {
+      setVerificationState(code.value.trim() === '123456' ? 'success' : 'error');
+    });
+    document.querySelector('#student-signup-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (verificationState !== 'success' || !event.currentTarget.reportValidity()) return;
+      window.UniChatStudentSession.signIn({ email: email.value.trim() });
+      window.location.href = returnTo;
+    });
+
+    renderCities();
+    setVerificationState('idle');
+  </script>
+  <script src="language-selector.js"></script>
+</body>
+</html>

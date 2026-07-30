@@ -11,38 +11,56 @@
   let volatileSession = null;
   const destinations = {
     chats: 'student-desktop.html?view=chats',
+    notices: 'student-desktop.html?view=notices',
     docs: 'student-desktop.html?view=docs',
     my: 'student-desktop.html?view=my'
   };
 
+  function availableStorages() {
+    return ['localStorage', 'sessionStorage'].map((name) => {
+      try {
+        return window[name];
+      } catch (error) {
+        return null;
+      }
+    }).filter(Boolean);
+  }
+
   function readSession() {
-    try {
-      const saved = window.localStorage.getItem(storageKey);
-      return saved ? { ...defaultStudent, ...JSON.parse(saved) } : volatileSession;
-    } catch (error) {
-      return volatileSession;
+    for (const storage of availableStorages()) {
+      try {
+        const saved = storage.getItem(storageKey);
+        if (saved) return { ...defaultStudent, ...JSON.parse(saved) };
+      } catch (error) {
+        // 일부 file:// 목업 환경은 localStorage 접근을 제한합니다.
+      }
     }
+    return volatileSession;
   }
 
   function signIn(student = {}) {
     const session = { ...defaultStudent, ...student };
     volatileSession = session;
-    try {
-      window.localStorage.setItem(storageKey, JSON.stringify(session));
-    } catch (error) {
-      // 목업은 저장소를 사용할 수 없는 환경에서도 현재 화면에서 동작합니다.
-    }
+    availableStorages().forEach((storage) => {
+      try {
+        storage.setItem(storageKey, JSON.stringify(session));
+      } catch (error) {
+        // 저장소 접근이 제한된 경우에도 현재 화면 세션은 유지합니다.
+      }
+    });
     refreshHeaders();
     return session;
   }
 
   function signOut() {
     volatileSession = null;
-    try {
-      window.localStorage.removeItem(storageKey);
-    } catch (error) {
-      // 저장소 접근 실패 시에도 화면 상태는 새로 고칩니다.
-    }
+    availableStorages().forEach((storage) => {
+      try {
+        storage.removeItem(storageKey);
+      } catch (error) {
+        // 저장소 접근 실패 시에도 화면 상태는 새로 고칩니다.
+      }
+    });
     refreshHeaders();
   }
 
@@ -55,6 +73,17 @@
     return `login.html?returnTo=${encodeURIComponent(destination || currentPath())}`;
   }
 
+  function withConsultationContext(destination) {
+    const query = new URLSearchParams(window.location.search);
+    const universityId = query.get('universityId');
+    const affiliationId = query.get('affiliationId');
+    if (!universityId || !affiliationId) return destination;
+    const url = new URL(destination, window.location.href);
+    url.searchParams.set('universityId', universityId);
+    url.searchParams.set('affiliationId', affiliationId);
+    return `${url.pathname.split('/').pop()}${url.search}${url.hash}`;
+  }
+
   function closeProfileMenus(except) {
     document.querySelectorAll('[data-profile-dropdown]').forEach((menu) => {
       if (menu !== except) menu.hidden = true;
@@ -65,18 +94,102 @@
     });
   }
 
+  function ensureDesktopProfileLinks(menu) {
+    const dropdown = menu.querySelector('[data-profile-dropdown]');
+    if (!dropdown) return;
+    const logout = dropdown.querySelector('[data-student-logout]');
+    const links = [
+      { key: 'chats', label: '내 상담' },
+      { key: 'notices', label: '공지사항' },
+      { key: 'docs', label: '문서 보관함' },
+      { key: 'my', label: '마이페이지' }
+    ];
+
+    links.forEach(({ key, label }) => {
+      const href = destinations[key];
+      let link = dropdown.querySelector(`[data-student-context="${key}"]`);
+      if (!link) {
+        link = [...dropdown.querySelectorAll('a')].find((candidate) => candidate.getAttribute('href') === href);
+      }
+      if (!link) {
+        link = document.createElement('a');
+        link.textContent = label;
+        link.setAttribute('role', 'menuitem');
+      }
+      link.dataset.studentContext = key;
+      link.href = href;
+      dropdown.insertBefore(link, logout || null);
+    });
+  }
+
+  function ensureMobileStudentMenu(header, index) {
+    const nav = header.querySelector('.header-nav, .student-header-nav');
+    if (!nav) return;
+    if (!nav.id) nav.id = `unichat-mobile-menu-${index + 1}`;
+    const trigger = header.querySelector('[data-mobile-nav-trigger]');
+    trigger?.setAttribute('aria-controls', nav.id);
+
+    let menu = nav.querySelector('[data-mobile-student-menu]');
+    if (!menu) {
+      menu = document.createElement('section');
+      menu.className = 'mobile-student-menu';
+      menu.setAttribute('data-mobile-student-menu', '');
+      menu.setAttribute('aria-label', '학생 개인 메뉴');
+      menu.innerHTML = `
+        <div class="mobile-student-profile">
+          <span class="mobile-student-avatar" data-profile-avatar aria-hidden="true">🇹🇭</span>
+          <span class="mobile-student-identity">
+            <strong data-profile-full-name>NAPAT SUKSAI</strong>
+            <small data-profile-email>napat@example.com</small>
+          </span>
+        </div>
+        <div class="mobile-student-links">
+          <a data-student-context="notices" href="${destinations.notices}">공지사항</a>
+          <a data-student-context="docs" href="${destinations.docs}">문서 보관함</a>
+          <a data-student-context="my" href="${destinations.my}">마이페이지</a>
+          <button type="button" data-student-logout>로그아웃</button>
+        </div>
+      `;
+    }
+    const mobileLanguage = nav.querySelector('[data-language-selector-placement="mobile"]');
+    nav.insertBefore(menu, mobileLanguage || null);
+  }
+
+  function closeMobileMenus() {
+    document.querySelectorAll('[data-public-header]').forEach((header) => {
+      header.classList.remove('is-mobile-menu-open');
+    });
+    document.querySelectorAll('[data-mobile-nav-trigger]').forEach((trigger) => {
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.setAttribute('aria-label', '주 메뉴 열기');
+    });
+  }
+
   function refreshHeaders() {
     const student = readSession();
     const authenticated = Boolean(student);
 
+    document.querySelectorAll('[data-public-header]').forEach((header, index) => {
+      ensureMobileStudentMenu(header, index);
+      header.classList.toggle('is-student-authenticated', authenticated);
+    });
+
+    document.querySelectorAll('[data-profile-menu]').forEach(ensureDesktopProfileLinks);
+
     document.querySelectorAll('[data-student-nav]').forEach((link) => {
-      const destination = destinations[link.dataset.studentNav] || destinations.chats;
+      const destination = withConsultationContext(destinations[link.dataset.studentNav] || destinations.chats);
       link.href = authenticated ? destination : loginHref(destination);
+      link.textContent = authenticated ? '내 상담' : '상담하기';
     });
 
     document.querySelectorAll('[data-student-login]').forEach((link) => {
       link.href = loginHref(destinations.chats);
       link.hidden = authenticated;
+    });
+
+    document.querySelectorAll('[data-student-context]').forEach((link) => {
+      const destination = destinations[link.dataset.studentContext] || destinations.chats;
+      link.href = withConsultationContext(destination);
     });
 
     document.querySelectorAll('[data-university-service]').forEach((link) => {
@@ -95,6 +208,12 @@
       document.querySelectorAll('[data-profile-email]').forEach((node) => { node.textContent = student.email; });
       document.querySelectorAll('[data-profile-avatar]').forEach((node) => { node.textContent = student.avatar; });
     }
+
+    document.querySelectorAll('[data-mobile-student-menu]').forEach((menu) => {
+      menu.hidden = !authenticated;
+    });
+
+    if (!authenticated) closeMobileMenus();
   }
 
   document.addEventListener('click', (event) => {
@@ -123,17 +242,18 @@
       const header = mobileTrigger.closest('[data-public-header]');
       const isOpen = header?.classList.toggle('is-mobile-menu-open');
       mobileTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      mobileTrigger.setAttribute('aria-label', isOpen ? '주 메뉴 닫기' : '주 메뉴 열기');
       return;
     }
 
     if (!event.target.closest('[data-profile-menu]')) closeProfileMenus();
+    if (!event.target.closest('[data-public-header]')) closeMobileMenus();
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       closeProfileMenus();
-      document.querySelectorAll('[data-public-header]').forEach((header) => header.classList.remove('is-mobile-menu-open'));
-      document.querySelectorAll('[data-mobile-nav-trigger]').forEach((trigger) => trigger.setAttribute('aria-expanded', 'false'));
+      closeMobileMenus();
     }
   });
 

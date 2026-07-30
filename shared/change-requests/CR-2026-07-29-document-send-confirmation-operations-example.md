@@ -1,0 +1,21 @@
+# Shared Change Request
+
+- 요청 ID: CR-2026-07-29-document-send-confirmation-operations-example
+- 날짜: 2026-07-29
+- 요청 스쿼드: Product Owner
+- 담당 역할: 학생 PM·Designer·Developer, 학교 PM·Designer·Developer, 어드민 PM·Developer
+- 대상 파일·계약: `student-desktop.html`, `student-mobile.html`, `university-admin.html`, 신규 `shared/contracts/consultation-documents.md`
+- 문제: 기존 P1 문서는 일치 문서의 즉시 전송을 전제한다. 사용자 결정은 모든 문서 전송의 학생 확인을 요구하며, 학교 요청 예시 파일은 운영측이 관리한다.
+- 제안 변경: 모든 문서 전송은 미리보기와 명시적 확인 뒤 처리한다. 운영측은 예시 파일 메타데이터·권한 URL·운영 수명주기를 관리하고, 학생은 같은 `studentId + universityId + affiliationId` 요청에서만 예시를 열람한다.
+- 변경하지 않을 범위: 학생 원본 문서의 어드민 열람, 외부 링크 파일 복제·색인, 실제 파일 저장·변환·바이러스 검사
+- 영향받는 스쿼드: 학생, 학교, 어드민
+- 호환성 위험: 예전 즉시 전송 문구·자동 완료 상태를 유지하면 학생 확인 없이 민감 문서가 전달될 수 있다.
+- 마이그레이션: 기존 요청은 확인 대기 상태로 표시한다. 예시 파일이 없는 요청은 버튼을 표시하지 않는다.
+- 검증 방법: 일치 문서·새 업로드·재요청 문서 모두 확인 전에는 전달되지 않는지, 취소 시 상태가 유지되는지, 예시 파일이 같은 소속구분 요청에만 보이는지, 문서명·URL·메시지 본문이 분석·감사 상세에 저장되지 않는지 확인한다.
+- Owner 승인: D-019, 사용자 직접 지시 (2026-07-29)
+- 필수 검토자 확인: 학생 PM·Designer·Developer, 학교 PM·Designer·Developer, 어드민 PM·Developer 확인 대기
+- Product Owner 결정 ID: D-019
+- 사용자 사전 승인: 있음 (2026-07-29)
+- 사용자 승인 범위: 모든 문서 전송의 미리보기·확인, 운영측 예시 파일 관리, 공통 계약 제안
+- 작업 완료 보고: PO 정책·인계 기록 완료. 소유 화면·계약 반영 대기.
+- 사용자 최종 확인: 대기

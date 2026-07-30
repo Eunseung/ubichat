@@ -48,9 +48,6 @@
   .login-submit:hover{background:#193f91}
   .demo-note{margin:15px 0 0;padding-top:14px;border-top:1px solid var(--line2);color:#7b8794;font-size:11px;text-align:center}
 
-  .wf-flag{background:repeating-linear-gradient(45deg,#fff6e6,#fff6e6 12px,#ffedcc 12px,#ffedcc 24px);
-    border-bottom:1px solid #e8c97a;padding:7px 16px;font-size:12.5px;color:#7a5b16;text-align:center}
-  .wf-flag b{color:#5a4310}
   .ix{font-size:11px;color:#fff;background:var(--accent);border-radius:4px;padding:2px 7px;font-family:var(--mono)}
 
   .admin-top{background:var(--admin);color:#fff;display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 18px;position:sticky;top:0;z-index:10}
@@ -210,11 +207,49 @@
   .slot-actions{display:flex;gap:6px;align-items:center}
   .slot-actions .rowbtn{white-space:nowrap}
 
+  /* ===== AM-7 콘텐츠 CMS ===== */
+  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+  .page-head .sub{max-width:700px}
+  .page-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .cms-policy{background:var(--brand-soft);border:1px solid #c8d7f6;border-radius:10px;padding:12px 14px;font-size:12px;color:#254c8e;margin-bottom:16px}
+  .cms-policy b{color:#183b7a}
+  .content-title-cell{min-width:220px}
+  .content-title-cell small{display:block;color:var(--ink2);font-size:11px;margin-top:3px}
+  .content-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .content-actions .rowbtn{white-space:nowrap}
+  .attachment-count{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2);font-weight:700}
+  .attachment-count b{color:var(--brand);font-size:13px}
+  .attachment-panel{margin-top:16px}
+  .attachment-panel[hidden]{display:none}
+  .attachment-panel .ch{justify-content:space-between}
+  .attachment-policy{margin:0 0 12px;font-size:12px;color:var(--ink2)}
+  .attachment-name{display:flex;align-items:center;gap:6px;min-width:200px}
+  .attachment-name a{color:var(--brand);font-weight:700;text-decoration:none}
+  .attachment-name a:hover{text-decoration:underline}
+  .attachment-source{font-size:11px;color:var(--ink2)}
+
+  /* ===== AM-4 대학 구성원 ===== */
+  .member-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+  .member-summary .kpi{margin:0}
+  .role-chip{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;border-radius:999px;padding:2px 9px;font-weight:700;white-space:nowrap;background:var(--brand-soft);color:var(--brand)}
+  .role-chip.owner{background:#e9e4fb;color:#6246a8}
+  .role-chip.member{background:#eef1f5;color:#52606d}
+  .affiliation-list{display:flex;gap:4px;flex-wrap:wrap}
+  .affiliation-list .chip{border:1px solid var(--line2);background:#fff;color:var(--ink2);font-weight:600}
+  .issue-note{font-size:11px;color:var(--ink2);margin:0 0 12px}
+  .action-checks{display:grid;grid-template-columns:1fr 1fr;gap:7px;border:1px solid var(--line2);border-radius:8px;padding:9px}
+  .action-checks label{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink);cursor:pointer}
+  .action-checks input{width:16px;height:16px;margin:0;accent-color:var(--brand)}
+  .action-help{font-size:11px;color:var(--ink2);margin:0 0 7px}
+
   /* ===== AM-6 활동·감사 로그 ===== */
   .audit-filter{display:flex;gap:8px;align-items:center;margin-bottom:12px}
   .audit-filter input,.audit-filter select{border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:12.5px;font-family:var(--sans)}
   .audit-filter input{min-width:220px;flex:1}
   .audit-detail{font-size:11px;color:var(--ink2);line-height:1.45;max-width:290px}
+  .audit-row{cursor:pointer}
+  .audit-row:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+  .audit-link{display:block;margin-top:5px;color:var(--brand);font-size:11px;font-weight:800}
 
   /* 공용 상태 전환 모달·토스트 */
   .action-overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.52);z-index:200;padding:20px;align-items:center;justify-content:center}
@@ -260,7 +295,6 @@
     .login-brand .unichat-brand-context{display:none}
     .login-main{padding:20px 16px 48px;place-items:start center}
     .login-card{padding:25px 22px}
-    .wf-flag{font-size:11px;padding-inline:10px}
     .admin-top .brand{font-size:12.5px}
     .admin-top .right{margin-left:0;width:100%;justify-content:flex-end}
     .todo,.kpis{grid-template-columns:1fr}
@@ -269,6 +303,11 @@
     .drawer-ft{flex-wrap:wrap}
     .drawer-ft .btn-primary{flex-basis:100%}
     .slot-actions{flex-wrap:wrap}
+    .page-head{flex-direction:column;gap:2px}
+    .page-actions{width:100%}
+    .page-actions .btn{flex:1;min-height:42px}
+    .member-summary{grid-template-columns:1fr}
+    .action-checks{grid-template-columns:1fr}
     .audit-filter{flex-direction:column;align-items:stretch}.audit-filter input{min-width:0}
     .action-overlay{padding:12px;align-items:flex-end}
   }
@@ -277,7 +316,6 @@
   @media (max-width:760px){
     body{overflow-x:hidden;font-size:13.5px}
     button,.side a{touch-action:manipulation}
-    .wf-flag{padding:5px 10px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
     /* 모바일 헤더 + 가로 스크롤 GNB */
     .admin-top{position:sticky;top:0;z-index:30;min-height:54px;padding:9px 12px;flex-wrap:nowrap;gap:8px;box-shadow:0 1px 0 rgba(255,255,255,.08)}
@@ -399,9 +437,9 @@
 <body>
   <div class="login-view" id="loginView">
     <header class="login-header">
-      <a class="login-brand unichat-brand" href="기업용_배너_포함.html" aria-label="UniChat 랜딩페이지">
+      <a class="login-brand unichat-brand" href="기업용_배너_포함.html" aria-label="ubichat 랜딩페이지">
         <span class="unichat-emblem" aria-hidden="true"></span>
-        <span class="unichat-brand-name">UniChat</span>
+        <span class="unichat-brand-name">ubichat</span>
         <span class="unichat-brand-context">플랫폼 관리자</span>
       </a>
       <a class="back-home" href="기업용_배너_포함.html">← 랜딩페이지로 돌아가기</a>
@@ -415,7 +453,7 @@
         <form onsubmit="loginAdmin(event)">
           <div class="login-field">
             <label for="adminEmail">이메일</label>
-            <input id="adminEmail" type="email" value="admin@unichat.kr" autocomplete="username" required>
+            <input id="adminEmail" type="email" value="admin@ubichat.kr" autocomplete="username" required>
           </div>
           <div class="login-field">
             <label for="adminPassword">비밀번호</label>
@@ -433,12 +471,10 @@
   </div>
 
   <div class="admin-app" id="adminApp" hidden>
-  <div class="wf-flag"><b>WIREFRAME</b> · 플랫폼 관리자 목업 (UniChat 운영자) — AM-0 대시보드 · AM-1 등록 대학 · AM-2 대학 승인 · AM-3 등록 요청 · AM-4 계정 관리 · AM-5 광고 구좌</div>
-
   <div class="admin-top">
-    <a class="brand unichat-brand" href="기업용_배너_포함.html" aria-label="UniChat 랜딩페이지">
+    <a class="brand unichat-brand" href="기업용_배너_포함.html" aria-label="ubichat 랜딩페이지">
       <span class="unichat-emblem" aria-hidden="true"></span>
-      <span class="unichat-brand-name">UniChat</span>
+      <span class="unichat-brand-name">ubichat</span>
       <span class="unichat-brand-context">플랫폼 관리자</span>
     </a>
     <span class="path" id="pathTx">/admin</span>
@@ -458,6 +494,9 @@
       <a class="subnav" href="#" data-pg="universities" onclick="openUniversityManagement();return false">등록 대학 <span class="ct" data-registered-university-count>21</span></a>
       <a class="subnav" href="#" data-pg="approvals" onclick="showPage('approvals', this);return false">승인 <span class="ct" id="approvalSideCount">3</span></a>
       <a class="subnav" href="#" data-pg="requests" onclick="showPage('requests', this);return false">등록 요청 <span class="ct" id="requestSideCount">5</span></a>
+      <div class="grp">콘텐츠 운영</div>
+      <a href="#" data-pg="contents" onclick="showPage('contents', this);return false">📝 콘텐츠 CMS</a>
+      <a href="#" data-pg="notices" onclick="showPage('notices', this);return false">📢 공지사항</a>
       <div class="grp">광고 운영</div>
       <a href="#" data-pg="ads" onclick="showPage('ads', this);return false">🎞️ 광고 구좌</a>
       <a href="#" data-pg="audits" onclick="showPage('audits', this);return false">🛡️ 활동·감사 로그</a>
@@ -485,8 +524,8 @@
         </div>
 
         <div class="kpis">
-          <button class="kpi" type="button" onclick="openUniversityManagement('hidden')" aria-label="공개 탐색 미노출 대학 3개 보기">
-            <div class="kl">등록 대학</div><b id="registeredUniversityCount">21</b><span class="kd up">공개 탐색 미노출 <span id="hiddenUniversityCount">3</span> · 목록 보기 →</span>
+          <button class="kpi" type="button" onclick="openUniversityManagement()" aria-label="공개 대학 21개 보기">
+            <div class="kl">등록 대학</div><b id="registeredUniversityCount">21</b><span class="kd up">프로토타입 전체 공개 · 목록 보기 → <span id="hiddenUniversityCount" hidden>0</span></span>
           </button>
           <div class="kpi"><div class="kl">오늘 접수 상담</div><b>12</b><span class="kd up">새 상담 9 · 재문의 3</span></div>
           <div class="kpi"><div class="kl">현재 미배정</div><b>8</b><span class="kd down">24시간 이상 3 · 추가 메시지 5</span></div>
@@ -527,7 +566,7 @@
               <thead><tr><th class="rank">#</th><th>대학</th><th>공개 탐색 노출</th><th class="num">현재 미배정</th><th class="num">24h+</th><th class="num">중앙값 첫 응답</th><th>상태</th></tr></thead>
               <tbody>
                 <tr><td class="rank" data-label="순위">1</td><td data-label="대학">성운대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">3</td><td class="num" data-label="24시간 이상">2</td><td class="num" data-label="첫 응답 중앙값">1일 2시간<span class="slowtag">지연</span></td><td data-label="운영 상태"><span class="chip c-wait">관심</span></td></tr>
-                <tr><td class="rank" data-label="순위">2</td><td data-label="대학">연성대학교</td><td data-label="공개 탐색 노출"><span class="chip c-gray">미노출</span></td><td class="num" data-label="현재 미배정">2</td><td class="num" data-label="24시간 이상">1</td><td class="num" data-label="첫 응답 중앙값">1시간 10분</td><td data-label="운영 상태"><span class="chip c-wait">관심</span></td></tr>
+                <tr><td class="rank" data-label="순위">2</td><td data-label="대학">연성대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">2</td><td class="num" data-label="24시간 이상">1</td><td class="num" data-label="첫 응답 중앙값">1시간 10분</td><td data-label="운영 상태"><span class="chip c-wait">관심</span></td></tr>
                 <tr><td class="rank" data-label="순위">3</td><td data-label="대학">한양여자대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">1</td><td class="num" data-label="24시간 이상">0</td><td class="num" data-label="첫 응답 중앙값">55분</td><td data-label="운영 상태"><span class="chip c-good">양호</span></td></tr>
                 <tr><td class="rank" data-label="순위">4</td><td data-label="대학">동의과학대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">1</td><td class="num" data-label="24시간 이상">0</td><td class="num" data-label="첫 응답 중앙값">38분</td><td data-label="운영 상태"><span class="chip c-good">양호</span></td></tr>
                 <tr><td class="rank" data-label="순위">5</td><td data-label="대학">서정대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">1</td><td class="num" data-label="24시간 이상">0</td><td class="num" data-label="첫 응답 중앙값">31분</td><td data-label="운영 상태"><span class="chip c-good">양호</span></td></tr>
@@ -543,12 +582,12 @@
     <div class="page" id="page-universities">
       <div class="body2">
         <h1>등록 대학 <span class="ix">AM-1</span></h1>
-        <p class="sub">현재 등록 대학 18개와 미노출 시연 데이터 3개를 함께 관리합니다. 공개 탐색·상담 채널·대학 계정 상태는 서로 분리해 변경할 수 있습니다.</p>
+        <p class="sub">프로토타입의 현재 대학 21개를 모두 공개 상태로 확인합니다. 실서비스의 공개 탐색 상태는 학교가 직접 게시하며, 어드민은 대학 등록·대학 계정 상태만 관리합니다.</p>
 
         <div class="kpis">
-          <div class="kpi"><div class="kl">등록 대학</div><b data-registered-university-count>21</b><span class="kd up">현재 18개 + 시연용 3개</span></div>
-          <div class="kpi"><div class="kl">공개 탐색 노출</div><b data-published-university-count>18</b><span class="kd up">학생·기업 모두 탐색 가능</span></div>
-          <div class="kpi"><div class="kl">공개 탐색 미노출</div><b data-hidden-university-count>3</b><span class="kd down">사유 확인 또는 게시 전 준비</span></div>
+          <div class="kpi"><div class="kl">등록 대학</div><b data-registered-university-count>21</b><span class="kd up">현재 대학 21개</span></div>
+          <div class="kpi"><div class="kl">공개 탐색 노출</div><b data-published-university-count>21</b><span class="kd up">프로토타입 전체 공개</span></div>
+          <div class="kpi"><div class="kl">공개 탐색 미노출</div><b data-hidden-university-count>0</b><span class="kd up">프로토타입에는 없음</span></div>
         </div>
 
         <div class="filterbar">
@@ -566,10 +605,10 @@
         </div>
 
         <div class="card">
-          <div class="ch">등록 대학 목록 <span class="cnote">공개 탐색 상태는 학생 공개 화면에 반영되는 시연용 데이터입니다.</span></div>
+          <div class="ch">등록 대학 목록 <span class="cnote">공개 탐색 상태는 학교가 직접 게시한 읽기 전용 정보입니다.</span></div>
           <div class="cb" style="padding:0">
             <table class="tbl">
-              <thead><tr><th>대학</th><th>지역 · 분야</th><th>공개 탐색</th><th>상담 채널</th><th>대학 계정</th><th>미노출 사유</th><th>관리</th></tr></thead>
+              <thead><tr><th>대학</th><th>지역 · 분야</th><th>학교 게시 상태</th><th>상담 채널</th><th>대학 계정</th><th>미노출 사유</th><th>안내</th></tr></thead>
               <tbody id="registeredUniversityRows"></tbody>
             </table>
           </div>
@@ -622,6 +661,87 @@
     </div>
 
     <!-- ===== AM-5 광고 구좌 관리 ===== -->
+    <div class="page" id="page-contents">
+      <div class="body2">
+        <div class="page-head">
+          <div>
+            <h1>콘텐츠 CMS <span class="ix">AM-7</span></h1>
+            <p class="sub">콘텐츠 초안부터 검토·공개 중단, 첨부 관리까지의 운영 상태를 관리합니다. 공개 콘텐츠 소비 화면 연동은 이 설계 목업 범위에 포함하지 않습니다.</p>
+          </div>
+          <div class="page-actions"><button class="btn btn-primary" type="button" onclick="openContentEditor()">새 콘텐츠</button></div>
+        </div>
+        <div class="cms-policy"><b>정책 확정 대기</b> · 콘텐츠 유형·카테고리·검토 권한·예약 시간대·다국어·광고성 표기는 Product Owner 확정 전입니다. 현재는 상태별 운영·첨부 UI를 설계합니다.</div>
+        <div class="tabs" aria-label="콘텐츠 상태 필터">
+          <button class="on" data-content-state="all" onclick="selectContentStatus('all',this)">전체<span class="n" id="contentCountAll">0</span></button>
+          <button data-content-state="draft" onclick="selectContentStatus('draft',this)">초안<span class="n" id="contentCountDraft">0</span></button>
+          <button data-content-state="review" onclick="selectContentStatus('review',this)">검토 중<span class="n" id="contentCountReview">0</span></button>
+          <button data-content-state="scheduled" onclick="selectContentStatus('scheduled',this)">예약됨<span class="n" id="contentCountScheduled">0</span></button>
+          <button data-content-state="published" onclick="selectContentStatus('published',this)">게시 중<span class="n" id="contentCountPublished">0</span></button>
+          <button data-content-state="hidden" onclick="selectContentStatus('hidden',this)">비공개<span class="n" id="contentCountHidden">0</span></button>
+        </div>
+        <div class="filterbar">
+          <input id="contentSearch" type="search" placeholder="제목·요약·작성자 검색" oninput="renderContentRecords()">
+          <select id="contentTypeFilter" onchange="renderContentRecords()"><option value="">유형(예시): 전체</option><option value="guide">안내 (예시)</option><option value="notice">공지 (예시)</option><option value="story">후기 (예시)</option></select>
+        </div>
+        <div class="card">
+          <div class="ch">콘텐츠 목록 <span class="cnote">게시 상태가 아닌 콘텐츠는 공개 화면에 표시되지 않습니다.</span></div>
+          <div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>제목</th><th>유형</th><th>첨부</th><th>작성자</th><th>상태</th><th>최근 변경</th><th>관리</th></tr></thead>
+              <tbody id="contentRows"></tbody>
+            </table>
+          </div>
+        </div>
+        <section class="card attachment-panel" id="contentAttachmentPanel" hidden aria-labelledby="contentAttachmentTitle">
+          <div class="ch"><span id="contentAttachmentTitle">콘텐츠 첨부</span><div class="slot-actions"><button class="rowbtn" type="button" onclick="closeContentAttachmentManager()">닫기</button><button class="rowbtn" type="button" onclick="openContentAttachmentEditor()">첨부 추가</button></div></div>
+          <div class="cb">
+            <p class="attachment-policy" id="contentAttachmentPolicy"></p>
+            <table class="tbl">
+              <thead><tr><th>첨부</th><th>출처·용량</th><th>열람 범위</th><th>관리</th></tr></thead>
+              <tbody id="contentAttachmentRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="page" id="page-notices">
+      <div class="body2">
+        <div class="page-head">
+          <div>
+            <h1>공지사항 <span class="ix">AM-8</span></h1>
+            <p class="sub">로그인한 학생·학교 구성원에게 전달할 플랫폼 운영 공지를 관리합니다.</p>
+          </div>
+          <div class="page-actions"><button class="btn btn-primary" type="button" onclick="openPlatformNoticeEditor()">새 공지</button></div>
+        </div>
+        <div class="cms-policy"><b>열람 범위</b> · 공개 랜딩과 콘텐츠 페이지에는 노출하지 않습니다. 학생·학교 전체 또는 한 역할만 지정할 수 있으며, 대학 구성원은 공지를 작성할 수 없습니다.</div>
+        <div class="kpis">
+          <div class="kpi"><div class="kl">전체 공지</div><b id="platformNoticeCountAll">0</b><span class="kd up">삭제 없이 상태 관리</span></div>
+          <div class="kpi"><div class="kl">게시 중</div><b id="platformNoticeCountPublished">0</b><span class="kd up">대상 포털 노출</span></div>
+          <div class="kpi"><div class="kl">게시 예정·종료</div><b id="platformNoticeCountInactive">0</b><span class="kd down">현재 미노출</span></div>
+        </div>
+        <div class="tabs" aria-label="공지 상태 필터">
+          <button class="on" data-platform-notice-state="all" onclick="selectPlatformNoticeStatus('all',this)">전체<span class="n" id="platformNoticeTabAll">0</span></button>
+          <button data-platform-notice-state="draft" onclick="selectPlatformNoticeStatus('draft',this)">게시 예정<span class="n" id="platformNoticeTabDraft">0</span></button>
+          <button data-platform-notice-state="published" onclick="selectPlatformNoticeStatus('published',this)">게시 중<span class="n" id="platformNoticeTabPublished">0</span></button>
+          <button data-platform-notice-state="hidden" onclick="selectPlatformNoticeStatus('hidden',this)">종료<span class="n" id="platformNoticeTabHidden">0</span></button>
+        </div>
+        <div class="filterbar">
+          <input id="platformNoticeSearch" type="search" placeholder="제목·요약·작성자 검색" oninput="renderPlatformNotices()">
+          <select id="platformNoticeAudienceFilter" onchange="renderPlatformNotices()"><option value="">대상: 전체</option><option value="all">학생·학교 전체</option><option value="student">학생</option><option value="university">학교</option></select>
+        </div>
+        <div class="card">
+          <div class="ch">공지 목록 <span class="cnote">게시 중인 공지만 지정 대상의 로그인 화면에 표시됩니다.</span></div>
+          <div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>제목</th><th>대상</th><th>중요</th><th>작성자</th><th>상태</th><th>최근 변경</th><th>관리</th></tr></thead>
+              <tbody id="platformNoticeRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="page" id="page-ads">
       <div class="body2">
         <h1>광고 구좌 관리 <span class="ix">AM-5</span></h1>
@@ -649,10 +769,10 @@
     <div class="page" id="page-audits">
       <div class="body2">
         <h1>활동·감사 로그 <span class="ix">AM-6</span></h1>
-        <p class="sub">공개 대학 정보, 상담 채널, 광고 구좌, 계정 상태 변경의 처리 이력을 확인합니다. 최근 200건을 같은 브라우저에 보관합니다.</p>
-        <div class="audit">🔒 <div><b>처리자·시각·대상·작업·메모</b>만 기록합니다. 상담 원문과 학생 민감정보는 감사 로그에 저장하지 않습니다.</div></div>
-        <div class="audit-filter"><input id="auditSearch" type="search" placeholder="대상·처리자·작업 내용 검색" oninput="renderAuditLogs()"><select id="auditScopeFilter" onchange="renderAuditLogs()"><option value="">영역: 전체</option><option>대학 정보</option><option>대학 공개</option><option>상담 채널</option><option>광고 구좌</option><option>계정</option><option>대학 승인</option></select><select id="auditActorFilter" onchange="renderAuditLogs()"><option value="">처리자: 전체</option><option value="플랫폼 관리자">플랫폼 관리자</option><option value="대학 멤버">대학 멤버</option><option value="대학 오너">대학 오너</option></select></div>
-        <div class="card"><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th>시각</th><th>처리자</th><th>영역</th><th>작업 · 대상</th><th>상세</th></tr></thead><tbody id="auditLogRows"></tbody></table></div></div>
+        <p class="sub">대학 등록·계정·콘텐츠·광고 변경의 처리 이력을 확인합니다. 행을 선택하면 대상 식별자와 이전·변경값을 볼 수 있습니다.</p>
+        <div class="audit">🔒 <div><b>처리자·시각·대상·작업·사유·이전/변경값</b>을 기록합니다. 상담 원문과 학생 문서 원본은 감사 로그에 저장하지 않습니다.</div></div>
+        <div class="audit-filter"><input id="auditSearch" type="search" placeholder="대상·처리자·작업·식별자 검색" oninput="renderAuditLogs()"><select id="auditScopeFilter" onchange="renderAuditLogs()"><option value="">영역: 전체</option><option>광고 구좌</option><option>계정</option><option>대학 승인</option><option>공지사항</option></select><select id="auditActorFilter" onchange="renderAuditLogs()"><option value="">처리자: 전체</option><option value="플랫폼 관리자">플랫폼 관리자</option></select></div>
+        <div class="card"><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th>시각</th><th>처리자</th><th>영역</th><th>작업 · 대상</th><th>결과</th><th>상세</th></tr></thead><tbody id="auditLogRows"></tbody></table></div></div>
       </div>
     </div>
 
@@ -660,10 +780,11 @@
     <div class="page" id="page-accounts">
       <div class="body2">
         <h1>계정 관리 <span class="ix">AM-4</span></h1>
-        <p class="sub">대학·학생 계정을 조회하고 제재·정지·탈퇴를 처리합니다.</p>
-        <div class="audit">🔒 <div>대학 인박스·학생 화면 열람은 <b>지원(운영) 목적</b>으로만 허용되며, 접근 전건이 감사 로그에 기록됩니다. 상담 원문 열람은 신고 처리 시로 제한됩니다.</div></div>
+        <p class="sub">대학·학생 계정 상태를 관리하고, 대학 구성원의 역할과 소속구분 배정을 발급합니다.</p>
+        <div class="audit">🔒 <div>계정 관리에서는 학생 문서와 상담 원문을 열람하지 않습니다.</div></div>
         <div class="subtabs">
           <button class="on" onclick="showSub('uni', this)">대학 계정</button>
+          <button onclick="showSub('members', this)">대학 구성원</button>
           <button onclick="showSub('stu', this)">학생 계정</button>
         </div>
 
@@ -677,6 +798,32 @@
                 <tr><td data-label="대학">🎓 한양여자대학교</td><td data-label="오너">최윤아</td><td class="num" data-label="멤버">3</td><td class="num" data-label="이번 달 상담">35</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td data-label="계정 상태"><span class="chip c-good account-status">활성</span></td><td data-label="관리"><button class="rowbtn warn" type="button" onclick="toggleAccount(this,'대학','한양여자대학교')">일시정지</button></td></tr>
                 <tr><td data-label="대학">🏫 연성대학교</td><td data-label="오너">한지훈</td><td class="num" data-label="멤버">2</td><td class="num" data-label="이번 달 상담">29</td><td data-label="공개 탐색 노출"><span class="chip c-gray">미노출</span></td><td data-label="계정 상태"><span class="chip c-wait account-status">일시정지</span></td><td data-label="관리"><button class="rowbtn" type="button" onclick="toggleAccount(this,'대학','연성대학교')">재활성</button></td></tr>
               </tbody>
+            </table>
+          </div></div>
+        </div>
+
+        <div class="subpane" id="sub-members">
+          <div class="page-head">
+            <div>
+              <h2 style="font-size:16px;margin:0 0 3px">대학 구성원 발급·배정</h2>
+              <p class="issue-note">최고관리자는 대학별 정확히 1명입니다. 소속구분 관리자·멤버는 여러 소속구분에 배정할 수 있습니다.</p>
+            </div>
+            <div class="page-actions"><button class="btn btn-primary" type="button" onclick="openUniversityMemberIssuer()">대학계정 발급</button></div>
+          </div>
+          <div class="member-summary">
+            <div class="kpi"><div class="kl">최고관리자</div><b id="topOwnerCount">0</b><span class="kd up">대학별 1명 보호</span></div>
+            <div class="kpi"><div class="kl">발급 대기</div><b id="pendingInviteCount">0</b><span class="kd down">초대 수락 필요</span></div>
+            <div class="kpi"><div class="kl">복수 소속구분 배정</div><b id="multiAffiliationCount">0</b><span class="kd up">관리자·멤버 기준</span></div>
+          </div>
+          <div class="filterbar">
+            <input id="memberSearch" type="search" placeholder="이름·이메일·대학 검색" oninput="renderUniversityMembers()">
+            <select id="memberRoleFilter" onchange="renderUniversityMembers()"><option value="">역할: 전체</option><option value="top_owner">최고관리자</option><option value="affiliation_manager">소속구분 관리자</option><option value="member">멤버</option></select>
+            <select id="memberStatusFilter" onchange="renderUniversityMembers()"><option value="">상태: 전체</option><option value="active">활성</option><option value="invited">초대 대기</option><option value="suspended">일시정지</option></select>
+          </div>
+          <div class="card"><div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>계정</th><th>대학</th><th>역할</th><th>배정 소속구분</th><th>상태</th><th>발급일</th><th>관리</th></tr></thead>
+              <tbody id="universityMemberRows"></tbody>
             </table>
           </div></div>
         </div>
@@ -754,6 +901,7 @@
 <script src="university-data.js"></script>
 <script src="ad-slot-data.js"></script>
 <script src="audit-log-data.js"></script>
+<script src="notice-data.js"></script>
 <script>
   function showLoginNotice(){
     const notice=document.querySelector('.demo-note');
@@ -782,11 +930,14 @@
     document.getElementById('page-'+key).classList.add('show');
     document.querySelectorAll('.side a').forEach(a=>a.classList.remove('on'));
     if(el) el.classList.add('on');
-    const paths={dash:'/admin', universities:'/admin/universities', approvals:'/admin/approvals', requests:'/admin/requests', ads:'/admin/ad-slots', audits:'/admin/audit-logs', accounts:'/admin/accounts'};
+    const paths={dash:'/admin', universities:'/admin/universities', approvals:'/admin/approvals', requests:'/admin/requests', contents:'/admin/contents', notices:'/admin/notices', ads:'/admin/ad-slots', audits:'/admin/audit-logs', accounts:'/admin/accounts'};
     document.getElementById('pathTx').textContent = paths[key]||'/admin';
     if(key==='universities') renderRegisteredUniversities();
+    if(key==='contents') renderContentRecords();
+    if(key==='notices') renderPlatformNotices();
     if(key==='ads') renderAdSlots();
     if(key==='audits') renderAuditLogs();
+    if(key==='accounts') renderUniversityMembers();
   }
   function openUniversityManagement(publicationFilter=''){
     const filter=document.getElementById('registeredUniversityPublicationFilter');
@@ -824,13 +975,15 @@
           const item=typeof option==='string'?{value:option,label:option}:option;
           return `<option value="${escapeHtml(item.value)}"${item.value===field.value?' selected':''}>${escapeHtml(item.label)}</option>`;
         }).join('');
-        return `<div class="action-field"><label for="${id}">${escapeHtml(field.label)}</label><select id="${id}" name="${escapeHtml(field.name)}"${required}>${options}</select></div>`;
+        return `<div class="action-field"><label for="${id}">${escapeHtml(field.label)}</label><select id="${id}" name="${escapeHtml(field.name)}"${required}${field.onchange?` onchange="${escapeHtml(field.onchange)}"`:''}>${options}</select></div>`;
       }
+      if(field.type==='slot') return `<div class="action-field"><label>${escapeHtml(field.label)}</label>${field.help?`<p class="action-help">${escapeHtml(field.help)}</p>`:''}<div id="${id}"></div></div>`;
       if(field.type==='textarea'){
         return `<div class="action-field"><label for="${id}">${escapeHtml(field.label)}</label><textarea id="${id}" name="${escapeHtml(field.name)}" placeholder="${escapeHtml(field.placeholder||'')}"${required}>${value}</textarea></div>`;
       }
       return `<div class="action-field"><label for="${id}">${escapeHtml(field.label)}</label><input id="${id}" name="${escapeHtml(field.name)}" type="${escapeHtml(field.type||'text')}" value="${value}" placeholder="${escapeHtml(field.placeholder||'')}"${required}></div>`;
     }).join('');
+    config.afterRender?.();
     document.getElementById('actionOverlay').classList.add('show');
     document.body.classList.add('action-open');
     const drawer=document.getElementById('drawer');
@@ -866,7 +1019,11 @@
     event.preventDefault();
     const form=event.currentTarget;
     if(!form.reportValidity()||!actionConfig) return;
-    const values=Object.fromEntries(new FormData(form).entries());
+    const values={};
+    new FormData(form).forEach((value,key)=>{
+      if(Object.prototype.hasOwnProperty.call(values,key)) values[key]=Array.isArray(values[key])?[...values[key],value]:[values[key],value];
+      else values[key]=value;
+    });
     const result=actionConfig.onSubmit ? actionConfig.onSubmit(values) : true;
     if(result!==false) closeActionModal();
   }
@@ -969,19 +1126,518 @@
   function escapeHtml(value){
     return String(value).replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character]));
   }
-  function recordAudit(scope,action,target,detail=''){
-    window.UniChatAuditLog?.add?.({actor:'플랫폼 관리자 · 운영팀 김하나',role:'플랫폼 관리자',scope,action,target,detail});
+  function recordAudit(scope,action,target,detail='',context={}){
+    window.UniChatAuditLog?.add?.({actor:'플랫폼 관리자 · 운영팀 김하나',role:'플랫폼 관리자',scope,action,target,detail,result:'성공',...context});
+  }
+  function auditResultChip(result){
+    const label=result||'성공';
+    const tone=label==='성공'?'c-good':label==='실패'?'c-rej':'c-wait';
+    return `<span class="chip ${tone}">${escapeHtml(label)}</span>`;
   }
   function renderAuditLogs(){
     const search=(document.getElementById('auditSearch')?.value||'').trim().toLocaleLowerCase('ko');
     const scope=document.getElementById('auditScopeFilter')?.value||'';
     const actor=document.getElementById('auditActorFilter')?.value||'';
     const records=(window.UniChatAuditLog?.list?.()||[]).filter(item=>{
-      const text=[item.actor,item.role,item.scope,item.action,item.target,item.detail].join(' ').toLocaleLowerCase('ko');
+      const text=[item.actor,item.role,item.scope,item.action,item.target,item.detail,item.universityId,item.affiliationId,item.contentId,item.previousValue,item.changedValue].join(' ').toLocaleLowerCase('ko');
       return (!search||text.includes(search))&&(!scope||item.scope===scope)&&(!actor||item.role===actor);
     });
     const rows=document.getElementById('auditLogRows');if(!rows)return;
-    rows.innerHTML=records.length?records.map(item=>`<tr><td class="num" data-label="시각"><b>${escapeHtml(item.at)}</b></td><td data-label="처리자">${escapeHtml(item.actor)}<div style="font-size:11px;color:var(--ink2)">${escapeHtml(item.role)}</div></td><td data-label="영역"><span class="chip c-info">${escapeHtml(item.scope)}</span></td><td data-label="작업 · 대상"><b>${escapeHtml(item.action)}</b><div style="font-size:11px;color:var(--ink2)">${escapeHtml(item.target)}</div></td><td data-label="상세"><div class="audit-detail">${escapeHtml(item.detail||'—')}</div></td></tr>`).join(''):'<tr><td colspan="5" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 감사 로그가 없습니다.</td></tr>';
+    rows.innerHTML=records.length?records.map(item=>`<tr class="audit-row" role="button" tabindex="0" onclick="openAuditDetail('${escapeHtml(item.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAuditDetail('${escapeHtml(item.id)}')}" aria-label="${escapeHtml(item.action)} 감사 로그 상세 보기"><td class="num" data-label="시각"><b>${escapeHtml(item.at)}</b></td><td data-label="처리자">${escapeHtml(item.actor)}<div style="font-size:11px;color:var(--ink2)">${escapeHtml(item.role)}</div></td><td data-label="영역"><span class="chip c-info">${escapeHtml(item.scope)}</span></td><td data-label="작업 · 대상"><b>${escapeHtml(item.action)}</b><div style="font-size:11px;color:var(--ink2)">${escapeHtml(item.target)}</div></td><td data-label="결과">${auditResultChip(item.result)}</td><td data-label="상세"><div class="audit-detail">${escapeHtml(item.detail||'—')}</div><span class="audit-link">상세 보기 ›</span></td></tr>`).join(''):'<tr><td colspan="6" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 감사 로그가 없습니다.</td></tr>';
+  }
+  function openAuditDetail(id){
+    const item=(window.UniChatAuditLog?.list?.()||[]).find(record=>record.id===id);
+    if(!item) return;
+    const lines=[
+      `처리자: ${item.actor} (${item.role})`,
+      `시각: ${item.at}`,
+      `영역: ${item.scope}`,
+      `작업: ${item.action}`,
+      `대상: ${item.target}`,
+      `결과: ${item.result||'성공'}`,
+      `사유·메모: ${item.detail||'—'}`,
+      `이전값: ${item.previousValue||'—'}`,
+      `변경값: ${item.changedValue||'—'}`,
+      `universityId: ${item.universityId||'—'}`,
+      `affiliationId: ${item.affiliationId||'—'}`,
+      `contentId: ${item.contentId||'—'}`
+    ];
+    openActionModal({title:'감사 로그 상세',description:lines.join('\n'),confirmLabel:'닫기',fields:[]});
+  }
+
+  let currentPlatformNoticeStatus='all';
+  const platformNoticeStatusClasses={draft:'c-wait',published:'c-good',hidden:'c-gray'};
+  function platformNoticeStatusChip(status){
+    const label=window.UniChatNotices?.statusLabels?.[status]||status;
+    return `<span class="chip ${platformNoticeStatusClasses[status]||'c-gray'}">${escapeHtml(label)}</span>`;
+  }
+  function syncPlatformNoticeCounts(records){
+    const count=status=>records.filter(record=>!status||record.status===status).length;
+    document.getElementById('platformNoticeCountAll').textContent=count('');
+    document.getElementById('platformNoticeCountPublished').textContent=count('published');
+    document.getElementById('platformNoticeCountInactive').textContent=count('draft')+count('hidden');
+    document.getElementById('platformNoticeTabAll').textContent=count('');
+    document.getElementById('platformNoticeTabDraft').textContent=count('draft');
+    document.getElementById('platformNoticeTabPublished').textContent=count('published');
+    document.getElementById('platformNoticeTabHidden').textContent=count('hidden');
+  }
+  function selectPlatformNoticeStatus(status,button){
+    currentPlatformNoticeStatus=status;
+    document.querySelectorAll('[data-platform-notice-state]').forEach(item=>item.classList.remove('on'));
+    button.classList.add('on');
+    renderPlatformNotices();
+  }
+  function platformNoticeActionButtons(notice){
+    const edit=`<button class="rowbtn" type="button" data-notice-id="${escapeHtml(notice.id)}" onclick="openPlatformNoticeEditor(this.dataset.noticeId)">편집</button>`;
+    const state=notice.status==='published'
+      ? `<button class="rowbtn warn" type="button" data-notice-id="${escapeHtml(notice.id)}" onclick="endPlatformNotice(this.dataset.noticeId)">종료</button>`
+      : `<button class="rowbtn" type="button" data-notice-id="${escapeHtml(notice.id)}" onclick="publishPlatformNotice(this.dataset.noticeId)">게시</button>`;
+    return `<div class="content-actions">${edit}${state}</div>`;
+  }
+  function renderPlatformNotices(){
+    const allRecords=(window.UniChatNotices?.list?.()||[]).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));
+    const rows=document.getElementById('platformNoticeRows');
+    if(!rows) return;
+    const search=(document.getElementById('platformNoticeSearch')?.value||'').trim().toLocaleLowerCase('ko');
+    const audience=document.getElementById('platformNoticeAudienceFilter')?.value||'';
+    const records=allRecords.filter(notice=>{
+      const text=[notice.title,notice.summary,notice.author].join(' ').toLocaleLowerCase('ko');
+      return (currentPlatformNoticeStatus==='all'||notice.status===currentPlatformNoticeStatus)&&(!audience||notice.audience===audience)&&(!search||text.includes(search));
+    });
+    rows.innerHTML=records.length?records.map(notice=>`<tr>
+      <td class="content-title-cell" data-label="제목"><b>${escapeHtml(notice.title)}</b><small>${escapeHtml(notice.summary)}</small></td>
+      <td data-label="대상"><span class="chip c-info">${escapeHtml(window.UniChatNotices.audienceLabels[notice.audience]||notice.audience)}</span></td>
+      <td data-label="중요">${notice.important?'<span class="chip c-rej">중요</span>':'—'}</td>
+      <td data-label="작성자">${escapeHtml(notice.author)}</td>
+      <td data-label="상태">${platformNoticeStatusChip(notice.status)}</td>
+      <td class="num" data-label="최근 변경">${escapeHtml(window.UniChatNotices.formatDate(notice.updatedAt))}</td>
+      <td data-label="관리">${platformNoticeActionButtons(notice)}</td>
+    </tr>`).join(''):'<tr><td colspan="7" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 공지사항이 없습니다.</td></tr>';
+    syncPlatformNoticeCounts(allRecords);
+  }
+  function openPlatformNoticeEditor(id=''){
+    const existing=id?window.UniChatNotices?.get?.(id):null;
+    openActionModal({
+      title:existing?'공지 편집':'새 공지',
+      description:'공개 랜딩이 아니라 로그인한 학생·학교 포털에만 표시됩니다.',
+      confirmLabel:existing?'변경 저장':'공지 만들기',
+      fields:[
+        {name:'title',label:'제목',type:'text',required:true,value:existing?.title||'',placeholder:'공지 제목'},
+        {name:'summary',label:'목록 요약',type:'textarea',required:true,value:existing?.summary||'',placeholder:'목록에서 먼저 보여 줄 요약'},
+        {name:'body',label:'본문',type:'textarea',required:true,value:existing?.body||'',placeholder:'공지 본문'},
+        {name:'audience',label:'열람 대상',type:'select',required:true,value:existing?.audience||'all',options:[{value:'all',label:'학생·학교 전체'},{value:'student',label:'학생'},{value:'university',label:'학교'}]},
+        {name:'important',label:'중요 공지',type:'select',required:true,value:String(existing?.important||false),options:[{value:'false',label:'일반'},{value:'true',label:'중요 · 목록 최상단'}]},
+        {name:'status',label:'게시 상태',type:'select',required:true,value:existing?.status||'draft',options:[{value:'draft',label:'게시 예정'},{value:'published',label:'게시 중'},{value:'hidden',label:'종료'}]}
+      ],
+      onSubmit:values=>{
+        const saved=window.UniChatNotices.save({
+          ...existing,
+          title:values.title,
+          summary:values.summary,
+          body:values.body,
+          audience:values.audience,
+          important:values.important==='true',
+          status:values.status,
+          author:existing?.author||'플랫폼 운영팀'
+        });
+        recordAudit('공지사항',existing?'공지 수정':'공지 생성',saved.title,`대상: ${window.UniChatNotices.audienceLabels[saved.audience]} · 상태: ${window.UniChatNotices.statusLabels[saved.status]}`,{contentId:saved.id,previousValue:existing?.status||'—',changedValue:saved.status});
+        renderPlatformNotices();
+        showToast(existing?'공지 변경을 저장했습니다.':'새 공지를 만들었습니다.',saved.status==='published'?'success':'info');
+      }
+    });
+  }
+  function publishPlatformNotice(id){
+    const notice=window.UniChatNotices?.get?.(id);
+    if(!notice) return;
+    openActionModal({
+      title:'공지 게시',
+      description:`${notice.title}\n대상: ${window.UniChatNotices.audienceLabels[notice.audience]}`,
+      confirmLabel:'게시',
+      fields:[],
+      onSubmit:()=>{
+        window.UniChatNotices.setStatus(id,'published');
+        recordAudit('공지사항','공지 게시',notice.title,`대상: ${window.UniChatNotices.audienceLabels[notice.audience]}`,{contentId:id,previousValue:notice.status,changedValue:'published'});
+        renderPlatformNotices();
+        showToast('지정 대상 포털에 공지를 게시했습니다.');
+      }
+    });
+  }
+  function endPlatformNotice(id){
+    const notice=window.UniChatNotices?.get?.(id);
+    if(!notice) return;
+    openActionModal({
+      title:'공지 종료',
+      description:`${notice.title}\n종료하면 학생·학교 화면에서 즉시 숨겨집니다. 기록은 삭제하지 않습니다.`,
+      confirmLabel:'종료',
+      fields:[{name:'reason',label:'종료 메모',type:'textarea',required:true,placeholder:'예: 점검 완료'}],
+      onSubmit:values=>{
+        window.UniChatNotices.setStatus(id,'hidden');
+        recordAudit('공지사항','공지 종료',notice.title,values.reason,{contentId:id,previousValue:notice.status,changedValue:'hidden'});
+        renderPlatformNotices();
+        showToast('공지를 종료했습니다. 대상 포털에서 숨겨집니다.','info');
+      }
+    });
+  }
+
+  const contentStatusLabels={draft:'초안',review:'검토 중',scheduled:'예약됨',published:'게시 중',hidden:'비공개'};
+  const contentStatusClasses={draft:'c-gray',review:'c-wait',scheduled:'c-info',published:'c-good',hidden:'c-rej'};
+  let currentContentStatus='all';
+  let activeContentAttachmentId=null;
+  const MAX_CONTENT_ATTACHMENT_BYTES=100*1024*1024;
+  let contentRecords=[
+    {id:'guide-visa',title:'유학 준비 서류, 언제부터 준비할까요?',summary:'지원 전 확인할 기본 서류와 준비 순서를 안내합니다.',type:'guide',typeLabel:'안내 (예시)',author:'콘텐츠 운영팀',status:'published',updatedAt:'2026-07-29 10:20',relatedUniversityIds:['seojeong'],attachments:[{id:'attachment-visa-guide',source:'link',name:'유학 준비 서류 안내.pdf',url:'https://example.com/ubichat-study-guide.pdf',sizeLabel:'외부 링크'}]},
+    {id:'notice-consultation',title:'대학 상담 시작 전 확인 사항',summary:'상담 채널 이용 방법과 개인정보 보호 안내 초안입니다.',type:'notice',typeLabel:'공지 (예시)',author:'김하나',status:'review',updatedAt:'2026-07-29 09:10',relatedUniversityIds:[],attachments:[{id:'attachment-chat-checklist',source:'link',name:'상담 시작 체크리스트',url:'https://example.com/ubichat-chat-checklist',sizeLabel:'외부 링크'}]},
+    {id:'story-living',title:'한국 생활 준비 체크리스트',summary:'입국 전 생활 준비 항목을 정리한 초안입니다.',type:'story',typeLabel:'후기 (예시)',author:'콘텐츠 운영팀',status:'draft',updatedAt:'2026-07-28 16:40',relatedUniversityIds:['hanyang-womens','gumi'],attachments:[]},
+    {id:'guide-housing',title:'기숙사와 주거 안내',summary:'예약 공개 상태를 보여 주는 설계 예시입니다.',type:'guide',typeLabel:'안내 (예시)',author:'김하나',status:'scheduled',updatedAt:'2026-07-28 11:35',relatedUniversityIds:[],attachments:[]},
+    {id:'notice-policy',title:'이전 운영 안내',summary:'공개를 중단한 콘텐츠 예시입니다.',type:'notice',typeLabel:'공지 (예시)',author:'콘텐츠 운영팀',status:'hidden',updatedAt:'2026-07-21 14:20',relatedUniversityIds:[],attachments:[]}
+  ];
+  function contentStatusChip(status){
+    return `<span class="chip ${contentStatusClasses[status]||'c-gray'}">${contentStatusLabels[status]||'알 수 없음'}</span>`;
+  }
+  function contentAttachments(item){
+    return Array.isArray(item.attachments)?item.attachments:[];
+  }
+  function contentAttachmentCount(item){
+    const count=contentAttachments(item).length;
+    return count?`<span class="attachment-count">📎 <b>${count}</b>개</span>`:'<span class="attachment-count">첨부 없음</span>';
+  }
+  function contentAttachmentAccess(item){
+    return item.status==='published'?'<span class="chip c-good">공개 콘텐츠와 함께 열람</span>':'<span class="chip c-info">관리자 미리보기 전용</span>';
+  }
+  function formatAttachmentSize(bytes){
+    if(!Number.isFinite(bytes)||bytes<=0) return '파일 크기 정보 없음';
+    return bytes>=1024*1024?`${(bytes/(1024*1024)).toFixed(1)}MB`:`${Math.max(1,Math.round(bytes/1024))}KB`;
+  }
+  function syncContentCounts(){
+    const count=(status)=>contentRecords.filter(item=>!status||item.status===status).length;
+    document.getElementById('contentCountAll').textContent=count('');
+    document.getElementById('contentCountDraft').textContent=count('draft');
+    document.getElementById('contentCountReview').textContent=count('review');
+    document.getElementById('contentCountScheduled').textContent=count('scheduled');
+    document.getElementById('contentCountPublished').textContent=count('published');
+    document.getElementById('contentCountHidden').textContent=count('hidden');
+  }
+  function selectContentStatus(status,button){
+    currentContentStatus=status;
+    document.querySelectorAll('[data-content-state]').forEach(item=>item.classList.remove('on'));
+    button.classList.add('on');
+    renderContentRecords();
+  }
+  function contentActionButtons(item){
+    const edit=`<button class="rowbtn" type="button" onclick="openContentEditor('${escapeHtml(item.id)}')">편집</button>`;
+    const attachments=`<button class="rowbtn" type="button" onclick="openContentAttachmentManager('${escapeHtml(item.id)}')">첨부</button>`;
+    if(item.status==='draft'||item.status==='hidden') return `<div class="content-actions">${edit}${attachments}<button class="rowbtn" type="button" onclick="requestContentReview('${escapeHtml(item.id)}')">검토 요청</button></div>`;
+    if(item.status==='published') return `<div class="content-actions">${edit}${attachments}<button class="rowbtn warn" type="button" onclick="hideContent('${escapeHtml(item.id)}')">비공개</button></div>`;
+    if(item.status==='scheduled') return `<div class="content-actions">${edit}${attachments}<button class="rowbtn" type="button" disabled title="예약 시간대 정책 확정 후 활성화">예약 정책 대기</button></div>`;
+    return `<div class="content-actions">${edit}${attachments}<button class="rowbtn" type="button" disabled title="검토 권한 정책 확정 후 게시 전환 가능">게시 정책 대기</button></div>`;
+  }
+  function renderContentRecords(){
+    const search=(document.getElementById('contentSearch')?.value||'').trim().toLocaleLowerCase('ko');
+    const type=document.getElementById('contentTypeFilter')?.value||'';
+    const rows=document.getElementById('contentRows');
+    if(!rows) return;
+    const records=contentRecords.filter(item=>{
+      const text=[item.title,item.summary,item.author].join(' ').toLocaleLowerCase('ko');
+      return (!currentContentStatus||item.status===currentContentStatus)&&(!type||item.type===type)&&(!search||text.includes(search));
+    });
+    rows.innerHTML=records.length?records.map(item=>`<tr>
+      <td class="content-title-cell" data-label="제목"><b>${escapeHtml(item.title)}</b><small>${escapeHtml(item.summary)}</small></td>
+      <td data-label="유형"><span class="chip c-info">${escapeHtml(item.typeLabel)}</span></td>
+      <td data-label="첨부">${contentAttachmentCount(item)}</td>
+      <td data-label="작성자">${escapeHtml(item.author)}</td>
+      <td data-label="상태">${contentStatusChip(item.status)}</td>
+      <td class="num" data-label="최근 변경">${escapeHtml(item.updatedAt)}</td>
+      <td data-label="관리">${contentActionButtons(item)}</td>
+    </tr>`).join(''):'<tr><td colspan="7" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 콘텐츠가 없습니다. 새 콘텐츠 초안을 만들어 보세요.</td></tr>';
+    syncContentCounts();
+  }
+  function openContentEditor(id=''){
+    const existing=id?contentRecords.find(item=>item.id===id):null;
+    openActionModal({
+      title:existing?'콘텐츠 편집':'새 콘텐츠 초안',
+      description:existing?'필수 필드를 수정하면 초안으로 저장됩니다. 공개 콘텐츠 화면에는 자동 반영되지 않습니다.':'저장하면 초안 상태로 추가됩니다. 게시·예약은 편집 정책 확정 뒤 연결합니다.',
+      confirmLabel:existing?'초안 저장':'초안 만들기',
+      fields:[
+        {name:'title',label:'제목',type:'text',required:true,value:existing?.title||'',placeholder:'콘텐츠 제목'},
+        {name:'summary',label:'요약',type:'textarea',required:true,value:existing?.summary||'',placeholder:'목록에 표시할 요약'},
+        {name:'type',label:'유형 (설계 예시)',type:'select',required:true,value:existing?.type||'guide',options:[{value:'guide',label:'안내 (예시)'},{value:'notice',label:'공지 (예시)'},{value:'story',label:'후기 (예시)'}]},
+        {name:'relatedUniversityIds',label:'관련 대학 ID',type:'text',value:(existing?.relatedUniversityIds||[]).join(', '),placeholder:'예: seojeong, gumi'},
+        {name:'body',label:'본문',type:'textarea',required:true,value:existing?.body||existing?.summary||'',placeholder:'콘텐츠 본문'}
+      ],
+      onSubmit:values=>{
+        const typeLabel={guide:'안내 (예시)',notice:'공지 (예시)',story:'후기 (예시)'}[values.type]||'기타 (예시)';
+        const record={
+          id:existing?.id||`content-${Date.now()}`,
+          title:values.title.trim(),summary:values.summary.trim(),body:values.body.trim(),type:values.type,typeLabel,
+          author:existing?.author||'플랫폼 관리자 · 운영팀 김하나',status:'draft',updatedAt:'방금',
+          relatedUniversityIds:values.relatedUniversityIds.split(',').map(item=>item.trim()).filter(Boolean),
+          attachments:contentAttachments(existing)
+        };
+        if(existing) contentRecords=contentRecords.map(item=>item.id===id?record:item);
+        else contentRecords=[record,...contentRecords];
+        renderContentRecords();
+        showToast(`콘텐츠 ${existing?'초안을 저장':'초안을 만들'}었습니다. 검토 요청 전에는 공개되지 않습니다.`,'info');
+      }
+    });
+  }
+  function requestContentReview(id){
+    const item=contentRecords.find(record=>record.id===id);
+    if(!item) return;
+    item.status='review';item.updatedAt='방금';
+    renderContentRecords();
+    showToast(item.title+'을 검토 요청 상태로 옮겼습니다.','info');
+  }
+  function hideContent(id){
+    const item=contentRecords.find(record=>record.id===id);
+    if(!item) return;
+    openActionModal({
+      title:'콘텐츠 비공개',
+      description:`${item.title}의 공개 상태를 중단합니다. 공개 화면에서 숨겨지며, 이 설계 목업에서는 원복할 수 있습니다.`,
+      confirmLabel:'비공개 확정',
+      fields:[{name:'reason',label:'비공개 사유',type:'textarea',required:true,value:'정보 최신화 필요'}],
+      onSubmit:values=>{
+        item.status='hidden';item.updatedAt='방금';
+        renderContentRecords();
+        showToast(item.title+'을 비공개 처리했습니다.','info');
+      }
+    });
+  }
+
+  function openContentAttachmentManager(contentId){
+    const item=contentRecords.find(record=>record.id===contentId);
+    if(!item) return;
+    activeContentAttachmentId=item.id;
+    document.getElementById('contentAttachmentPanel').hidden=false;
+    document.getElementById('contentAttachmentTitle').textContent=`${item.title} · 첨부`;
+    document.getElementById('contentAttachmentPolicy').textContent=item.status==='published'
+      ? '이 콘텐츠는 게시 중입니다. 첨부 교체·삭제는 공개 콘텐츠에 즉시 반영되며 이전 파일은 보관하지 않습니다.'
+      : '게시 전 첨부는 플랫폼 관리자만 미리보기할 수 있습니다. 콘텐츠가 게시되기 전에는 공개 화면에 노출되지 않습니다.';
+    renderContentAttachments();
+    document.getElementById('contentAttachmentPanel').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function closeContentAttachmentManager(){
+    activeContentAttachmentId=null;
+    document.getElementById('contentAttachmentPanel').hidden=true;
+  }
+  function safeAttachmentUrl(value){
+    const url=String(value||'');
+    return /^(https:|blob:)/i.test(url)?url:'';
+  }
+  function renderContentAttachments(){
+    const rows=document.getElementById('contentAttachmentRows');
+    const item=contentRecords.find(record=>record.id===activeContentAttachmentId);
+    if(!rows||!item) return;
+    const attachments=contentAttachments(item);
+    rows.innerHTML=attachments.length?attachments.map(attachment=>{
+      const previewUrl=safeAttachmentUrl(attachment.url);
+      const preview=previewUrl?`<a href="${escapeHtml(previewUrl)}" target="_blank" rel="noopener noreferrer">관리자 미리보기</a>`:'<span>미리보기 불가</span>';
+      const source=attachment.source==='link'?'외부 링크':'파일';
+      return `<tr>
+        <td class="attachment-name" data-label="첨부">📎 <span><b>${escapeHtml(attachment.name)}</b><div>${preview}</div></span></td>
+        <td data-label="출처 · 용량"><span class="attachment-source">${source} · ${escapeHtml(attachment.sizeLabel||'—')}</span></td>
+        <td data-label="열람 범위">${contentAttachmentAccess(item)}</td>
+        <td data-label="관리"><div class="slot-actions"><button class="rowbtn" type="button" onclick="openContentAttachmentEditor('${escapeHtml(attachment.id)}')">교체</button><button class="rowbtn warn" type="button" onclick="removeContentAttachment('${escapeHtml(attachment.id)}')">삭제</button></div></td>
+      </tr>`;
+    }).join(''):'<tr><td colspan="4" data-empty style="text-align:center;color:var(--ink2);padding:28px">첨부가 없습니다. 파일 또는 HTTPS 외부 링크를 추가하세요.</td></tr>';
+  }
+  function refreshContentAttachmentSource(){
+    const source=document.getElementById('actionField-attachmentSource')?.value;
+    const target=document.getElementById('actionField-attachmentInput');
+    if(!target) return;
+    target.innerHTML=source==='file'
+      ? '<input id="contentAttachmentFile" name="contentAttachmentFile" type="file" aria-label="첨부 파일 선택"><p class="action-help">모든 파일 형식을 허용하며, 파일당 최대 100MB입니다.</p>'
+      : '<input id="contentAttachmentLink" name="contentAttachmentLink" type="url" placeholder="https://example.com/file" aria-label="HTTPS 외부 링크"><p class="action-help">HTTPS 외부 링크를 연결할 수 있습니다.</p>';
+  }
+  function openContentAttachmentEditor(attachmentId=''){
+    const item=contentRecords.find(record=>record.id===activeContentAttachmentId);
+    if(!item){showToast('첨부할 콘텐츠를 먼저 선택해 주세요.','error');return;}
+    const existing=attachmentId?contentAttachments(item).find(attachment=>attachment.id===attachmentId):null;
+    openActionModal({
+      title:existing?'콘텐츠 첨부 교체':'콘텐츠 첨부 추가',
+      description:existing?'교체하면 이전 첨부는 즉시 제거되고 보관되지 않습니다. 첨부 작업은 감사 로그에 남기지 않습니다.':'모든 파일 형식을 첨부할 수 있으며 파일당 최대 100MB입니다. 외부 링크는 HTTPS만 허용합니다. 첨부 작업은 감사 로그에 남기지 않습니다.',
+      confirmLabel:existing?'교체 저장':'첨부 추가',
+      fields:[
+        {name:'attachmentSource',label:'첨부 방식',type:'select',required:true,value:existing?.source||'file',options:[{value:'file',label:'파일 첨부'},{value:'link',label:'HTTPS 외부 링크'}],onchange:'refreshContentAttachmentSource()'},
+        {name:'attachmentInput',label:'파일 또는 외부 링크',type:'slot'},
+        {name:'attachmentName',label:'표시 이름',type:'text',value:existing?.name||'',placeholder:'비워두면 파일명 또는 링크 이름을 사용'}
+      ],
+      afterRender:()=>{
+        refreshContentAttachmentSource();
+        const existingLink=existing?.source==='link'?document.getElementById('contentAttachmentLink'):null;
+        if(existingLink) existingLink.value=existing.url||'';
+      },
+      onSubmit:values=>{
+        const source=values.attachmentSource;
+        let name=String(values.attachmentName||'').trim();
+        let url='';let sizeLabel='';
+        if(source==='file'){
+          const file=values.contentAttachmentFile;
+          if(!file||!file.name){showActionError('첨부할 파일을 선택해 주세요.');return false;}
+          if(file.size>MAX_CONTENT_ATTACHMENT_BYTES){showActionError('파일당 최대 100MB까지 첨부할 수 있습니다.');return false;}
+          name=name||file.name;
+          url=URL.createObjectURL(file);
+          sizeLabel=formatAttachmentSize(file.size);
+        }else{
+          const link=String(values.contentAttachmentLink||'').trim();
+          try{
+            const parsed=new URL(link);
+            if(parsed.protocol!=='https:') throw new Error('https');
+            url=parsed.href;
+            name=name||decodeURIComponent(parsed.pathname.split('/').filter(Boolean).pop()||parsed.hostname);
+            sizeLabel='외부 링크';
+          }catch(_){showActionError('HTTPS 형식의 외부 링크를 입력해 주세요.');return false;}
+        }
+        const replacement={id:existing?.id||`attachment-${Date.now()}`,source,name,url,sizeLabel};
+        if(existing?.url?.startsWith('blob:')) URL.revokeObjectURL(existing.url);
+        item.attachments=existing?contentAttachments(item).map(attachment=>attachment.id===existing.id?replacement:attachment):[...contentAttachments(item),replacement];
+        item.updatedAt='방금';
+        renderContentRecords();
+        renderContentAttachments();
+        showToast(`${name} ${existing?'교체':'첨부'}를 저장했습니다.`,'info');
+      }
+    });
+  }
+  function removeContentAttachment(attachmentId){
+    const item=contentRecords.find(record=>record.id===activeContentAttachmentId);
+    const attachment=item&&contentAttachments(item).find(record=>record.id===attachmentId);
+    if(!item||!attachment) return;
+    openActionModal({
+      title:'콘텐츠 첨부 삭제',
+      description:`${attachment.name}을 삭제합니다. 게시 중인 콘텐츠라면 공개 첨부에서도 즉시 사라집니다. 이전 파일은 보관하지 않습니다.`,
+      confirmLabel:'첨부 삭제',
+      fields:[],
+      onSubmit:()=>{
+        if(attachment.url?.startsWith('blob:')) URL.revokeObjectURL(attachment.url);
+        item.attachments=contentAttachments(item).filter(record=>record.id!==attachmentId);
+        item.updatedAt='방금';
+        renderContentRecords();
+        renderContentAttachments();
+        showToast(`${attachment.name} 첨부를 삭제했습니다.`,'info');
+      }
+    });
+  }
+
+  const roleLabels={top_owner:'최고관리자',affiliation_manager:'소속구분 관리자',member:'멤버'};
+  const affiliationOptions={
+    seojeong:['학부 / 학사','언어교육원','대학원'],
+    'hanyang-womens':['학부 / 학사','국제교육원'],
+    gumi:['학부 / 학사','언어교육원','대학원'],
+    yeonsung:['학부 / 학사','국제교육원']
+  };
+  let universityMemberRecords=[
+    {id:'member-seojeong-owner',universityId:'seojeong',name:'김국제',email:'global@seojeong.ac.kr',role:'top_owner',affiliations:['all'],status:'active',issuedAt:'2026-07-11'},
+    {id:'member-seojeong-manager',universityId:'seojeong',name:'이입학',email:'admission@seojeong.ac.kr',role:'affiliation_manager',affiliations:['학부 / 학사','언어교육원'],status:'active',issuedAt:'2026-07-12'},
+    {id:'member-hanyang-owner',universityId:'hanyang-womens',name:'최윤아',email:'global@hywoman.ac.kr',role:'top_owner',affiliations:['all'],status:'active',issuedAt:'2026-07-10'},
+    {id:'member-gumi-manager',universityId:'gumi',name:'박유학',email:'intl@gumi.ac.kr',role:'affiliation_manager',affiliations:['학부 / 학사','대학원'],status:'invited',issuedAt:'2026-07-29'},
+    {id:'member-yeonsung-owner',universityId:'yeonsung',name:'한지훈',email:'owner@yeonsung.ac.kr',role:'top_owner',affiliations:['all'],status:'active',issuedAt:'2026-07-08'},
+    {id:'member-yeonsung',universityId:'yeonsung',name:'오상담',email:'admission@yeonsung.ac.kr',role:'member',affiliations:['국제교육원'],status:'suspended',issuedAt:'2026-07-16'}
+  ];
+  function universityNameFor(id){
+    return registeredUniversityRecords.find(university=>university.id===id)?.name?.ko||'대학 정보 준비 중';
+  }
+  function memberStatusChip(status){
+    const labels={active:'활성',invited:'초대 대기',suspended:'일시정지'};
+    const tones={active:'c-good',invited:'c-wait',suspended:'c-rej'};
+    return `<span class="chip ${tones[status]||'c-gray'}">${labels[status]||'알 수 없음'}</span>`;
+  }
+  function memberRoleChip(role){
+    const css=role==='top_owner'?'owner':role==='member'?'member':'';
+    return `<span class="role-chip ${css}">${escapeHtml(roleLabels[role]||role)}</span>`;
+  }
+  function affiliationChips(affiliations){
+    const labels=affiliations.includes('all')?['모든 소속구분']:affiliations;
+    return `<div class="affiliation-list">${labels.map(label=>`<span class="chip">${escapeHtml(label)}</span>`).join('')}</div>`;
+  }
+  function renderUniversityMembers(){
+    const search=(document.getElementById('memberSearch')?.value||'').trim().toLocaleLowerCase('ko');
+    const role=document.getElementById('memberRoleFilter')?.value||'';
+    const status=document.getElementById('memberStatusFilter')?.value||'';
+    const rows=document.getElementById('universityMemberRows');
+    if(!rows) return;
+    const records=universityMemberRecords.filter(item=>{
+      const text=[item.name,item.email,universityNameFor(item.universityId),roleLabels[item.role],...item.affiliations].join(' ').toLocaleLowerCase('ko');
+      return (!search||text.includes(search))&&(!role||item.role===role)&&(!status||item.status===status);
+    });
+    rows.innerHTML=records.length?records.map(item=>`<tr>
+      <td data-label="계정"><b>${escapeHtml(item.name)}</b><div style="font-size:11px;color:var(--ink2)">${escapeHtml(item.email)}</div></td>
+      <td data-label="대학">${escapeHtml(universityNameFor(item.universityId))}</td>
+      <td data-label="역할">${memberRoleChip(item.role)}</td>
+      <td data-label="배정 소속구분">${affiliationChips(item.affiliations)}</td>
+      <td data-label="상태">${memberStatusChip(item.status)}</td>
+      <td class="num" data-label="발급일">${escapeHtml(item.issuedAt)}</td>
+      <td data-label="관리"><button class="rowbtn" type="button" onclick="openUniversityMemberDetail('${escapeHtml(item.id)}')">상세</button></td>
+    </tr>`).join(''):'<tr><td colspan="7" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 대학 구성원이 없습니다.</td></tr>';
+    document.getElementById('topOwnerCount').textContent=universityMemberRecords.filter(item=>item.role==='top_owner'&&item.status==='active').length;
+    document.getElementById('pendingInviteCount').textContent=universityMemberRecords.filter(item=>item.status==='invited').length;
+    document.getElementById('multiAffiliationCount').textContent=universityMemberRecords.filter(item=>item.affiliations.length>1&&!item.affiliations.includes('all')).length;
+  }
+  function openUniversityMemberDetail(id){
+    const member=universityMemberRecords.find(item=>item.id===id);
+    if(!member) return;
+    const lines=[
+      `대학: ${universityNameFor(member.universityId)}`,
+      `계정: ${member.name} · ${member.email}`,
+      `역할: ${roleLabels[member.role]}`,
+      `배정 소속구분: ${member.affiliations.includes('all')?'모든 소속구분':member.affiliations.join(', ')}`,
+      `상태: ${memberStatusChip(member.status).replace(/<[^>]+>/g,'')}`,
+      `발급일: ${member.issuedAt}`,
+      member.role==='top_owner'?'최고관리자는 이관 확정 전 비활성화할 수 없습니다.':'계정 상태 변경은 사유와 감사 기록을 남겨야 합니다.'
+    ];
+    openActionModal({title:'대학 구성원 상세',description:lines.join('\n'),confirmLabel:'닫기',fields:[]});
+  }
+  function refreshUniversityMemberAffiliations(){
+    const universityId=document.getElementById('actionField-universityId')?.value;
+    const role=document.getElementById('actionField-role')?.value;
+    const target=document.getElementById('actionField-affiliationIds');
+    if(!target||!universityId||!role) return;
+    if(role==='top_owner'){
+      target.innerHTML='<div class="vbox ok" style="margin:0"><b>모든 소속구분 자동 배정</b><div style="margin-top:5px">대학별 최고관리자는 정확히 1명만 발급할 수 있습니다.</div><input type="hidden" name="affiliationIds" value="all"></div>';
+      return;
+    }
+    const options=affiliationOptions[universityId]||['학부 / 학사'];
+    target.innerHTML=`<div class="action-checks">${options.map((label,index)=>`<label><input type="checkbox" name="affiliationIds" value="${escapeHtml(label)}"${index===0?' checked':''}>${escapeHtml(label)}</label>`).join('')}</div>`;
+  }
+  function openUniversityMemberIssuer(){
+    const universities=registeredUniversityRecords.filter(university=>university.account?.status!=='suspended');
+    if(!universities.length){showToast('활성 대학이 없어 대학계정을 발급할 수 없습니다.','error');return;}
+    openActionModal({
+      title:'대학계정 발급',
+      description:'대상·역할·배정 범위를 확인한 뒤 초대를 발급합니다. 발급 결과와 부여 권한은 감사 로그에 기록됩니다.',
+      confirmLabel:'초대 발급',
+      fields:[
+        {name:'universityId',label:'대상 대학',type:'select',required:true,value:universities[0].id,options:universities.map(university=>({value:university.id,label:university.name.ko})),onchange:'refreshUniversityMemberAffiliations()'},
+        {name:'name',label:'이름',type:'text',required:true,value:'',placeholder:'담당자 이름'},
+        {name:'email',label:'이메일',type:'email',required:true,value:'',placeholder:'name@university.ac.kr'},
+        {name:'role',label:'역할',type:'select',required:true,value:'affiliation_manager',options:[{value:'top_owner',label:'최고관리자'},{value:'affiliation_manager',label:'소속구분 관리자'},{value:'member',label:'멤버'}],onchange:'refreshUniversityMemberAffiliations()'},
+        {name:'affiliationIds',label:'배정 소속구분',type:'slot',help:'최고관리자는 모든 소속구분에 자동 배정됩니다.'},
+        {name:'reason',label:'발급 사유',type:'textarea',required:true,value:'대학 운영 담당자 초대',placeholder:'운영 사유'}
+      ],
+      afterRender:refreshUniversityMemberAffiliations,
+      onSubmit:values=>{
+        const affiliations=Array.isArray(values.affiliationIds)?values.affiliationIds:values.affiliationIds?[values.affiliationIds]:[];
+        const university=registeredUniversityRecords.find(item=>item.id===values.universityId);
+        if(!university){showActionError('대상 대학을 다시 선택해 주세요.');return false;}
+        if(!affiliations.length){showActionError('최소 한 개의 소속구분을 배정해 주세요.');return false;}
+        if(universityMemberRecords.some(item=>item.email.toLocaleLowerCase('ko')===values.email.trim().toLocaleLowerCase('ko'))){showActionError('이미 발급했거나 초대 중인 이메일입니다.');return false;}
+        if(values.role==='top_owner'&&universityMemberRecords.some(item=>item.universityId===university.id&&item.role==='top_owner'&&item.status!=='suspended')){
+          showActionError('이 대학에는 이미 최고관리자가 있습니다. 이관 정책 확정 전에는 추가 발급할 수 없습니다.');return false;
+        }
+        const member={id:`member-${Date.now()}`,universityId:university.id,name:values.name.trim(),email:values.email.trim(),role:values.role,affiliations,status:'invited',issuedAt:'방금'};
+        universityMemberRecords=[member,...universityMemberRecords];
+        recordAudit('계정','대학계정 초대 발급',member.email,values.reason.trim(),{previousValue:'미발급',changedValue:`${roleLabels[member.role]} · ${affiliations.includes('all')?'모든 소속구분':affiliations.join(', ')}`,universityId:university.id,affiliationId:affiliations.join(', ')});
+        renderUniversityMembers();
+        showToast(`${member.name}님에게 ${roleLabels[member.role]} 초대를 발급했습니다.`);
+      }
+    });
+  }
+  function issueInitialOwnerFromCandidate(candidate,universityId){
+    if(universityMemberRecords.some(item=>item.universityId===universityId&&item.role==='top_owner'&&item.status!=='suspended')) return true;
+    const name=String(candidate.applicant||'대학 신청자').split('·')[0].trim();
+    const member={id:`member-${universityId}-owner`,universityId,name,email:`owner@${universityId}.example`,role:'top_owner',affiliations:['all'],status:'invited',issuedAt:'방금'};
+    universityMemberRecords=[member,...universityMemberRecords];
+    recordAudit('계정','대학 최고관리자 초대 발급',member.email,'등록 승인과 함께 신청자를 최고관리자로 지정',{previousValue:'최고관리자 없음',changedValue:'최고관리자 초대 발급',universityId,affiliationId:'all'});
+    renderUniversityMembers();
+    return true;
   }
   function adSlots(type){
     return window.UniChatAdSlots?.list?.(type)||[];
@@ -1129,65 +1785,18 @@
       return `<tr class="${isPublished?'':'hidden-university-row'}">
         <td data-label="대학"><b>${escapeHtml(university.name.ko)}</b>${university.isDemo?' <span class="chip c-info">시연</span>':''}<div style="font-size:11px;color:var(--ink2)">${escapeHtml(university.name.en)}</div></td>
         <td data-label="지역 · 분야">${escapeHtml(university.location.label)}<div style="font-size:11px;color:var(--ink2);margin-top:2px">${university.fields.map(escapeHtml).join(' · ')}</div></td>
-        <td data-label="공개 탐색">${publicationChip(university)}</td>
+        <td data-label="학교 게시 상태">${publicationChip(university)}</td>
         <td data-label="상담 채널">${consultationChip(university)}</td>
         <td data-label="대학 계정">${accountChip(university)}</td>
         <td data-label="미노출 사유" style="font-size:12px;color:var(--ink2)">${escapeHtml(reason)}</td>
-        <td data-label="관리"><div class="slot-actions">${university.publication?.reviewStatus==='requested'?'<button class="rowbtn" type="button" onclick="reviewUniversityProfile(\''+escapeHtml(university.id)+'\')">변경 검토</button>':''}<button class="rowbtn${isPublished?' warn':''}" type="button" onclick="toggleUniversityPublication('${escapeHtml(university.id)}')">${isPublished?'미노출 처리':'노출하기'}</button></div></td>
+        <td data-label="안내" style="font-size:12px;color:var(--ink2)">학교 운영 화면에서 관리</td>
       </tr>`;
     }).join(''):'<tr><td data-empty colspan="7" style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 등록 대학이 없습니다.</td></tr>';
     syncUniversityCounts();
   }
-  function toggleUniversityPublication(id){
-    const university=registeredUniversityRecords.find(item=>item.id===id);
-    if(!university) return;
-    const nextStatus=publicationStatus(university)==='published'?'hidden':'published';
-    const isPublishing=nextStatus==='published';
-    openActionModal({
-      title:isPublishing?'공개 탐색 노출':'공개 탐색 미노출',
-      description:isPublishing
-        ? university.name.ko+'을 공개 대학 탐색과 대학 상세에 노출합니다. 대학 계정·상담 채널 상태는 변경하지 않습니다.'
-        : university.name.ko+'을 공개 대학 탐색에서 숨깁니다. 대학 계정·상담 채널 상태는 변경하지 않습니다.',
-      confirmLabel:isPublishing?'노출 확정':'미노출 확정',
-      fields:isPublishing?[]:[{name:'reason',label:'미노출 사유',type:'textarea',required:true,value:university.publication?.reason||'공개 대학 정보 보완 요청'}],
-      onSubmit:values=>{
-        window.UniversityDirectory?.update?.(id,{
-          publication:{
-            ...university.publication,
-            status:nextStatus,
-            reason:isPublishing?'':values.reason.trim()
-          }
-        });
-        refreshRegisteredUniversityRecords();
-        syncUniversityCounts();
-        renderRegisteredUniversities();
-        recordAudit('대학 공개',isPublishing?'공개 탐색 노출':'공개 탐색 미노출',university.name.ko,isPublishing?'플랫폼 관리자가 공개 탐색 노출을 승인':'사유: '+(values.reason||'').trim());
-        showToast(university.name.ko+' 공개 탐색 상태를 '+(isPublishing?'노출':'미노출')+'로 변경했습니다.\n대학 계정과 상담 채널 상태는 그대로 유지됩니다.',isPublishing?'info':'error');
-      }
-    });
-  }
-  function reviewUniversityProfile(id){
-    const university=registeredUniversityRecords.find(item=>item.id===id);
-    const draft=university?.profileDraft;
-    if(!university||!draft){showToast('검토할 공개 정보 변경 요청이 없습니다.','info');return;}
-    openActionModal({
-      title:'공개 대학 정보 변경 검토',
-      description:`${university.name.ko} 변경안\n· 한 줄 소개: ${draft.profile?.headline||'변경 없음'}\n· 배경 이미지: ${draft.visual?.heroImage||'변경 없음'}\n· 브로셔: ${draft.profile?.brochure?.title||'변경 없음'}`,
-      confirmLabel:'검토 결과 저장',
-      fields:[{name:'decision',label:'검토 결과',type:'select',required:true,value:'approve',options:[{value:'approve',label:'승인 · 공개 정보 반영'},{value:'changes',label:'보완 요청 · 공개 정보 유지'}]},{name:'note',label:'검토 메모',type:'textarea',required:true,value:'공개 대학 정보 검토를 완료했습니다.'}],
-      onSubmit:values=>{
-        const approved=values.decision==='approve';
-        const update={publication:{...university.publication,reviewStatus:approved?'approved':'changes_requested',reviewNote:values.note.trim(),reviewedAt:new Date().toISOString()},profileDraft:approved?null:draft};
-        if(approved){update.visual={...university.visual,...(draft.visual||{})};update.profile={...university.profile,...(draft.profile||{}),brochure:{...university.profile?.brochure,...(draft.profile?.brochure||{})}};}
-        window.UniversityDirectory?.update?.(id,update);
-        refreshRegisteredUniversityRecords();renderRegisteredUniversities();
-        recordAudit('대학 정보',approved?'프로필 변경 승인':'프로필 변경 보완 요청',university.name.ko,values.note.trim());
-        showToast(university.name.ko+' 공개 정보 변경을 '+(approved?'승인·반영':'보완 요청')+'했습니다.',approved?'success':'info');
-      }
-    });
-  }
   function registerApprovedUniversity(candidate){
-    if(registeredUniversityRecords.some(university=>university.name.ko===candidate.name)) return;
+    const existing=registeredUniversityRecords.find(university=>university.name.ko===candidate.name);
+    if(existing) return existing.id;
     const id='approved-'+candidate.name.toLocaleLowerCase('ko').replace(/[^a-z0-9가-힣]+/g,'-');
     window.UniversityDirectory?.add?.({
       id,
@@ -1207,6 +1816,7 @@
     });
     refreshRegisteredUniversityRecords();
     syncUniversityCounts();
+    return id;
   }
   function selectApprovalStatus(status,button){
     currentApprovalStatus=status;
@@ -1321,19 +1931,24 @@
     const candidateKey=activeUniversityKey;
     openActionModal({
       title:'대학 등록 승인',
-      description:candidate.name+'을 승인하면 채널이 활성화되고 신청자가 오너로 지정됩니다.\n연계된 미등록 대학 요청은 등록완료 처리되며 요청 학생에게 알림이 발송됩니다.',
+      description:candidate.name+'을 승인하면 신청자에게 최고관리자 초대를 발급합니다. 최고관리자 1명이 확보돼야 승인 처리가 완료됩니다.\n연계된 미등록 대학 요청은 등록완료 처리되며 요청 학생에게 알림이 발송됩니다.',
       confirmLabel:'승인 확정',
       fields:[],
       onSubmit:()=>{
+        const universityId=registerApprovedUniversity(candidate);
+        if(!universityId||!issueInitialOwnerFromCandidate(candidate,universityId)){
+          showActionError('최고관리자 계정을 발급하지 못했습니다. 승인 처리를 다시 시도해 주세요.');
+          return false;
+        }
         candidate.status='approved';
         candidate.history.push('07-16 · 승인 · 채널 활성화 및 신청자 오너 지정');
-        registerApprovedUniversity(candidate);
         const linkedRequest=requestData.find(item=>item.approvalKey===candidateKey);
         if(linkedRequest){
           linkedRequest.status='등록완료';
           linkedRequest.assignee='자동 처리';
           linkedRequest.memo=`승인 연계 완료 · 요청 학생 ${linkedRequest.count}명 알림 발송`;
         }
+        recordAudit('대학 승인','대학 등록 승인',candidate.name,'신청자 최고관리자 초대 발급 및 등록 승인 완료',{previousValue:'등록 검토 대기',changedValue:'승인됨',universityId});
         showToast(candidate.name+' 승인 완료\n· 채널 활성화 + 신청자 오너 지정\n· 요청 학생 '+candidate.requests+'명에게 등록 알림 발송');
         closeDrawer();
         renderApprovalRows();
@@ -1447,7 +2062,7 @@
           renderRegisteredUniversities();
         }
         recordAudit('계정',type+' 계정 '+action,name,'사유: '+values.reason.trim()+(values.period?' · 기간: '+values.period.trim():''));
-        showToast(name+' '+action+' 처리 완료\n· 사유: '+values.reason.trim()+(values.period?'\n· 기간: '+values.period.trim():'')+(type==='대학'?'\n· 공개 탐색 상태는 등록 대학 화면에서 별도로 관리합니다.':'')+'\n· 처리자와 시각이 감사 로그에 기록되었습니다.',suspended?'success':'error');
+        showToast(name+' '+action+' 처리 완료\n· 사유: '+values.reason.trim()+(values.period?'\n· 기간: '+values.period.trim():'')+(type==='대학'?'\n· 공개 탐색 상태는 학교 운영 화면에서 직접 관리합니다.':'')+'\n· 처리자와 시각이 감사 로그에 기록되었습니다.',suspended?'success':'error');
       }
     });
   }
@@ -1460,6 +2075,9 @@
   renderRegisteredUniversities();
   renderApprovalRows();
   renderRequests();
+  renderContentRecords();
+  renderPlatformNotices();
+  renderUniversityMembers();
   renderAdSlots();
   renderAuditLogs();
   window.addEventListener('unichat:universities-updated',()=>{
@@ -1468,6 +2086,8 @@
   });
   window.addEventListener('unichat:ad-slots-updated',renderAdSlots);
   window.addEventListener('unichat:audit-log-updated',renderAuditLogs);
+  window.addEventListener('unichat:notices-updated',renderPlatformNotices);
+  window.addEventListener('storage',event=>{ if(event.key===window.UniChatNotices?.storageKey) renderPlatformNotices(); });
 </script>
 </body>
 </html>

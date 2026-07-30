@@ -1,0 +1,21 @@
+# Shared Change Request
+
+- 요청 ID: CR-2026-07-29-document-request-example-file
+- 날짜: 2026-07-29
+- 요청 스쿼드: 학생
+- 담당 역할: 학생 PM·Designer·Developer, 학교 PM·Designer·Developer
+- 대상 파일·계약: 신규 `shared/contracts/consultation-documents.md`, `student-desktop.html`, `university-admin.html`
+- 문제: 현재 학교의 서류 요청은 문서 분류·라벨만 전달한다. 학생은 학교가 요구하는 서류 형식·예시를 확인할 수 없어 잘못된 서류를 제출할 수 있다.
+- 제안 변경: 학교는 상담 채널의 서류 요청에 선택 `exampleFile` 1개를 첨부할 수 있다. `exampleFile`은 `fileName`, `mimeType`(PDF만), `sizeBytes`(10MB 이하), 학생 권한 확인 뒤 발급되는 `previewUrl` 또는 파일 식별자를 가진다. 학생은 같은 `studentId + universityId + affiliationId` 요청 화면에서 `제출 예시 보기`로 열람한다. 예시가 없으면 버튼을 표시하지 않는다.
+- 변경하지 않을 범위: 학생이 올린 원본 문서 열람권한 변경, 어드민 문서 열람, 외부 링크 파일 복제·색인, 실제 파일 저장·변환·바이러스 검사
+- 영향받는 스쿼드: 학생, 학교, Product Owner·공통 계약
+- 호환성 위험: 기존 요청에는 `exampleFile`이 없으므로 학생 화면은 예시 버튼을 숨겨야 한다. 공개 URL 또는 권한 없는 URL을 저장하면 비인가 열람 위험이 있다.
+- 마이그레이션: `exampleFile`은 선택 필드로 추가한다. 기존 요청은 변경하지 않는다. 시연용 학생 화면은 학교 제공 예시가 없는 경우 고정 예시를 학교 실제 파일로 오인하지 않도록 `시연용` 표기를 유지한다.
+- 검증 방법: 학교가 학부 채널에 여권 PDF 예시를 첨부해 요청했을 때 해당 학생만 예시 파일명·미리보기·열기 동작을 보는지, 다른 소속구분 학생은 보지 못하는지, 예시 없는 요청은 버튼이 없는지, 만료·권한 없는 URL은 오류 안내가 나오는지, 학생 문서·메시지 본문·예시 URL이 분석 이벤트에 포함되지 않는지 확인한다.
+- Owner 승인: Product Owner·공통 계약 Owner 확인 대기
+- 필수 검토자 확인: 학생 PM·Designer·Developer 검토 완료, 학교 PM·Designer·Developer 확인 대기
+- Product Owner 결정 ID: D-009 관련 확장 결정 필요
+- 사용자 사전 승인: 있음 (2026-07-29)
+- 사용자 승인 범위: 학교 서류 요청의 선택 예시 파일 열람, 학생 요청 화면 표시, 학교 입력·공통 요청 형식 추가 제안
+- 작업 완료 보고: 학생 포털 시연 구현과 변경 요청 기록 완료. 학교 입력·실제 파일 권한 URL 연동 대기.
+- 사용자 최종 확인: 대기

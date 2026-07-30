@@ -1,0 +1,21 @@
+# Shared Change Request
+
+- 요청 ID: CR-2026-07-29-platform-notices
+- 날짜: 2026-07-29
+- 요청 스쿼드: Product Owner
+- 담당 역할: 어드민 PM·Designer·Developer → 학생·학교 PM·Designer·Developer
+- 대상 파일·계약: `notice-data.js`, `shared/contracts/platform-notices.md`, `platform-admin.html`, `student-desktop.html`, `university-admin.html`
+- 문제: 로그인한 학생·학교 사용자가 플랫폼 운영 공지를 확인할 공통 데이터와 화면이 없다.
+- 제안 변경: 플랫폼 어드민이 대상·중요 여부·게시 상태를 관리하고, 학생은 프로필 메뉴, 학교는 홈 위젯·전체 보기에서 대상별 게시 공지를 읽는다.
+- 변경하지 않을 범위: 공개 콘텐츠 CMS, 공개 랜딩, 대학 자체 공지 작성, 학생·학교의 공지 수정 권한
+- 영향받는 스쿼드: 학생, 학교, 어드민
+- 호환성 위험: `file://` 프로토타입에서 브라우저별 저장소 격리 정책이 다르면 탭 간 즉시 동기화가 제한될 수 있다. 초기 공지와 화면별 대상 필터는 독립 실행된다.
+- 마이그레이션: 기존 콘텐츠 공지 유형은 유지하고 플랫폼 공지를 별도 `PlatformNotice`로 추가한다. 기존 데이터 삭제·변환 없음.
+- 검증 방법: JavaScript 문법, 필수 화면 ID, 학생·학교 대상 필터, 중요 정렬, `published` 전용 노출, `hidden` 즉시 제외, 3열·2열·1열 반응형 규칙
+- Owner 승인: D-020에 따른 Product Owner 승인
+- 필수 검토자 확인: 학생·학교·어드민 즉시 실행 문서 및 구현 반영
+- Product Owner 결정 ID: D-020
+- 사용자 사전 승인: 2026-07-29, 공지 위치·학교 홈 공간 활용·Designer/Developer 진행 지시
+- 사용자 승인 범위: 플랫폼 어드민 작성, 학생 프로필 메뉴 열람, 학교 홈 열람, 반응형 배치
+- 작업 완료 보고: 코드·계약·스쿼드 문서 반영, 정적·데이터 동작 검증 완료
+- 사용자 최종 확인: 대기

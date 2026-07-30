@@ -34,35 +34,31 @@ function escapeHtml(value) {
   }[character]));
 }
 
-function cardMarkup(university) {
-  const tags = university.fields.map((field) => `<span class="tag">${escapeHtml(field)}</span>`).join('');
-  const response = university.consultation.responseLabel;
+function cardMarkup(affiliation) {
+  const tags = affiliation.fields.map((field) => `<span class="tag">${escapeHtml(field)}</span>`).join('');
+  const response = affiliation.consultation.responseLabel;
   const slowClass = response.includes('1일') ? ' slow' : '';
-  // 상담 가능 상태 도트는 현재 비노출입니다.
-  // 필요 시 아래 상태 계산과 카드의 active-dot 마크업을 함께 복구합니다.
-  // const consultationOpen = UniversityDirectory.isConsultationOpen(university);
-  // const statusClass = consultationOpen ? '' : ' off';
-  // const statusLabel = consultationOpen ? '상담 운영 중' : '운영시간 확인 필요';
+  const href = `university-detail.html?universityId=${encodeURIComponent(affiliation.universityId)}&affiliationId=${encodeURIComponent(affiliation.affiliationId)}`;
 
   return `
     <article class="university-card">
       <div class="university-top">
-        <div class="university-mark" aria-hidden="true">${escapeHtml(university.visual.initials)}</div>
+        <div class="university-mark" aria-hidden="true">${escapeHtml(affiliation.visual.initials)}</div>
         <div>
-          <h3 class="university-name">${escapeHtml(university.name.ko)}</h3>
-          <p class="university-region">${escapeHtml(university.location.label)} · ${escapeHtml(university.name.en)}</p>
+          <h3 class="university-name">${escapeHtml(affiliation.displayName)}</h3>
+          <p class="university-region">${escapeHtml(affiliation.location)} · ${escapeHtml(affiliation.universityNameEn)}</p>
         </div>
       </div>
       <div class="university-meta">
         <span class="response${slowClass}">${escapeHtml(response)}</span>
         ${tags}
       </div>
-      <a class="button-quiet" href="university-detail.html?universityId=${encodeURIComponent(university.id)}">대학 소개 보기 <span aria-hidden="true">→</span></a>
+      <a class="button-quiet" href="${href}">대학 소개 보기 <span aria-hidden="true">→</span></a>
     </article>`;
 }
 
 function renderUniversities(field) {
-  const universities = UniversityDirectory.listPublic();
+  const universities = window.UniChatPublicUniversityPrototype?.listCards?.() || [];
   const matching = field === '전체'
     ? universities.slice(0, 8)
     : universities.filter((university) => university.fields.includes(field));

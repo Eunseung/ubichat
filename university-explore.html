@@ -3,20 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="UniChat에서 한국 전문대학을 검색하고 관심 분야별로 탐색하세요.">
-  <title>UniChat | 전체 대학 탐색</title>
+  <meta name="description" content="ubichat에서 한국 전문대학을 검색하고 관심 분야별로 탐색하세요.">
+  <title>ubichat | 전체 대학 탐색</title>
   <link rel="stylesheet" href="landing.css">
 </head>
 <body>
   <div class="page">
     <header class="wrap header public-header" data-public-header>
-      <a class="brand" href="기업용_배너_포함.html" aria-label="UniChat 홈">
-        <span class="brand-mark" aria-hidden="true"></span><span>UniChat</span>
+      <a class="brand" href="기업용_배너_포함.html" aria-label="ubichat 홈">
+        <span class="brand-mark" aria-hidden="true"></span><span>ubichat</span>
       </a>
       <button class="mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
       <nav class="header-nav" aria-label="주 메뉴">
         <a href="#explore-title" aria-current="page">대학 탐색</a>
         <a data-student-nav="chats" href="login.html">상담하기</a>
+        <a href="content.html">콘텐츠</a>
       </nav>
       <div class="header-actions">
         <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">⌂</span> 대학 서비스</a>
@@ -76,14 +77,16 @@
           <p>대학 담당자이신가요?</p>
           <h2 id="university-title">우리 대학을 학생에게 소개해 보세요</h2>
         </div>
-        <a class="button-secondary" href="university-admin.html?register=1">대학 입점 신청 <span aria-hidden="true">→</span></a>
+        <a class="button-secondary" href="university-admin.html?register=1">대학 등록 신청 <span aria-hidden="true">→</span></a>
       </section>
     </main>
 
-    <footer class="footer"><div class="wrap footer-inner"><p>© 2026 UniChat</p><p><a href="기업용_배너_포함.html">랜딩페이지로 돌아가기</a></p></div></footer>
+    <footer class="footer"><div class="wrap footer-inner"><p>© 2026 ubichat</p><p><a href="기업용_배너_포함.html">랜딩페이지로 돌아가기</a></p></div></footer>
   </div>
   <script src="university-data.js"></script>
+  <script src="university-public-prototype.js"></script>
   <script src="university-explore.js"></script>
   <script src="student-session.js"></script>
+  <script src="language-selector.js"></script>
 </body>
 </html>

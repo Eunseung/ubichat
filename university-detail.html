@@ -3,20 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="UniChat 인증 한국 전문대학 소개와 상담 안내">
-  <title>UniChat | 대학 소개</title>
+  <meta name="description" content="ubichat 한국 전문대학 소개와 상담 안내">
+  <title>ubichat | 대학 소개</title>
   <link rel="stylesheet" href="landing.css">
 </head>
 <body>
   <div class="page">
     <header class="wrap header public-header" data-public-header>
-      <a class="brand" href="기업용_배너_포함.html" aria-label="UniChat 홈">
-        <span class="brand-mark" aria-hidden="true"></span><span>UniChat</span>
+      <a class="brand" href="기업용_배너_포함.html" aria-label="ubichat 홈">
+        <span class="brand-mark" aria-hidden="true"></span><span>ubichat</span>
       </a>
       <button class="mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
       <nav class="header-nav" aria-label="주 메뉴">
         <a href="university-explore.html">대학 탐색</a>
         <a data-student-nav="chats" href="login.html">상담하기</a>
+        <a href="content.html">콘텐츠</a>
       </nav>
       <div class="header-actions">
         <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">⌂</span> 대학 서비스</a>
@@ -37,12 +38,11 @@
 
     <main class="wrap detail-main">
       <section class="detail-cover" aria-labelledby="cover-title">
-        <a class="detail-back" href="university-explore.html">← 대학 탐색으로</a>
-        <div class="detail-cover-inner">
-          <div class="detail-cover-copy">
-            <small>VERIFIED COLLEGE</small>
-            <strong id="cover-title">외국인 유학생의 새로운 시작을 함께합니다</strong>
-            <span id="cover-subtitle">대학이 게시한 공개 대학 탐색 소개입니다.</span>
+        <a class="detail-back" id="detail-back" href="university-explore.html">← 뒤로가기</a>
+          <div class="detail-cover-inner">
+            <div class="detail-cover-copy">
+              <strong id="cover-title">외국인 유학생의 새로운 시작을 함께합니다</strong>
+              <span id="cover-subtitle">대학이 게시한 공개 대학 탐색 소개입니다.</span>
           </div>
         </div>
       </section>
@@ -52,21 +52,36 @@
           <header class="university-profile">
             <div class="detail-mark" id="detail-mark" aria-hidden="true">SJ</div>
             <div>
-              <h1><span id="university-name">서정대학교</span><span class="verified">✓ 인증 대학</span></h1>
+              <h1><span id="university-name">서정대학교</span></h1>
               <p id="university-meta">경기 양주 · Seojeong University</p>
             </div>
           </header>
-          <section class="detail-section">
-            <h2>대학 소개</h2>
-            <p id="university-intro">외국인 유학생의 한국 유학 준비를 입학부터 생활 안내까지 상담으로 돕습니다. 관심 분야와 입학 준비 과정이 궁금하다면 대학 담당자에게 직접 문의해 보세요.</p>
+          <nav class="detail-tabs" role="tablist" aria-label="대학 상세 정보">
+            <button class="on" type="button" role="tab" aria-selected="true" aria-controls="detail-panel-intro" id="detail-tab-intro" data-detail-tab="intro">대학 소개</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="detail-panel-programs" id="detail-tab-programs" data-detail-tab="programs">학과·지원 과정</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="detail-panel-benefits" id="detail-tab-benefits" data-detail-tab="benefits">기숙사·장학금</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="detail-panel-brochure" id="detail-tab-brochure" data-detail-tab="brochure">입학안내 자료</button>
+          </nav>
+          <section class="detail-tab-panel" role="tabpanel" id="detail-panel-intro" aria-labelledby="detail-tab-intro" data-detail-panel="intro">
+            <p id="university-intro">외국인 유학생의 한국 유학 준비를 입학부터 생활 안내까지 상담으로 돕습니다.</p>
             <div class="detail-tags" id="university-tags"></div>
-          </section>
-          <section class="detail-section">
-            <h2>외국인 유학생 모집 안내</h2>
-            <div class="brochure-card">
-              <div class="brochure-icon" aria-hidden="true">▤</div>
-              <div><b id="brochure-title">2027 외국인 유학생 모집 브로셔</b><span id="brochure-description">PDF · PC와 모바일에서 바로 보기</span></div>
+            <h2>소개 사진</h2>
+            <div class="detail-gallery-shell">
+              <div class="detail-gallery" id="detail-gallery" aria-label="대학 소개 사진"></div>
+              <div class="detail-gallery-controls" id="detail-gallery-controls" aria-label="소개 사진 이동" hidden>
+                <button type="button" id="detail-gallery-prev" aria-label="이전 사진" aria-controls="detail-gallery">←</button>
+                <button type="button" id="detail-gallery-next" aria-label="다음 사진" aria-controls="detail-gallery">→</button>
+              </div>
             </div>
+          </section>
+          <section class="detail-tab-panel" role="tabpanel" id="detail-panel-programs" aria-labelledby="detail-tab-programs" data-detail-panel="programs" hidden>
+            <div id="programs-list"></div>
+          </section>
+          <section class="detail-tab-panel" role="tabpanel" id="detail-panel-benefits" aria-labelledby="detail-tab-benefits" data-detail-panel="benefits" hidden>
+            <div id="benefits-list"></div>
+          </section>
+          <section class="detail-tab-panel" role="tabpanel" id="detail-panel-brochure" aria-labelledby="detail-tab-brochure" data-detail-panel="brochure" hidden>
+            <div class="brochure-list" id="brochure-list"></div>
           </section>
         </article>
 
@@ -79,15 +94,26 @@
             <div class="detail-fact"><span>상담 언어</span><b id="consult-languages">한국어 · English</b></div>
           </div>
           <a class="button-primary consult-link" id="consult-link" href="login.html?role=student">학생 로그인 후 상담하기 <span aria-hidden="true">→</span></a>
-          <p class="detail-login-note">상담을 시작하려면 학생 계정으로 로그인해야 합니다.</p>
         </aside>
       </div>
     </main>
 
-    <footer class="footer"><div class="wrap footer-inner"><p>© 2026 UniChat</p><p><a href="university-explore.html">다른 대학 탐색하기</a></p></div></footer>
+    <footer class="footer"><div class="wrap footer-inner"><p>© 2026 ubichat</p><p><a href="university-explore.html">다른 대학 탐색하기</a></p></div></footer>
   </div>
+  <dialog class="photo-dialog" id="photo-dialog" aria-labelledby="photo-dialog-title">
+    <div class="photo-dialog-inner">
+      <div class="photo-dialog-header">
+        <strong id="photo-dialog-title">소개 사진 상세</strong>
+        <button class="photo-dialog-close" type="button" data-photo-dialog-close aria-label="사진 상세 닫기">×</button>
+      </div>
+      <img id="photo-dialog-image" alt="">
+      <p id="photo-dialog-caption"></p>
+    </div>
+  </dialog>
   <script src="university-data.js"></script>
   <script src="student-session.js"></script>
+  <script src="university-public-prototype.js"></script>
   <script src="university-detail.js"></script>
+  <script src="language-selector.js"></script>
 </body>
 </html>

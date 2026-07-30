@@ -3,31 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="UniChat 한국 전문대학 탐색 서비스 - 기업 제휴 배너 미포함">
-  <title>UniChat | 대학 탐색 · 기업 제휴 배너 미포함</title>
+  <meta name="description" content="ubichat 한국 전문대학 탐색 서비스 - 기업 제휴 배너 미포함">
+  <title>ubichat | 대학 탐색 · 기업 제휴 배너 미포함</title>
   <link rel="stylesheet" href="landing.css">
 </head>
 <body>
   <div class="page">
     <header class="wrap header public-header" data-public-header>
-      <a class="brand" href="기업용_배너_미포함.html" aria-label="UniChat 홈">
+      <a class="brand" href="기업용_배너_포함.html" aria-label="ubichat 홈">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span>UniChat</span>
+        <span>ubichat</span>
       </a>
       <button class="mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
       <nav class="header-nav" aria-label="주 메뉴">
         <a href="university-explore.html">대학 탐색</a>
         <a data-student-nav="chats" href="login.html">상담하기</a>
+        <a href="content.html">콘텐츠</a>
       </nav>
       <div class="header-actions">
-        <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">⌂</span> 대학 서비스</a>
-        <a class="student-login-link" data-student-login href="login.html">로그인</a>
+        <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">🏫</span> 학교 서비스</a>
+        <a class="student-login-link" data-student-login href="login.html">학생 로그인</a>
         <div class="profile-menu" data-profile-menu hidden>
           <button class="profile-trigger" type="button" data-profile-trigger aria-haspopup="menu" aria-expanded="false">
             <span class="profile-avatar" data-profile-avatar>🇹🇭</span><span data-profile-name>NAPAT</span><span aria-hidden="true">⌄</span>
           </button>
           <div class="profile-dropdown" data-profile-dropdown role="menu" hidden>
             <div class="profile-summary"><strong data-profile-full-name>NAPAT SUKSAI</strong><span data-profile-email>napat@example.com</span></div>
+            <a href="student-desktop.html?view=chats" role="menuitem">내 상담</a>
             <a href="student-desktop.html?view=docs" role="menuitem">문서 보관함</a>
             <a href="student-desktop.html?view=my" role="menuitem">마이페이지</a>
             <button type="button" data-student-logout role="menuitem">로그아웃</button>
@@ -95,7 +97,7 @@
 
       <section class="wrap owned-section" aria-labelledby="topik-title">
         <div>
-          <p class="owned-kicker">UniChat 부가 서비스</p>
+          <p class="owned-kicker">ubichat 부가 서비스</p>
           <h2 id="topik-title">TOPIK 준비도, 지금 확인해 보세요</h2>
           <p>입학 상담 전 나의 한국어 수준을 확인하고 TOPIK 준비 과정을 살펴볼 수 있습니다.</p>
         </div>
@@ -107,21 +109,27 @@
           <p>대학 담당자이신가요?</p>
           <h2 id="university-title">우리 대학을 학생에게 소개해 보세요</h2>
         </div>
-        <a class="button-secondary" href="university-admin.html?register=1">대학 입점 신청 <span aria-hidden="true">→</span></a>
+        <a class="button-secondary" href="university-admin.html?register=1">대학 등록 신청 <span aria-hidden="true">→</span></a>
       </section>
     </main>
 
     <footer class="footer">
       <div class="wrap footer-inner">
-        <p>© 2026 UniChat · Landing proposal B</p>
-        <p><a href="기업용_배너_포함.html">기업 제휴 배너 포함 안 보기</a></p>
+        <p>© 2026 ubichat</p>
+        <nav class="footer-legal" aria-label="정책 안내">
+          <span>개인정보 처리방침</span>
+          <span aria-hidden="true">·</span>
+          <span>서비스 이용약관</span>
+        </nav>
       </div>
     </footer>
   </div>
   <div class="toast" role="status" aria-live="polite" id="toast"></div>
   <script src="university-data.js"></script>
+  <script src="university-public-prototype.js"></script>
   <script src="ad-slot-data.js"></script>
   <script src="landing.js"></script>
   <script src="student-session.js"></script>
+  <script src="language-selector.js"></script>
 </body>
 </html>

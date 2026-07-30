@@ -1,15 +1,124 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>UniChat | 대학 탐색</title>
-    <meta http-equiv="refresh" content="0; url=./기업용_배너_포함.html" />
-    <script>
-      window.location.replace('./기업용_배너_포함.html');
-    </script>
-  </head>
-  <body>
-    <p><a href="./기업용_배너_포함.html">UniChat 랜딩페이지로 이동</a></p>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ubichat 한국 전문대학 탐색 서비스">
+  <title>ubichat | 대학 탐색</title>
+  <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+  <div class="page">
+    <header class="wrap header public-header" data-public-header>
+      <a class="brand" href="index.html" aria-label="ubichat 홈">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>ubichat</span>
+      </a>
+      <button class="mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
+      <nav class="header-nav" aria-label="주 메뉴">
+        <a href="university-explore.html">대학 탐색</a>
+        <a data-student-nav="chats" href="login.html">상담하기</a>
+        <a href="content.html">콘텐츠</a>
+      </nav>
+      <div class="header-actions">
+        <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">🏫</span> 학교 서비스</a>
+        <a class="student-login-link" data-student-login href="login.html">학생 로그인</a>
+        <div class="profile-menu" data-profile-menu hidden>
+          <button class="profile-trigger" type="button" data-profile-trigger aria-haspopup="menu" aria-expanded="false">
+            <span class="profile-avatar" data-profile-avatar>🇹🇭</span><span data-profile-name>NAPAT</span><span aria-hidden="true">⌄</span>
+          </button>
+          <div class="profile-dropdown" data-profile-dropdown role="menu" hidden>
+            <div class="profile-summary"><strong data-profile-full-name>NAPAT SUKSAI</strong><span data-profile-email>napat@example.com</span></div>
+            <a href="student-desktop.html?view=chats" role="menuitem">내 상담</a>
+            <a href="student-desktop.html?view=docs" role="menuitem">문서 보관함</a>
+            <a href="student-desktop.html?view=my" role="menuitem">마이페이지</a>
+            <button type="button" data-student-logout role="menuitem">로그아웃</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="wrap hero" aria-labelledby="hero-title">
+        <div class="hero-content">
+          <h1 id="hero-title">나에게 맞는 한국 전문대학을<br>탐색해 보세요</h1>
+          <p class="hero-lead">관심 분야를 둘러보고, 궁금한 대학에 바로 상담을 신청하세요.</p>
+        </div>
+      </section>
+
+      <section class="wrap sponsor-carousel" data-carousel data-ad-carousel="university" data-autoplay="5000" aria-label="대학 고객사 광고 배너">
+        <div class="carousel-viewport">
+          <article class="carousel-slide is-active" role="group" aria-roledescription="slide" aria-label="1 / 3">
+            <div class="sponsor-placeholder"><img class="carousel-image" src="assets/sahmyook-health-banner.png" alt="삼육보건대학교 대학 고객사 배너"></div>
+          </article>
+          <article class="carousel-slide" role="group" aria-roledescription="slide" aria-label="2 / 3">
+            <div class="sponsor-placeholder alt"><img class="carousel-image" src="assets/hanyeong-banner.png" alt="한영대학교 대학 고객사 배너"></div>
+          </article>
+          <article class="carousel-slide" role="group" aria-roledescription="slide" aria-label="3 / 3">
+            <div class="sponsor-placeholder alt-2"><img class="carousel-image" src="assets/sungwoon-banner.png" alt="성운대학교 대학 고객사 배너"></div>
+          </article>
+        </div>
+        <div class="carousel-controls" aria-label="대학 고객사 배너 제어">
+          <button class="carousel-arrow" type="button" data-carousel-prev aria-label="이전 배너">‹</button>
+          <div class="carousel-dots" aria-label="배너 선택">
+            <button class="carousel-dot is-active" type="button" data-carousel-to="0" aria-label="첫 번째 배너" aria-current="true"></button>
+            <button class="carousel-dot" type="button" data-carousel-to="1" aria-label="두 번째 배너"></button>
+            <button class="carousel-dot" type="button" data-carousel-to="2" aria-label="세 번째 배너"></button>
+          </div>
+          <button class="carousel-arrow" type="button" data-carousel-next aria-label="다음 배너">›</button>
+        </div>
+      </section>
+
+      <section class="wrap discovery" id="discover" aria-labelledby="discover-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">University exploration</p>
+            <h2 class="section-title" id="discover-title">지금 상담 가능한 전문대학</h2>
+            <div class="explore-pills" aria-label="관심 분야 선택">
+              <button class="explore-pill active" type="button" data-field="전체">전체 둘러보기</button>
+              <button class="explore-pill" type="button" data-field="요양보호">요양보호</button>
+              <button class="explore-pill" type="button" data-field="육성형전문기술">육성형 전문기술</button>
+              <button class="explore-pill" type="button" data-field="뿌리산업">뿌리산업</button>
+              <button class="explore-pill" type="button" data-field="기타">기타</button>
+            </div>
+            <p class="section-desc" id="discover-description">대학의 응답 정보와 특화 분야를 확인하고, 나에게 맞는 학교를 둘러보세요.</p>
+          </div>
+        </div>
+        <div class="university-grid" id="university-grid" aria-live="polite"></div>
+        <div class="all-link"><a class="button-secondary" href="university-explore.html">전체 대학 탐색 <span aria-hidden="true">→</span></a></div>
+      </section>
+
+      <section class="wrap owned-section" aria-labelledby="topik-title">
+        <div>
+          <p class="owned-kicker">ubichat 부가 서비스</p>
+          <h2 id="topik-title">TOPIK 준비도, 지금 확인해 보세요</h2>
+          <p>입학 상담 전 나의 한국어 수준을 확인하고 TOPIK 준비 과정을 살펴볼 수 있습니다.</p>
+        </div>
+        <button class="button-primary" type="button" data-toast="TOPIK 서비스로 연결되는 자사 프로모션 영역입니다.">TOPIK 시작하기 <span aria-hidden="true">→</span></button>
+      </section>
+
+      <section class="wrap university-cta" id="university" aria-labelledby="university-title">
+        <div>
+          <p>대학 담당자이신가요?</p>
+          <h2 id="university-title">우리 대학을 학생에게 소개해 보세요</h2>
+        </div>
+        <a class="button-secondary" href="university-admin.html?register=1">대학 등록 신청 <span aria-hidden="true">→</span></a>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <p>© 2026 ubichat</p>
+        <nav class="footer-legal" aria-label="정책 안내"><span>개인정보 처리방침</span><span aria-hidden="true">·</span><span>서비스 이용약관</span></nav>
+      </div>
+    </footer>
+  </div>
+  <div class="toast" role="status" aria-live="polite" id="toast"></div>
+  <script src="university-data.js"></script>
+  <script src="university-public-prototype.js"></script>
+  <script src="ad-slot-data.js"></script>
+  <script src="landing.js"></script>
+  <script src="student-session.js"></script>
+  <script src="language-selector.js"></script>
+</body>
 </html>

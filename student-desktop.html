@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UniChat 학생 포털 — 데스크톱</title>
+<title>ubichat 학생 포털</title>
 <link rel="stylesheet" href="unichat-brand.css">
 <style>
   :root{
@@ -14,31 +14,21 @@
     --mono:"JetBrains Mono",monospace;--sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px;padding-top:40px}
-  .wf-flag{background:repeating-linear-gradient(45deg,#fff6e6,#fff6e6 12px,#ffedcc 12px,#ffedcc 24px);border-bottom:1px solid #e8c97a;padding:6px 16px;font-size:12px;color:#7a5b16;text-align:center}
-  .wf-flag b{color:#5a4310}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px}
   .ix{font-size:10.5px;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;font-family:var(--mono)}
 
-  .scn{position:fixed;top:0;left:0;right:0;z-index:50;background:#121720}
-  .scn-in{max-width:1160px;margin:0 auto;padding:8px 16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-  .scn-in .lab{font-size:11.5px;color:#dfe6f2;font-family:var(--mono)}
-  .scn button{font-size:12px;border:1px solid #4a5a75;background:#1b2436;color:#cdd8e4;border-radius:999px;padding:4px 11px;cursor:pointer}
-  .scn button.on{background:var(--brand2);color:#fff;border-color:var(--brand2)}
-  .landing-back{margin-left:auto;font-size:12px;font-weight:700;color:#fff;text-decoration:none;border:1px solid #71809a;border-radius:999px;padding:4px 11px;white-space:nowrap}
-  .landing-back:hover{background:#26334a}
-
-  /* GNB */
-  header{background:#fff;border-bottom:1px solid var(--line2);position:sticky;top:40px;z-index:10}
-  .gnb{max-width:1160px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:12px}
-  .student-brand{margin-right:20px}
-  nav.menu{display:flex;gap:3px;flex:1}
-  nav.menu button{border:0;background:none;padding:8px 10px;font-size:14px;font-weight:780;color:#667085;cursor:pointer;border-radius:8px;font-family:var(--sans);position:relative}
-  nav.menu button:hover{background:#eef3ff;color:#1d4ed8}
-  nav.menu button.on{color:#1d4ed8;background:#eef3ff}
-  nav.menu button .nbdg{position:absolute;top:3px;right:4px;background:var(--warn);color:#fff;font-size:9px;font-weight:800;border-radius:999px;min-width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px}
-  .lang{font-size:12px;border:1px solid #d7e0ee;border-radius:999px;padding:5px 10px;color:var(--ink2);cursor:pointer}
-  .lang b{color:#1d4ed8}
-  .student-profile-menu{position:relative}
+  /* 메인 공개 GNB와 동일한 구조 */
+  #appHeader{background:rgba(246,248,252,.94);border:0;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
+  .student-header-inner{width:min(100% - 48px,1180px);min-height:76px;margin:0 auto;display:flex;align-items:center;gap:12px;position:relative}
+  .student-brand{margin:0;white-space:nowrap;flex:0 0 auto}
+  .student-mobile-nav-trigger{display:none;width:36px;height:36px;align-items:center;justify-content:center;border:1px solid #d6dfef;border-radius:10px;background:#fff;color:#10223f;font-size:18px;cursor:pointer}
+  .student-header-nav{display:flex;align-items:center;gap:3px;margin-left:32px}
+  .student-header-nav a{display:inline-flex;align-items:center;min-height:36px;padding:8px 10px;border-radius:8px;color:#667085;font-size:14px;font-weight:780;text-decoration:none;white-space:nowrap}
+  .student-header-nav a:hover,.student-header-nav a[aria-current="page"]{background:#eef3ff;color:#1d4ed8}
+  .student-header-nav .language-selector{display:inline-flex;align-items:center;margin-left:5px}
+  .student-header-nav .language-selector select{min-height:34px;max-width:168px;padding:0 25px 0 10px;border:1px solid #d7e0ee;border-radius:999px;background:#fff;color:#475467;font:750 12px var(--sans);cursor:pointer}
+  .student-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+  .student-profile-menu{position:relative;flex:0 0 auto}
   .userchip{display:flex;align-items:center;gap:7px;border:1px solid #d7e0ee;border-radius:999px;background:#fff;padding:3px 9px 3px 4px;font:800 12.5px var(--sans);color:#10223f;cursor:pointer}
   .userchip .av{width:28px;height:28px;border-radius:50%;background:#edf3ff;display:flex;align-items:center;justify-content:center;font-size:14px}
   .student-profile-dropdown{position:absolute;top:calc(100% + 8px);right:0;z-index:20;width:218px;padding:7px;border:1px solid #dce5f1;border-radius:13px;background:#fff;box-shadow:0 18px 42px rgba(16,34,63,.16)}
@@ -48,6 +38,7 @@
   .student-profile-dropdown button{display:flex;align-items:center;width:100%;min-height:35px;padding:0 9px;border:0;border-radius:8px;background:transparent;font:700 12px var(--sans);color:#344054;text-align:left;cursor:pointer}
   .student-profile-dropdown button:hover{background:#f3f6fb;color:#1d4ed8}
   .student-profile-dropdown .logout{margin-top:3px;border-top:1px solid var(--line2);border-radius:0;color:var(--warn)}
+  .mobile-student-menu{display:none}
 
   .wrap{max-width:1160px;margin:0 auto;padding:26px 24px 60px}
   .page{display:none}
@@ -60,6 +51,7 @@
   .authcard h2{font-size:20px;font-weight:800;margin-bottom:4px}
   .authcard .sub{font-size:13px;color:var(--ink2);margin-bottom:20px}
   .field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+  .field[hidden]{display:none!important}
   .field label{font-size:12px;color:var(--ink2);font-weight:600}
   .field label .req{color:var(--warn)}
   .field input,.field select{border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;font-family:var(--sans);background:#fff}
@@ -113,13 +105,13 @@
   .nofind button{margin-left:auto;font-size:13px;font-weight:700;color:#fff;background:var(--brand);border:none;border-radius:999px;padding:9px 20px;cursor:pointer;white-space:nowrap}
 
   /* ST-2/3 메신저 2패널 */
-  .msgr{display:grid;grid-template-columns:330px 1fr;height:calc(100vh - 230px);min-height:520px;background:#fff;border:1px solid var(--line2);border-radius:14px;overflow:hidden}
-  .clist{border-right:1px solid var(--line2);overflow-y:auto}
+  .msgr{display:grid;grid-template-columns:330px minmax(0,1fr);min-width:0;height:calc(100vh - 230px);min-height:520px;background:#fff;border:1px solid var(--line2);border-radius:14px;overflow:hidden}
+  .clist{min-width:0;min-height:0;border-right:1px solid var(--line2);overflow-y:auto}
   .clist .hd{padding:15px 16px 9px;font-weight:800;font-size:15px}
   .citem{padding:12px 16px;border-bottom:1px solid var(--line2);display:flex;gap:10px;cursor:pointer}
   .citem:hover{background:#f7faff}
   .citem.act{background:#eef3fb;border-left:3px solid var(--brand);padding-left:13px}
-  .citem .ulogo{width:42px;height:42px;border-radius:11px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+  .citem .ulogo{width:42px;height:42px;border-radius:11px;background:var(--soft);color:#102c5c;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;letter-spacing:-.04em;flex-shrink:0}
   .citem .cb{flex:1;min-width:0}
   .citem .r1{display:flex;justify-content:space-between;gap:6px}
   .citem .nm{font-weight:700;font-size:13px}
@@ -127,31 +119,42 @@
   .citem .prev{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
   .citem .r2{display:flex;align-items:center;gap:6px;margin-top:5px}
   .stchip{font-size:9.5px;border-radius:999px;padding:2px 8px;font-weight:700}
-  .st-wait{background:#fff4e5;color:#9a5b00}.st-live{background:#e7edf6;color:var(--brand)}.st-done{background:#eef1f5;color:#5a6678}
+  .st-wait{background:#fff4e5;color:#9a5b00}.st-live{background:#e7edf6;color:var(--brand)}.st-done{background:#eef1f5;color:#5a6678}.st-blocked{background:#fef3f2;color:#b42318}
   .citem .unread{margin-left:auto;background:var(--warn);color:#fff;font-size:10px;font-weight:800;border-radius:999px;min-width:17px;height:17px;display:flex;align-items:center;justify-content:center;padding:0 5px}
 
-  .conv{display:flex;flex-direction:column;background:#f7f9fb}
+  .conv{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;background:#f7f9fb}
   .chat-hd{background:#fff;border-bottom:1px solid var(--line2);padding:12px 18px;display:flex;align-items:center;gap:11px}
-  .chat-hd .ulogo{width:38px;height:38px;border-radius:11px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:18px}
+  .chat-hd .ulogo{width:38px;height:38px;border-radius:11px;background:var(--soft);color:#102c5c;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;letter-spacing:-.04em}
   .chat-hd .tt b{font-size:14.5px;display:block}
   .chat-hd .tt small{font-size:11px;color:var(--ink2)}
   .chat-hd .st{margin-left:auto}
-  .thread{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
+  .thread{flex:1;min-width:0;min-height:0;overflow-x:hidden;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
   .day{text-align:center;font-size:11px;color:var(--ink2)}
-  .msg{display:flex;gap:8px;max-width:62%}
+  .msg{display:flex;gap:8px;max-width:62%;min-width:0}
+  .msg > :not(.av){min-width:0}
   .msg .av{width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0}
-  .msg .bub{background:var(--bubble-you);color:var(--bubble-you-tx);padding:9px 13px;border-radius:14px 14px 14px 4px;font-size:13.5px}
+  .msg .bub{min-width:0;overflow-wrap:anywhere;word-break:break-word;background:var(--bubble-you);color:var(--bubble-you-tx);padding:9px 13px;border-radius:14px 14px 14px 4px;font-size:13.5px}
   .msg .meta{font-size:10px;color:#aeb6c4;margin-top:3px}
   .msg.me{align-self:flex-end;flex-direction:row-reverse}
   .msg.me .bub{background:var(--bubble-me);color:var(--bubble-me-tx);border-radius:14px 14px 4px 14px}
   .msg.me .meta{text-align:right}
   .msg.sys{align-self:center;max-width:100%}
   .msg.sys .bub{background:#e7edf6;color:var(--brand);font-size:11.5px;border-radius:10px}
-  .doccard{border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 11px;display:flex;gap:9px;align-items:center;margin-top:3px;background:rgba(255,255,255,.12)}
+  .msg.welcome-message .bub{background:#eef5ff;border:1px solid #c8daf6}
+  .welcome-label{display:block;width:max-content;margin:0 0 6px;padding:3px 6px;border-radius:999px;background:#dce9fc;color:#2458a6;font-size:10px;font-weight:800;line-height:1.2}
+  .doccard{min-width:0;max-width:100%;border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 11px;display:flex;gap:9px;align-items:center;margin-top:3px;background:rgba(255,255,255,.12)}
+  .doccard > :last-child{min-width:0}
   .msg:not(.me) .doccard{border-color:var(--line2);background:#fff}
   .doccard .di{font-size:19px}
-  .doccard .dn{font-size:12.5px;font-weight:700;line-height:1.3}
-  .doccard .dm{font-size:10.5px;opacity:.75}
+  .doccard .dn{font-size:12.5px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;word-break:break-word}
+  .doccard .dm{font-size:10.5px;opacity:.75;overflow-wrap:anywhere;word-break:break-word}
+  .doc-request-action{display:block;width:100%;margin-top:9px;border:1px solid currentColor;border-radius:8px;background:rgba(255,255,255,.1);color:inherit;padding:6px 8px;font:700 11px var(--sans);cursor:pointer;text-align:center}
+  .msg:not(.me) .doc-request-action{background:#fff;color:var(--brand)}
+  .doc-request-action:disabled{opacity:.65;cursor:default}
+  .doc-example-action{display:block;width:100%;margin-top:6px;border:1px solid #b9cae8;border-radius:8px;background:#fff;color:var(--brand);padding:6px 8px;font:700 11px var(--sans);cursor:pointer;text-align:center}
+  .doc-example-action:hover{background:#eef3fb;border-color:var(--brand)}
+  .document-re-request-box{border:1px solid #b9cae8;background:#f4f8ff!important;color:#203f70!important}
+  .document-re-request-box b{display:block;font-size:12px}.document-re-request-box span{display:block;margin-top:5px;font-size:11px;line-height:1.5;color:#526b90}
   .composer{border-top:1px solid var(--line2);background:#fff;padding:11px 16px;display:flex;gap:9px;align-items:center;position:relative}
   .composer .att{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink2);flex-shrink:0;font-size:15px}
   .composer input{flex:1;border:1px solid var(--line);border-radius:999px;padding:10px 16px;font-size:13.5px}
@@ -163,7 +166,7 @@
   .attmenu button small{font-size:10.5px;color:var(--ink2);font-weight:500}
 
   /* ST-4 문서 */
-  .docwrap{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+  .docwrap{display:block}
   .doc-cat{font-size:11.5px;color:var(--ink2);font-weight:700;margin:16px 0 8px;text-transform:uppercase;letter-spacing:.4px}
   .doc-cat:first-of-type{margin-top:0}
   .dcard{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:center}
@@ -171,8 +174,10 @@
   .dcard .db{flex:1;min-width:0}
   .dcard .dn{font-size:13.5px;font-weight:700}
   .dcard .dm{font-size:11px;color:var(--ink2);margin-top:1px}
-  .dcard .sent{font-size:10.5px;color:var(--brand);font-weight:700;margin-top:4px}
-  .dcard .vch{font-size:10.5px;background:var(--soft);color:var(--brand);border-radius:999px;padding:2px 8px;font-weight:700}
+  .doc-edit{flex:0 0 auto;border:1px solid #b9cae8;border-radius:8px;background:#fff;color:var(--brand);padding:6px 9px;font:700 11px var(--sans);cursor:pointer}
+  .doc-edit:hover{background:#eef3fb;border-color:var(--brand)}
+  .doc-open-link{flex:0 0 auto;color:var(--brand);font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap}
+  .doc-open-link:hover{text-decoration:underline}
   .upl{border:1.5px dashed var(--line);border-radius:12px;padding:22px;text-align:center;font-size:13px;color:var(--ink2);cursor:pointer;margin-top:14px;background:#fff}
   .upl:hover{border-color:var(--brand);color:var(--brand);background:var(--soft)}
   .upl small{display:block;font-size:11px;color:#aeb6c4;margin-top:4px}
@@ -203,6 +208,19 @@
   .setrow .si:last-child{border-bottom:0}
   .setrow .si small{color:var(--ink2);font-size:12px}
 
+  /* ST-6 플랫폼 공지사항 */
+  .student-notice-alert{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;padding:13px 15px;border:1px solid #f1c2bd;border-radius:12px;background:#fff5f4;color:#8f1d14}
+  .student-notice-alert[hidden]{display:none}.student-notice-alert strong{display:block;font-size:13px}.student-notice-alert span{display:block;margin-top:2px;font-size:11.5px;color:#9d3f36}
+  .student-notice-layout{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:16px;align-items:start}
+  .student-notice-list,.student-notice-detail{overflow:hidden;border:1px solid var(--line2);border-radius:14px;background:#fff}
+  .student-notice-item{display:block;width:100%;padding:14px 16px;border:0;border-bottom:1px solid var(--line2);background:#fff;color:var(--ink);font-family:var(--sans);text-align:left;cursor:pointer}
+  .student-notice-item:last-child{border-bottom:0}.student-notice-item:hover,.student-notice-item.on{background:#f4f7fd}.student-notice-item.on{box-shadow:inset 3px 0 var(--brand)}
+  .student-notice-item strong{display:block;font-size:13px}.student-notice-item p{margin-top:3px;color:var(--ink2);font-size:11.5px;line-height:1.5}
+  .student-notice-meta{display:flex;align-items:center;gap:6px;margin-top:7px;color:#8b96a5;font-size:10.5px}.student-notice-important{display:inline-flex;border-radius:999px;padding:2px 7px;background:#fef3f2;color:var(--warn);font-size:9.5px;font-weight:800}
+  .student-notice-detail{min-height:300px;padding:22px}.student-notice-detail h3{font-size:18px;line-height:1.4}.student-notice-detail .detail-meta{margin-top:7px;color:var(--ink2);font-size:11px}
+  .student-notice-detail .detail-body{margin-top:20px;padding-top:18px;border-top:1px solid var(--line2);color:#344054;font-size:13px;line-height:1.8;white-space:pre-line}
+  .student-notice-empty{padding:28px 18px;color:var(--ink2);font-size:12px;text-align:center}
+
   /* 모달 */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.45);z-index:100;align-items:center;justify-content:center}
   .modal-overlay.show{display:flex}
@@ -214,64 +232,89 @@
   .pickitem{display:flex;gap:11px;align-items:center;border:1px solid var(--line2);border-radius:11px;padding:11px 13px;margin-bottom:8px;cursor:pointer}
   .pickitem:hover{background:var(--soft);border-color:var(--brand)}
   .pickitem .di{font-size:18px}
-  .pickitem .dn{font-size:13px;font-weight:700}
-  .pickitem .dm{font-size:10.5px;color:var(--ink2)}
+  .pickitem .dn{display:block;font-size:13px;font-weight:700}
+  .pickitem .dm{display:block;font-size:10.5px;color:var(--ink2)}
+  button.pickitem{width:100%;background:#fff;font-family:var(--sans);text-align:left}
+  .document-preview-modal{width:min(560px,calc(100vw - 28px))}
+  .document-preview-intro{font-size:12px;color:var(--ink2);margin-bottom:12px}
+  .document-preview-summary{display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;align-items:center;border:1px solid var(--line2);border-radius:11px;padding:11px 12px;background:#f8fafc}
+  .document-preview-summary .preview-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:#e7edf6;color:var(--brand);font-weight:900;font-size:11px}
+  .document-preview-summary b,.document-preview-summary small{display:block;overflow-wrap:anywhere;word-break:break-word}
+  .document-preview-summary b{font-size:13px}.document-preview-summary small{font-size:10.5px;color:var(--ink2);margin-top:2px}
+  .document-preview-target{font-size:11px;color:var(--brand);font-weight:700;margin:10px 0}
+  .pdf-preview-card{position:relative;min-height:205px;padding:20px;border:1px solid #dce5f1;border-radius:12px;background:linear-gradient(135deg,#f8fbff,#fff);overflow:hidden}
+  .pdf-preview-card::before{content:"PDF";position:absolute;right:16px;top:14px;border:1px solid #b9cae8;border-radius:999px;padding:2px 7px;color:var(--brand);font-size:10px;font-weight:800}
+  .pdf-preview-card .eyebrow{display:block;color:var(--ink2);font-size:10.5px;font-weight:700;letter-spacing:.04em}
+  .pdf-preview-card strong{display:block;margin-top:18px;font-size:16px}.pdf-preview-card p{max-width:265px;margin-top:5px;font-size:11px;color:var(--ink2)}
+  .pdf-preview-lines{display:grid;gap:8px;margin-top:24px}.pdf-preview-lines span{display:block;height:8px;border-radius:999px;background:#e7edf6}.pdf-preview-lines span:nth-child(2){width:88%}.pdf-preview-lines span:nth-child(3){width:71%}.pdf-preview-lines span:nth-child(4){width:81%}
+  .preview-watermark{position:absolute;right:-10px;bottom:16px;transform:rotate(-22deg);color:rgba(31,75,168,.1);font-size:28px;font-weight:900;letter-spacing:.08em}
+  .external-link-preview{border:1px solid #dce5f1;border-radius:12px;padding:16px;background:#f8fafc}.external-link-preview b{display:block;font-size:13px}.external-link-preview p{margin-top:4px;font-size:11px;color:var(--ink2);overflow-wrap:anywhere;word-break:break-word}.external-link-preview a{display:inline-block;margin-top:10px;color:var(--brand);font-size:12px;font-weight:700}
+  .preview-caption{font-size:10.5px;color:#7a8699;margin-top:8px;line-height:1.5}.preview-actions{display:flex;gap:8px;margin-top:16px}.preview-actions .btn{flex:1;padding:10px 12px;font-size:13px}
+  .request-example-modal{width:min(540px,calc(100vw - 28px))}.request-example-file{display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;align-items:center;border:1px solid var(--line2);border-radius:11px;padding:11px 12px;background:#f8fafc}.request-example-file .file-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;background:#e7edf6;color:var(--brand);font-size:11px;font-weight:900}.request-example-file b,.request-example-file small{display:block;overflow-wrap:anywhere;word-break:break-word}.request-example-file b{font-size:13px}.request-example-file small{margin-top:2px;color:var(--ink2);font-size:10.5px}.request-example-paper{position:relative;min-height:220px;margin-top:12px;padding:20px;border:1px solid #dce5f1;border-radius:12px;background:linear-gradient(135deg,#f8fbff,#fff);overflow:hidden}.request-example-paper .eyebrow{display:block;color:var(--ink2);font-size:10.5px;font-weight:700;letter-spacing:.04em}.request-example-paper strong{display:block;margin-top:18px;font-size:16px}.request-example-paper p{max-width:290px;margin-top:5px;color:var(--ink2);font-size:11px}.request-example-note{margin-top:10px;border-radius:9px;background:#fff8e6;color:#7a5b16;padding:9px 11px;font-size:11px;line-height:1.5}.request-example-open{display:inline-block;margin-top:12px;color:var(--brand);font-size:12px;font-weight:700}
   .mergehint{background:var(--soft);border-radius:9px;padding:10px 13px;font-size:12px;color:var(--brand);margin:-2px 0 13px}
 
-  /* ===== 모바일·태블릿 반응형 ===== */
+  /* ===== 태블릿 반응형 ===== */
+  @media (min-width:761px) and (max-width:1024px){
+    .student-header-inner{width:min(100% - 40px,1180px)}.wrap{padding-inline:20px}
+    .ugrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .msgr{grid-template-columns:280px minmax(0,1fr)}
+    .msg{max-width:76%}
+    .docwrap{grid-template-columns:minmax(0,1fr) 250px}
+    .mygrid{grid-template-columns:minmax(0,1fr) 290px}
+    .stat4{grid-template-columns:repeat(3,1fr)}
+  }
+
+  /* ===== 모바일 반응형 ===== */
   .mobile-chat-back{display:none}
   @media (max-width:760px){
-    body{padding-top:36px;font-size:13px;overflow-x:hidden}
-    .scn{overflow-x:auto}.scn-in{min-width:max-content;padding:7px 12px;flex-wrap:nowrap}.scn-in .lab{font-size:10px}.scn button,.landing-back{font-size:10.5px;padding:4px 8px}
-    .wf-flag{padding:5px 10px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    header{top:36px}.gnb{padding:10px 14px;gap:8px;overflow-x:auto}.student-brand{margin-right:4px;flex-shrink:0}.student-brand .unichat-brand-name{font-size:16px}nav.menu{gap:0;flex:0 0 auto}nav.menu button{padding:7px 8px;font-size:12px;white-space:nowrap}.lang{display:none}.userchip{padding:3px;border-radius:50%;flex-shrink:0}.userchip .user-name{display:none}
+    body{padding-top:0;font-size:13px;overflow-x:hidden}
+    #appHeader{top:0}.student-header-inner{width:min(100% - 32px,1180px);min-height:66px;gap:7px}.student-brand .unichat-brand-name{font-size:16px}.student-mobile-nav-trigger{display:inline-flex;order:3;margin-left:auto}.student-header-nav{display:none}.student-public-header.is-mobile-menu-open .student-header-nav{position:absolute;top:calc(100% - 2px);right:0;display:flex;flex-direction:column;align-items:stretch;min-width:190px;gap:2px;margin:0;padding:7px;border:1px solid #dce5f1;border-radius:13px;background:#fff;box-shadow:0 18px 42px rgba(16,34,63,.16)}.student-public-header.is-mobile-menu-open .student-header-nav a{min-height:39px;padding:0 10px}.student-public-header.is-mobile-menu-open .language-selector{min-height:39px;margin:0;padding:0 4px}.student-public-header.is-mobile-menu-open .language-selector select{width:100%;max-width:none}.student-header-actions{gap:6px;margin-left:0}.student-header-actions > [data-language-selector]{display:none!important}.userchip{padding:3px;border-radius:50%;flex-shrink:0}.userchip .user-name{display:none}
+    .student-public-header.is-mobile-menu-open .student-header-nav{width:min(320px,calc(100vw - 32px));min-width:0;max-height:calc(100dvh - 82px);overflow-y:auto}
+    .student-public-header.is-mobile-menu-open .student-header-nav>a{order:1}
+    .student-public-header.is-student-authenticated .student-profile-menu{display:none}
+    .student-public-header.is-mobile-menu-open .mobile-student-menu:not([hidden]){order:2;display:grid;gap:5px;margin-top:4px;padding-top:7px;border-top:1px solid var(--line2)}
+    .mobile-student-profile{display:grid;grid-template-columns:38px minmax(0,1fr);gap:10px;align-items:center;padding:9px 10px}
+    .mobile-student-avatar{display:grid;width:38px;height:38px;place-items:center;border-radius:50%;background:#edf3ff;font-size:18px}
+    .mobile-student-identity{display:grid;min-width:0;gap:1px}
+    .mobile-student-identity strong,.mobile-student-identity small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .mobile-student-identity strong{color:#10223f;font-size:13px}.mobile-student-identity small{color:var(--ink2);font-size:11px}
+    .mobile-student-links{display:grid;gap:2px}
+    .student-public-header.is-mobile-menu-open .mobile-student-links a,.mobile-student-links button{display:flex;width:100%;min-height:39px;align-items:center;padding:0 10px;border:0;border-radius:8px;background:transparent;color:#344054;font:700 12px var(--sans);text-align:left;text-decoration:none}
+    .student-public-header.is-mobile-menu-open .mobile-student-links a:hover,.mobile-student-links button:hover{background:#f3f6fb;color:#1d4ed8}
+    .mobile-student-links button[data-student-logout]{margin-top:3px;border-top:1px solid var(--line2);border-radius:0;color:var(--warn)}
+    .student-public-header.is-mobile-menu-open .student-header-nav>.language-selector[data-language-selector-placement="mobile"]{order:3;margin-top:4px;border-top:1px solid var(--line2)}
     .wrap{padding:18px 14px 40px}.lead{font-size:12.5px;margin-bottom:15px}h2.vt{font-size:19px}.authcard{margin:0 auto;padding:22px 18px;border-radius:14px}.findbar input{max-width:none;padding:10px 14px}.chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:3px;margin-bottom:14px}.chip{white-space:nowrap;font-size:11.5px;padding:6px 11px}.ugrid{grid-template-columns:1fr;gap:10px}.ucard{padding:14px}.nofind{padding:15px;align-items:flex-start;flex-direction:column;gap:11px}.nofind button{margin-left:0;width:100%}
-    .msgr{height:calc(100vh - 168px);min-height:520px;grid-template-columns:1fr;border-radius:12px}.msgr .clist{border-right:0}.msgr .conv{display:none}.msgr.show-conversation .clist{display:none}.msgr.show-conversation .conv{display:flex}.mobile-chat-back{display:inline-grid;place-items:center;width:30px;height:30px;border:0;border-radius:8px;background:#eef3fb;color:var(--brand);font-size:18px;cursor:pointer;flex-shrink:0}.chat-hd{padding:10px 12px;gap:8px}.chat-hd .tt{min-width:0}.chat-hd .tt b,.chat-hd .tt small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chat-hd .st{margin-left:auto}.thread{padding:14px}.composer{padding:9px 10px}.msg .bub{max-width:calc(100vw - 102px)}
-    .docwrap,.mygrid{grid-template-columns:1fr;gap:12px}.sidebox{order:2}.stat4{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:12px}.prof{padding:16px}.setrow .si{padding:12px;gap:12px}.modal-overlay{padding:14px}.modal-box{width:100%;max-height:82vh}.modal-hd{padding:14px 16px}.modal-bd{padding:14px 16px 18px}.verify-email-row,.verify-code-row{gap:6px}.verify-email-row button,.verify-code-row button{padding:0 9px;font-size:10.5px}
+    .msgr{height:calc(100dvh - 225px);min-height:480px;grid-template-columns:1fr;border-radius:12px}.msgr .clist{border-right:0}.msgr .conv{display:none}.msgr.show-conversation .clist{display:none}.msgr.show-conversation .conv{display:flex}.mobile-chat-back{display:inline-grid;place-items:center;width:30px;height:30px;border:0;border-radius:8px;background:#eef3fb;color:var(--brand);font-size:18px;cursor:pointer;flex-shrink:0}.chat-hd{padding:10px 12px;gap:8px}.chat-hd .tt{min-width:0}.chat-hd .tt b,.chat-hd .tt small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chat-hd .st{margin-left:auto;font-size:9px}.thread{padding:14px}.msg{max-width:84%}.composer{padding:9px 10px}.msg .bub{max-width:calc(100vw - 74px)}
+    .docwrap,.mygrid,.student-notice-layout{grid-template-columns:1fr;gap:12px}.sidebox{order:2}.dcard .dn{overflow-wrap:anywhere}.stat4{grid-template-columns:repeat(2,1fr);gap:8px}.stat{padding:12px}.prof{padding:16px}.setrow .si{padding:12px;gap:12px}.student-notice-detail{min-height:0;padding:17px}.student-notice-detail h3{font-size:16px}.modal-overlay{padding:14px}.modal-box{width:100%;max-height:82vh}.document-preview-modal,.request-example-modal{width:100%}#universityDetail .modal-box{width:100%!important}.modal-hd{padding:14px 16px}.modal-bd{padding:14px 16px 18px}.verify-email-row,.verify-code-row{gap:6px}.verify-email-row button,.verify-code-row button{padding:0 9px;font-size:10.5px}
   }
   @media (max-width:390px){
-    nav.menu button{padding:7px 6px;font-size:11px}.student-brand .unichat-brand-name{font-size:14px}.wrap{padding-inline:11px}.stat4{grid-template-columns:1fr 1fr}.msgr{height:calc(100vh - 158px)}
+    .student-header-inner{width:min(100% - 22px,1180px)}.student-brand .unichat-brand-name{font-size:14px}.wrap{padding-inline:11px}.stat4{grid-template-columns:1fr 1fr}.msgr{height:calc(100dvh - 215px)}
+  }
+  @media (max-width:440px){
+    .student-brand .unichat-brand-name{display:none}
   }
 </style>
 </head>
 <body>
-  <div class="scn">
-    <div class="scn-in">
-      <span class="lab">ST 시나리오</span>
-      <button data-p="pSignup">ST-0 가입</button>
-      <button type="button" onclick="window.location.href='university-explore.html'">공개 대학 탐색</button>
-      <button data-p="pChats">ST-2/3 내 상담·채팅</button>
-      <button data-p="pDocs">ST-4 문서</button>
-      <button data-p="pMy">ST-5 마이</button>
-      <span class="lab">인증 상태</span>
-      <button data-auth-state="pending">대기</button>
-      <button data-auth-state="success">성공</button>
-      <button data-auth-state="failure">실패</button>
-      <button data-auth-state="expired">만료</button>
-      <span class="lab">상담 상태</span>
-      <button data-chat-state="대기">대기</button>
-      <button data-chat-state="진행중">진행</button>
-      <button data-chat-state="종료">종료</button>
-      <a class="landing-back" href="university-explore.html">← 대학 탐색</a>
-    </div>
-  </div>
-  <div class="wf-flag"><b>WIREFRAME</b> · 학생 포털(유학생) 데스크톱 목업 — 페르소나: 나팟 수크사이 🇹🇭 (방콕, KST-2) · 모바일 버전: 06_사용자_상담_목업.html</div>
-
-  <header id="appHeader" style="display:none">
-    <div class="gnb">
-      <a class="unichat-brand student-brand" href="기업용_배너_포함.html" aria-label="UniChat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">UniChat</span></a>
-      <nav class="menu">
-        <button type="button" onclick="window.location.href='university-explore.html'">대학 탐색</button>
-        <button data-p="pChats">상담하기<span class="nbdg">2</span></button>
+  <header id="appHeader" class="student-public-header" data-public-header style="display:none">
+    <div class="student-header-inner">
+      <a class="unichat-brand student-brand" href="기업용_배너_포함.html" aria-label="ubichat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">ubichat</span></a>
+      <button class="student-mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
+      <nav class="student-header-nav" aria-label="주 메뉴">
+        <a href="university-explore.html">대학 탐색</a>
+        <a data-student-nav="chats" href="student-desktop.html?view=chats" aria-current="page">내 상담</a>
+        <a href="content.html">콘텐츠</a>
       </nav>
-      <span class="lang" onclick="toggleLang(this)"><b>한국어</b> / EN</span>
-      <div class="student-profile-menu" id="desktopProfileMenu">
-        <button class="userchip" id="desktopProfileTrigger" type="button" aria-haspopup="menu" aria-expanded="false" onclick="toggleDesktopProfileMenu()"><span class="av">🇹🇭</span>NAPAT<span aria-hidden="true">⌄</span></button>
-        <div class="student-profile-dropdown" id="desktopProfileDropdown" role="menu" hidden>
-          <div class="student-profile-summary"><strong>NAPAT SUKSAI</strong><span>napat@example.com</span></div>
-          <button type="button" role="menuitem" onclick="showPage('pDocs');closeDesktopProfileMenu()">문서 보관함</button>
-          <button type="button" role="menuitem" onclick="showPage('pMy');closeDesktopProfileMenu()">마이페이지</button>
-          <button class="logout" type="button" role="menuitem" onclick="logoutDesktopStudent()">로그아웃</button>
+      <div class="student-header-actions">
+        <div class="student-profile-menu" id="desktopProfileMenu">
+          <button class="userchip" id="desktopProfileTrigger" type="button" aria-haspopup="menu" aria-expanded="false" onclick="toggleDesktopProfileMenu()"><span class="av" data-profile-avatar>🇹🇭</span><span class="user-name" data-profile-name>NAPAT</span><span aria-hidden="true">⌄</span></button>
+          <div class="student-profile-dropdown" id="desktopProfileDropdown" role="menu" hidden>
+            <div class="student-profile-summary"><strong data-profile-full-name>NAPAT SUKSAI</strong><span data-profile-email>napat@example.com</span></div>
+            <button type="button" role="menuitem" onclick="showPage('pNotices');closeDesktopProfileMenu()">공지사항</button>
+            <button type="button" role="menuitem" onclick="showPage('pDocs');closeDesktopProfileMenu()">문서 보관함</button>
+            <button type="button" role="menuitem" onclick="showPage('pMy');closeDesktopProfileMenu()">마이페이지</button>
+            <button class="logout" type="button" role="menuitem" onclick="logoutDesktopStudent()">로그아웃</button>
+          </div>
         </div>
       </div>
     </div>
@@ -339,29 +382,45 @@
     <div class="page" id="pChats">
       <span class="ix">ST-2 / ST-3</span>
       <h2 class="vt" style="margin-top:8px">내 상담</h2>
-      <div class="lead">대학별 대화는 하나의 채널로 계속 이어져요</div>
+      <div class="lead">대학과 소속구분별 대화를 별도 채널로 확인하세요</div>
       <div class="msgr">
         <div class="clist">
-          <div class="citem act" onclick="selectConv(this,'서정대학교','진행중')">
-            <div class="ulogo">🏛️</div>
+          <div class="citem act" data-channel-key="gumi::undergraduate" onclick="selectConv(this,'gumi','undergraduate')">
+            <div class="ulogo">GM</div>
             <div class="cb">
-              <div class="r1"><span class="nm">서정대학교</span><span class="tm">방금</span></div>
+              <div class="r1"><span class="nm">구미대학교</span><span class="tm">방금</span></div>
               <div class="prev">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div>
               <div class="r2"><span class="stchip st-live">진행중</span><span class="unread">2</span></div>
             </div>
           </div>
-          <div class="citem" onclick="selectConv(this,'한양여자대학교','대기')">
-            <div class="ulogo">🎓</div>
+          <div class="citem" data-channel-key="gumi::language-center" onclick="selectConv(this,'gumi','language-center')">
+            <div class="ulogo">GM</div>
+            <div class="cb">
+              <div class="r1"><span class="nm">구미대학교 언어교육원</span><span class="tm">20분 전</span></div>
+              <div class="prev">TOPIK 성적표를 보내주세요.</div>
+              <div class="r2"><span class="stchip st-live">진행중</span></div>
+            </div>
+          </div>
+          <div class="citem" data-channel-key="gumi::graduate-school" onclick="selectConv(this,'gumi','graduate-school')">
+            <div class="ulogo">GM</div>
+            <div class="cb">
+              <div class="r1"><span class="nm">구미대학교 대학원</span><span class="tm">어제</span></div>
+              <div class="prev">이 소속구분의 상담이 제한되었습니다.</div>
+              <div class="r2"><span class="stchip st-blocked">상담 제한</span></div>
+            </div>
+          </div>
+          <div class="citem" data-channel-key="hanyang-womens::undergraduate" onclick="selectConv(this,'hanyang-womens','undergraduate')">
+            <div class="ulogo">HY</div>
             <div class="cb">
               <div class="r1"><span class="nm">한양여자대학교</span><span class="tm">1시간 전</span></div>
-              <div class="prev">장학금 관련해서 문의드립니다</div>
+              <div class="prev">장학금 관련해서 문의드립니다.</div>
               <div class="r2"><span class="stchip st-wait">대기</span></div>
             </div>
           </div>
-          <div class="citem" onclick="selectConv(this,'연성대학교','종료')">
-            <div class="ulogo">🏫</div>
+          <div class="citem" data-channel-key="yeonsung::international-office" onclick="selectConv(this,'yeonsung','international-office')">
+            <div class="ulogo">YS</div>
             <div class="cb">
-              <div class="r1"><span class="nm">연성대학교</span><span class="tm">6월 30일</span></div>
+              <div class="r1"><span class="nm">연성대학교 국제교류</span><span class="tm">6월 30일</span></div>
               <div class="prev">상담이 종료되었습니다.</div>
               <div class="r2"><span class="stchip st-done">종료</span></div>
             </div>
@@ -370,23 +429,23 @@
         <div class="conv">
           <div class="chat-hd">
             <button class="mobile-chat-back" type="button" onclick="showMobileConversationList()" aria-label="상담 목록으로 돌아가기">‹</button>
-            <div class="ulogo">🏛️</div>
+            <div class="ulogo" id="chatUniversityMark">GM</div>
             <div class="tt">
-              <b id="chatUniv">서정대학교</b>
-              <small>이수진 입학팀 · <span style="color:#1a7f43">●</span> 운영중 · 운영 09:00–18:00 KST (내 시간 07:00–16:00)</small>
+              <b id="chatUniv">구미대학교</b>
+              <small>입학 상담팀 · <span style="color:#1a7f43">●</span> 운영중 · 운영 09:00–18:00 KST (내 시간 07:00–16:00)</small>
             </div>
             <span class="stchip st-live st" id="chatSt">진행중</span>
           </div>
           <div class="thread" id="thread">
             <div class="day">오늘</div>
             <div class="msg sys"><div class="bub">입학 상담이 시작되었어요 · 프로필(🇹🇭 태국 · 방콕 제1고)이 대학에 전달되었습니다</div></div>
-            <div class="msg"><div class="av">서정</div><div><div class="bub">Napat님 안녕하세요! 입학팀 이수진입니다. 2027년 3월 학부 입학을 준비하시는군요 😊</div><div class="meta">10:02</div></div></div>
+            <div class="msg welcome-message"><div class="av">SJ</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>Napat님 안녕하세요! 서정대학교 입학 상담팀입니다. 2027년 3월 학부 입학을 준비하시는군요 😊</div><div class="meta">10:02</div></div></div>
             <div class="msg me"><div><div class="bub">네! 컴퓨터공학과 지원 조건이 궁금해요. Do you have English materials?</div><div class="meta">읽음 · 10:03</div></div></div>
-            <div class="msg"><div class="av">서정</div><div><div class="bub">물론이죠. 우선 최근 성적증명서를 보내주시면 지원 가능 여부를 확인해드릴게요.</div><div class="meta">10:05</div></div></div>
+            <div class="msg"><div class="av">SJ</div><div><div class="bub">물론이죠. 우선 최근 성적증명서를 보내주시면 지원 가능 여부를 확인해드릴게요.</div><div class="meta">10:05</div></div></div>
             <div class="msg me"><div><div class="bub">📎 문서 보관함에서 전송
-              <div class="doccard"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일 업로드</div></div></div>
+              <div class="doccard"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · 6월 28일 업로드</div></div></div>
             </div><div class="meta">읽음 · 10:06</div></div></div>
-            <div class="msg"><div class="av">서정</div><div><div class="bub">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div><div class="meta">10:08</div></div></div>
+            <div class="msg"><div class="av">SJ</div><div><div class="bub">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div><div class="meta">10:08</div></div></div>
           </div>
           <div class="composer">
             <div class="attmenu" id="attMenu">
@@ -411,27 +470,37 @@
           <div id="desktopDocList">
             <div class="doc-group" data-category="성적증명서">
               <div class="doc-cat">성적증명서</div>
-              <div class="dcard"><div class="di">📄</div><div class="db"><div class="dn">성적증명서_2026.pdf</div><div class="dm">6월 28일 업로드 · 840KB</div><div class="sent">서정대학교에 전송됨 (v2)</div></div><span class="vch">v2</span></div>
+              <div class="dcard" data-document-id="desktop-transcript"><div class="di">📄</div><div class="db"><div class="dn">성적증명서_2026.pdf</div><div class="dm">6월 28일 업로드 · 840KB</div></div><button class="doc-edit" type="button" onclick="openDesktopDocumentEdit(this)" aria-label="성적증명서_2026.pdf 수정">수정</button></div>
             </div>
             <div class="doc-group" data-category="어학성적">
               <div class="doc-cat">어학성적</div>
-              <div class="dcard"><div class="di">🗣️</div><div class="db"><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">6월 1일 업로드 · 420KB</div><div class="sent">3개 대학에 전송됨</div></div><span class="vch">v1</span></div>
+              <div class="dcard" data-document-id="desktop-topik"><div class="di">🗣️</div><div class="db"><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">6월 1일 업로드 · 420KB</div></div><button class="doc-edit" type="button" onclick="openDesktopDocumentEdit(this)" aria-label="TOPIK_4급_성적표.pdf 수정">수정</button></div>
             </div>
             <div class="doc-group" data-category="졸업(예정)증명서">
               <div class="doc-cat">졸업(예정)증명서</div>
               <div class="dcard empty-doc" style="opacity:.55"><div class="di">🎓</div><div class="db"><div class="dn">아직 업로드하지 않았어요</div><div class="dm">입학 지원 시 필요할 수 있어요</div></div></div>
             </div>
+            <div class="doc-group" data-category="여권"><div class="doc-cat">여권</div><div class="dcard empty-doc" style="opacity:.55"><div class="di">🛂</div><div class="db"><div class="dn">아직 업로드하지 않았어요</div><div class="dm">여권 인적사항 면을 올려 주세요</div></div></div></div>
+            <div class="doc-group" data-category="가족관계증명서"><div class="doc-cat">가족관계증명서</div><div class="dcard empty-doc" style="opacity:.55"><div class="di">👪</div><div class="db"><div class="dn">아직 업로드하지 않았어요</div><div class="dm">지원에 필요한 가족관계 서류를 올려 주세요</div></div></div></div>
+            <div class="doc-group" data-category="재정증명서"><div class="doc-cat">재정증명서</div><div class="dcard empty-doc" style="opacity:.55"><div class="di">💳</div><div class="db"><div class="dn">아직 업로드하지 않았어요</div><div class="dm">지원에 필요한 재정 관련 서류를 올려 주세요</div></div></div></div>
+            <div class="doc-group" data-category="apostille"><div class="doc-cat">공증문서</div><div class="dcard empty-doc" style="opacity:.55"><div class="di">🏷️</div><div class="db"><div class="dn">아직 업로드하지 않았어요</div><div class="dm">공증문서 확인 서류를 올려 주세요</div></div></div></div>
           </div>
-          <div class="upl" role="button" tabindex="0" onclick="openUploadModal()" onkeydown="if(event.key==='Enter'||event.key===' ')openUploadModal()">＋ 문서 업로드<small>카테고리를 지정해 PDF/JPG/PNG 파일을 올릴 수 있어요 (10MB 이하)</small></div>
+          <div class="upl" role="button" tabindex="0" onclick="openUploadModal()" onkeydown="if(event.key==='Enter'||event.key===' ')openUploadModal()">＋ 문서 업로드<small>PDF 파일만 올릴 수 있어요 (10MB 이하). 기타는 클라우드 링크도 첨부할 수 있어요.</small></div>
         </div>
-        <div class="sidebox">
-          <h4>전송 이력 요약</h4>
-          <div class="row"><span>서정대학교</span><b>2건</b></div>
-          <div class="row"><span>한양여자대학교</span><b>2건</b></div>
-          <div class="row"><span>연성대학교</span><b>1건</b></div>
-          <h4 style="margin-top:16px">안내</h4>
-          <div style="font-size:11.5px;color:var(--ink2);line-height:1.6">보관함 원본은 본인만 볼 수 있어요. 대학은 대화방에 전송한 사본만 열람할 수 있습니다. 보관함에서 삭제해도 이미 전송된 사본은 회수되지 않아요.</div>
-        </div>
+      </div>
+    </div>
+
+    <!-- ST-6 플랫폼 공지사항 -->
+    <div class="page" id="pNotices">
+      <span class="ix">ST-6</span>
+      <h2 class="vt" style="margin-top:8px">공지사항</h2>
+      <div class="lead">ubichat 서비스 이용과 학생 포털 운영 안내를 확인하세요.</div>
+      <div class="student-notice-alert" id="studentNoticeAlert" hidden aria-live="polite"></div>
+      <div class="student-notice-layout">
+        <section class="student-notice-list" id="studentNoticeList" aria-label="공지사항 목록"></section>
+        <article class="student-notice-detail" id="studentNoticeDetail" tabindex="-1">
+          <div class="student-notice-empty">확인할 공지사항을 선택해 주세요.</div>
+        </article>
       </div>
     </div>
 
@@ -491,10 +560,52 @@
   <!-- 문서 선택 모달 -->
   <div class="modal-overlay" id="docPick" onclick="if(event.target===this) closeModal('docPick')">
     <div class="modal-box">
-      <div class="modal-hd"><b>문서 보관함에서 전송</b><button onclick="closeModal('docPick')">✕</button></div>
+      <div class="modal-hd"><b id="desktopDocPickTitle">문서 보관함에서 전송</b><button onclick="closeModal('docPick')">✕</button></div>
       <div class="modal-bd">
-        <div class="pickitem" onclick="sendDoc('성적증명서_2026.pdf','성적증명서 · v2')"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일</div></div></div>
-        <div class="pickitem" onclick="sendDoc('TOPIK_4급_성적표.pdf','어학성적 · v1')"><span class="di">🗣️</span><div><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">어학성적 · v1 · 6월 1일</div></div></div>
+        <button class="pickitem" type="button" data-document-id="desktop-transcript" data-file-name="성적증명서_2026.pdf" data-category="성적증명서" data-document-meta="성적증명서 · 6월 28일 업로드" onclick="sendSelectedDesktopDocument(this)"><span class="di">📄</span><span><span class="dn">성적증명서_2026.pdf</span><span class="dm">성적증명서 · 6월 28일</span></span></button>
+        <button class="pickitem" type="button" data-document-id="desktop-topik" data-file-name="TOPIK_4급_성적표.pdf" data-category="어학성적" data-document-meta="어학성적 · 6월 1일 업로드" onclick="sendSelectedDesktopDocument(this)"><span class="di">🗣️</span><span><span class="dn">TOPIK_4급_성적표.pdf</span><span class="dm">어학성적 · 6월 1일</span></span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 재요청 문서 선택 모달 -->
+  <div class="modal-overlay" id="desktopDocumentRequestChoiceModal" onclick="if(event.target===this) closeModal('desktopDocumentRequestChoiceModal')">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="desktopDocumentRequestChoiceTitle">
+      <div class="modal-hd"><b id="desktopDocumentRequestChoiceTitle">요청 문서 다시 보내기</b><button type="button" onclick="closeModal('desktopDocumentRequestChoiceModal')" aria-label="요청 문서 선택 창 닫기">✕</button></div>
+      <div class="modal-bd">
+        <div class="upload-summary" id="desktopDocumentRequestChoiceSummary"></div>
+        <button class="btn btn-primary btn-full" type="button" onclick="openDesktopRequestedUpload()">새 PDF 업로드</button>
+        <button class="btn btn-ghost btn-full" style="margin-top:8px" type="button" id="desktopRequestedExistingDocumentButton" onclick="openDesktopRequestedExistingDocumentPicker()">문서 보관함에서 선택</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 학교 요청 서류의 제출 예시 모달 -->
+  <div class="modal-overlay" id="desktopDocumentRequestExampleModal" onclick="if(event.target===this)closeDesktopDocumentRequestExample()">
+    <div class="modal-box request-example-modal" role="dialog" aria-modal="true" aria-labelledby="desktopRequestExampleTitle">
+      <div class="modal-hd"><b id="desktopRequestExampleTitle">제출 예시 파일</b><button type="button" id="desktopRequestExampleClose" onclick="closeDesktopDocumentRequestExample()" aria-label="제출 예시 파일 닫기">✕</button></div>
+      <div class="modal-bd">
+        <div class="request-example-file"><span class="file-icon" aria-hidden="true">PDF</span><div><b id="desktopRequestExampleFileName"></b><small id="desktopRequestExampleSource"></small></div></div>
+        <section class="request-example-paper" aria-label="학교 요청 서류의 시연용 예시"><span class="eyebrow">제출 예시</span><strong id="desktopRequestExampleDocumentTitle"></strong><p id="desktopRequestExampleDescription"></p><div class="pdf-preview-lines" aria-hidden="true"><span></span><span></span><span></span><span></span></div><span class="preview-watermark" aria-hidden="true">SAMPLE</span></section>
+        <p class="request-example-note" id="desktopRequestExampleNotice"></p>
+        <a class="request-example-open" id="desktopRequestExampleOpen" target="_blank" rel="noopener noreferrer" hidden>예시 파일 새 창에서 열기</a>
+        <div class="preview-actions"><button class="btn btn-primary" type="button" onclick="closeDesktopDocumentRequestExample()">확인</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 문서 전송 전 미리보기 모달 -->
+  <div class="modal-overlay" id="documentPreviewModal" onclick="if(event.target===this)cancelDesktopDocumentPreview()">
+    <div class="modal-box document-preview-modal" role="dialog" aria-modal="true" aria-labelledby="desktopPreviewTitle">
+      <div class="modal-hd"><b id="desktopPreviewTitle">전송 전 미리보기</b><button type="button" onclick="cancelDesktopDocumentPreview()" aria-label="문서 미리보기 닫기">✕</button></div>
+      <div class="modal-bd">
+        <p class="document-preview-intro">전송할 문서와 대상을 확인한 뒤 보내 주세요.</p>
+        <div class="document-preview-summary"><span class="preview-icon" id="desktopPreviewIcon" aria-hidden="true">PDF</span><div><b id="desktopPreviewFileName"></b><small id="desktopPreviewMetadata"></small></div></div>
+        <div class="document-preview-target" id="desktopPreviewTarget"></div>
+        <section class="pdf-preview-card" id="desktopPdfPreview" aria-label="PDF 첫 페이지 시연용 미리보기"><span class="eyebrow">시연용 첫 페이지 미리보기</span><strong id="desktopPreviewCategory"></strong><p>실제 문서 내용을 표시하지 않고, 전송 전 문서 유형과 상태만 확인해요.</p><div class="pdf-preview-lines" aria-hidden="true"><span></span><span></span><span></span><span></span></div><span class="preview-watermark" aria-hidden="true">PREVIEW</span></section>
+        <section class="external-link-preview" id="desktopExternalLinkPreview" hidden><b>외부 클라우드 링크</b><p id="desktopPreviewLinkHost"></p><a id="desktopPreviewLink" target="_blank" rel="noopener noreferrer">새 창에서 링크 열기</a><p>플랫폼은 링크의 파일을 열람하거나 복제하지 않아요.</p></section>
+        <p class="preview-caption">취소하면 전송되지 않아요. 전송 뒤에는 해당 상담 채널에서만 문서 카드가 표시됩니다.</p>
+        <div class="preview-actions"><button class="btn btn-ghost" type="button" onclick="cancelDesktopDocumentPreview()">취소</button><button class="btn btn-primary" type="button" id="desktopPreviewSend" onclick="confirmDesktopDocumentSend()">이 문서 전송</button></div>
       </div>
     </div>
   </div>
@@ -502,12 +613,13 @@
   <!-- 문서 업로드 모달 -->
   <div class="modal-overlay" id="uploadModal" onclick="if(event.target===this) closeModal('uploadModal')">
     <div class="modal-box">
-      <div class="modal-hd"><b>문서 업로드</b><button onclick="closeModal('uploadModal')">✕</button></div>
+      <div class="modal-hd"><b id="desktopUploadModalTitle">문서 업로드</b><button onclick="closeModal('uploadModal')">✕</button></div>
       <div class="modal-bd">
-        <div class="upload-summary">업로드할 문서의 카테고리를 먼저 선택해 주세요. 같은 카테고리에 추가한 문서는 버전별로 보관됩니다.</div>
-        <div class="field"><label for="desktopUploadCategory">카테고리 <span class="req">*</span></label><select id="desktopUploadCategory"><option>성적증명서</option><option>어학성적</option><option>졸업(예정)증명서</option><option>기타</option></select></div>
-        <div class="field"><label for="desktopUploadFile">파일 <span class="req">*</span></label><input id="desktopUploadFile" type="file" accept=".pdf,.jpg,.jpeg,.png"><span class="hint">PDF/JPG/PNG · 최대 10MB</span></div>
-        <button class="btn btn-primary btn-full" onclick="uploadDesktopDocument()">선택한 카테고리로 업로드</button>
+        <div class="upload-summary" id="desktopUploadSummary">PDF 파일만 올릴 수 있어요. 카테고리에서 기타를 선택하면 클라우드 링크도 첨부할 수 있어요.</div>
+        <div class="field"><label for="desktopUploadCategory">카테고리 <span class="req">*</span></label><select id="desktopUploadCategory"><option>성적증명서</option><option>어학성적</option><option>졸업(예정)증명서</option><option>여권</option><option>가족관계증명서</option><option>재정증명서</option><option value="apostille">공증문서</option><option>기타</option></select></div>
+        <div class="field" id="desktopUploadFileField"><label for="desktopUploadFile">PDF 파일</label><input id="desktopUploadFile" type="file" accept=".pdf,application/pdf"><span class="hint">PDF · 최대 10MB</span></div>
+        <div class="field" id="desktopCloudLinkField" hidden><label for="desktopCloudLink">클라우드 링크</label><input id="desktopCloudLink" type="url" inputmode="url" autocomplete="url" placeholder="https://drive.google.com/..." disabled><span class="hint">기타를 선택했을 때만 가능 · Google Drive, Dropbox 등 HTTPS 링크를 첨부할 수 있어요. 플랫폼은 파일을 복제하지 않아요.</span></div>
+        <button class="btn btn-primary btn-full" id="desktopUploadSubmit" onclick="uploadDesktopDocument()">선택한 카테고리로 업로드</button>
       </div>
     </div>
   </div>
@@ -515,6 +627,7 @@
 <script src="university-data.js"></script>
 <script src="student-university-directory.js"></script>
 <script src="student-session.js"></script>
+<script src="notice-data.js"></script>
 <script>
   const signupCities={
     '베트남':['하노이','호치민','다낭'],
@@ -528,9 +641,10 @@
     const city=document.getElementById('signupCity');
     city.replaceChildren(...signupCities[country].map(name=>new Option(name,name)));
   }
-  const protectedPages=new Set(['pChats','pDocs','pMy']);
+  const protectedPages=new Set(['pChats','pDocs','pMy','pNotices']);
   const desktopQuery=new URLSearchParams(window.location.search);
   const requestedUniversity=desktopQuery.get('universityId')||desktopQuery.get('university');
+  const requestedAffiliation=desktopQuery.get('affiliationId');
   const requestedView=desktopQuery.get('view');
   let studentAuthenticated=Boolean(window.UniChatStudentSession?.isSignedIn()), desktopEmailAuthState='unverified';
   const desktopAuthCopy={
@@ -580,17 +694,21 @@
     showPage('pFind');
   }
   function openRequestedDesktopConsultation(){
-    if(requestedUniversity){
-      const university=window.UniversityDirectory?.resolve?.(requestedUniversity);
-      const isOpen=university?.publication?.status==='published'&&university?.consultation?.status==='open';
-      if(isOpen){
-        openChatFromFind(university.name.ko,'대기');
-        return;
-      }
-      returnToDesktopFind(university);
+    const requestedPage={docs:'pDocs',my:'pMy',notices:'pNotices',signup:'pSignup'}[requestedView]||'pChats';
+    if(requestedPage!=='pChats'){
+      showPage(requestedPage);
       return;
     }
-    showPage({docs:'pDocs',my:'pMy',signup:'pSignup'}[requestedView]||'pChats');
+    if(requestedUniversity||requestedAffiliation){
+      if(requestedUniversity&&requestedAffiliation&&getConsultationChannel(requestedUniversity,requestedAffiliation)){
+        openChatFromFind(requestedUniversity,requestedAffiliation);
+        return;
+      }
+      showConsultationContextError();
+      return;
+    }
+    setChatHeader('gumi','undergraduate');
+    showPage('pChats');
   }
   function completeDesktopSignup(){
     if(desktopEmailAuthState!=='success'){ setDesktopEmailAuthState('unverified',false); return; }
@@ -605,111 +723,345 @@
     }
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
     document.getElementById(id).classList.add('show');
+    if(id==='pNotices') renderStudentNotices();
     if(id==='pChats' && window.innerWidth<=760) document.querySelector('.msgr')?.classList.remove('show-conversation');
     document.getElementById('appHeader').style.display=(id==='pLogin'||id==='pSignup')?'none':'';
-    document.querySelectorAll('.scn button').forEach(b=>b.classList.toggle('on', b.dataset.p===id));
-    document.querySelectorAll('nav.menu button').forEach(b=>b.classList.toggle('on', b.dataset.p===id));
   }
-  document.querySelectorAll('.scn button, nav.menu button').forEach(b=>{
-    if(b.dataset.p) b.addEventListener('click', ()=> showPage(b.dataset.p));
-  });
-  document.querySelectorAll('.scn button[data-auth-state]').forEach(b=> b.addEventListener('click', ()=>{
-    setDesktopEmailAuthState(b.dataset.authState); b.classList.add('on');
-  }) );
-  document.querySelectorAll('.scn button[data-chat-state]').forEach(b=> b.addEventListener('click', ()=>{
-    studentAuthenticated=true; window.UniChatStudentSession?.signIn(); setChatHeader('서정대학교',b.dataset.chatState); showPage('pChats'); b.classList.add('on');
-  }) );
+  function escapeStudentNotice(value){
+    return String(value??'').replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character]));
+  }
+  function renderStudentNotices(selectedId=''){
+    const notices=window.UniChatNotices?.listFor?.('student')||[];
+    const list=document.getElementById('studentNoticeList');
+    const alert=document.getElementById('studentNoticeAlert');
+    if(!list||!alert) return;
+    const important=notices.find(notice=>notice.important);
+    alert.hidden=!important;
+    alert.innerHTML=important?`<span aria-hidden="true">📢</span><div><strong>${escapeStudentNotice(important.title)}</strong><span>${escapeStudentNotice(important.summary)}</span></div>`:'';
+    if(!notices.length){
+      list.innerHTML='<div class="student-notice-empty">현재 게시 중인 공지사항이 없습니다.</div>';
+      document.getElementById('studentNoticeDetail').innerHTML='<div class="student-notice-empty">새 공지가 게시되면 이곳에서 확인할 수 있습니다.</div>';
+      return;
+    }
+    const active=notices.find(notice=>notice.id===selectedId)||notices[0];
+    list.innerHTML=notices.map(notice=>`<button class="student-notice-item${notice.id===active.id?' on':''}" type="button" data-notice-id="${escapeStudentNotice(notice.id)}" onclick="openStudentNotice(this.dataset.noticeId)" aria-current="${notice.id===active.id?'true':'false'}"><strong>${escapeStudentNotice(notice.title)}</strong><p>${escapeStudentNotice(notice.summary)}</p><span class="student-notice-meta">${notice.important?'<span class="student-notice-important">중요</span>':''}<span>${escapeStudentNotice(window.UniChatNotices.formatDate(notice.publishedAt))}</span></span></button>`).join('');
+    renderStudentNoticeDetail(active);
+  }
+  function renderStudentNoticeDetail(notice){
+    const detail=document.getElementById('studentNoticeDetail');
+    if(!detail||!notice) return;
+    detail.innerHTML=`${notice.important?'<span class="student-notice-important">중요 공지</span>':''}<h3>${escapeStudentNotice(notice.title)}</h3><div class="detail-meta">${escapeStudentNotice(window.UniChatNotices.formatDate(notice.publishedAt))} · ${escapeStudentNotice(notice.author)}</div><div class="detail-body">${escapeStudentNotice(notice.body)}</div>`;
+  }
+  function openStudentNotice(id){
+    renderStudentNotices(id);
+    const detail=document.getElementById('studentNoticeDetail');
+    if(window.innerWidth<=760) detail?.scrollIntoView({behavior:'smooth',block:'start'});
+    detail?.focus({preventScroll:true});
+  }
   renderDesktopEmailAuth();
 
-  const stMap={'대기':'st-wait','진행중':'st-live','종료':'st-done'};
-  const activeThreadMarkup=document.getElementById('thread').innerHTML;
-  const completedThreadMarkup=activeThreadMarkup.replace('<div class="day">오늘</div>','<div class="day">6월 30일</div>');
-  let currentChatStatus='진행중', currentChatUniversity='서정대학교';
+  const stMap={'대기':'st-wait','진행중':'st-live','종료':'st-done','차단':'st-blocked'};
+  const statusLabel={'차단':'상담 제한'};
+  const undergraduateThread=`${document.getElementById('thread').innerHTML.replaceAll('서정대학교','구미대학교').replaceAll('SJ','GM')}<div class="msg"><div class="av">GM</div><div><div class="bub">입학 진행을 위해 여권 인적사항 면을 보내주세요.<button class="doc-example-action" type="button" data-doc-request-example="gumi-undergraduate-passport">제출 예시 보기</button><button class="doc-request-action" type="button" data-doc-request="gumi-undergraduate-passport" onclick="fulfillDesktopDocumentRequest('gumi-undergraduate-passport')">여권 업로드 후 전송</button></div><div class="meta">10:12</div></div></div>`;
+  const consultationChannels={
+    'gumi::undergraduate':{universityId:'gumi',affiliationId:'undergraduate',displayName:'구미대학교',mark:'GM',team:'학부·학사 입학 상담팀',status:'진행중',thread:undergraduateThread,preview:'성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!'},
+    'gumi::language-center':{universityId:'gumi',affiliationId:'language-center',displayName:'구미대학교 언어교육원',mark:'GM',team:'언어교육원 상담팀',status:'진행중',thread:`<div class="day">오늘</div><div class="msg sys"><div class="bub">언어교육원 상담이 시작되었어요 · 한국어 과정 문의가 전달되었습니다</div></div><div class="msg welcome-message"><div class="av">GM</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요! 구미대학교 언어교육원 상담팀입니다. 한국어 과정과 연계 진학을 안내해 드릴게요.</div><div class="meta">09:41</div></div></div><div class="msg me"><div><div class="bub">TOPIK 4급으로 지원 가능한 과정과 개강 일정을 알고 싶어요.</div><div class="meta">읽음 · 09:45</div></div></div><div class="msg"><div class="av">GM</div><div><div class="bub">현재 TOPIK 성적표를 보내주시면 지원 가능 과정을 확인해 드릴게요.<button class="doc-example-action" type="button" data-doc-request-example="gumi-language-topik">제출 예시 보기</button><button class="doc-request-action" type="button" data-doc-request="gumi-language-topik" onclick="fulfillDesktopDocumentRequest('gumi-language-topik')">어학성적 보내기</button></div><div class="meta">09:48</div></div></div>`,preview:'TOPIK 성적표를 보내주세요.'},
+    'gumi::graduate-school':{universityId:'gumi',affiliationId:'graduate-school',displayName:'구미대학교 대학원',mark:'GM',team:'대학원 입학 상담팀',status:'차단',thread:'<div class="day">어제</div><div class="msg sys"><div class="bub">이 소속구분의 상담이 제한되었습니다. 차단 해제 뒤 구미대학교 대학원 상담을 다시 신청할 수 있어요.</div></div>',preview:'이 소속구분의 상담이 제한되었습니다.'},
+    'hanyang-womens::undergraduate':{universityId:'hanyang-womens',affiliationId:'undergraduate',displayName:'한양여자대학교',mark:'HY',team:'입학 상담팀',status:'대기',thread:'<div class="day">오늘</div><div class="msg sys"><div class="bub">입학 상담 신청이 접수되었어요</div></div><div class="msg me"><div><div class="bub">장학금 관련해서 문의드립니다.</div><div class="meta">보냄 · 아직 읽지 않음</div></div></div>',preview:'장학금 관련해서 문의드립니다.'},
+    'yeonsung::international-office':{universityId:'yeonsung',affiliationId:'international-office',displayName:'연성대학교 국제교류',mark:'YS',team:'국제교류 상담팀',status:'종료',thread:'<div class="day">6월 30일</div><div class="msg sys"><div class="bub">입학 상담이 시작되었어요 · 희망 전공과 한국어 학습 계획이 대학에 전달되었습니다</div></div><div class="msg welcome-message"><div class="av">YS</div><div><div class="bub"><span class="welcome-label">대학 웰컴 메시지</span>안녕하세요, 연성대학교 국제교류 상담팀입니다. 호텔관광 전공에 관심이 있으시다고 들었어요.</div><div class="meta">13:20</div></div></div><div class="msg me"><div><div class="bub">네, 호텔관광과 지원을 준비 중이에요. 기숙사 신청도 함께 안내받을 수 있을까요?</div><div class="meta">읽음 · 13:24</div></div></div><div class="msg"><div class="av">YS</div><div><div class="bub">가능합니다. 입학 서류 확인 후 기숙사 신청 일정과 비용을 안내해 드릴게요.</div><div class="meta">13:29</div></div></div>',preview:'상담이 종료되었습니다.'}
+  };
+  const desktopDocumentRequests={
+    'gumi-undergraduate-passport':{channelKey:'gumi::undergraduate',category:'여권',label:'여권 인적사항 면',completed:false,exampleFile:{fileName:'여권_인적사항면_제출예시.pdf',title:'여권 인적사항 면 제출 예시',description:'사진과 영문 인적사항이 한 페이지에 모두 보이도록 준비해 주세요.',source:'구미대학교 학부·학사 입학 상담팀 제공',isPrototype:true}},
+    'gumi-language-topik':{channelKey:'gumi::language-center',category:'어학성적',label:'TOPIK 성적표',completed:false,exampleFile:{fileName:'TOPIK_성적표_제출예시.pdf',title:'TOPIK 성적표 제출 예시',description:'성명, 급수, 성적 확인 영역이 보이도록 전체 페이지를 제출해 주세요.',source:'구미대학교 언어교육원 상담팀 제공',isPrototype:true}}
+  };
+  const documentRequestStorageKey='unichat.prototype.document-requests.v1';
+  const documentUpdateStorageKey='unichat.prototype.document-updates.v1';
+  let currentChatKey='gumi::undergraduate', currentChatStatus='진행중';
+  function consultationKey(universityId,affiliationId){ return `${universityId}::${affiliationId}`; }
+  function getConsultationChannel(universityId,affiliationId){ return consultationChannels[consultationKey(universityId,affiliationId)]||null; }
+  function currentConsultationChannel(){ return consultationChannels[currentChatKey]||null; }
+  function syncConsultationList(channel){
+    const item=document.querySelector(`.citem[data-channel-key="${consultationKey(channel.universityId,channel.affiliationId)}"]`);
+    if(!item) return;
+    const preview=item.querySelector('.prev'), status=item.querySelector('.stchip');
+    if(preview) preview.textContent=channel.preview;
+    if(status){ status.textContent=statusLabel[channel.status]||channel.status; status.className=`stchip ${stMap[channel.status]||'st-wait'}`; }
+  }
+  function syncDocumentRequestActions(){
+    Object.entries(desktopDocumentRequests).forEach(([id,request])=>{
+      if(request.channelKey!==currentChatKey) return;
+      const button=document.querySelector(`[data-doc-request="${id}"]`);
+      if(button&&request.completed){ button.disabled=true; button.textContent='전송 완료'; }
+    });
+    document.querySelectorAll('[data-doc-request-choice]').forEach(button=>{
+      const request=desktopDocumentRequests[button.dataset.docRequestChoice];
+      if(!request) return;
+      button.disabled=request.completed;
+      button.textContent=request.completed?'전송 완료':'업로드 하기';
+      button.onclick=()=>openDesktopDocumentRequestChoice(button.dataset.docRequestChoice);
+    });
+    document.querySelectorAll('[data-doc-request-example]').forEach(button=>{
+      const request=desktopDocumentRequests[button.dataset.docRequestExample];
+      button.hidden=!request?.exampleFile;
+      button.onclick=()=>openDesktopDocumentRequestExample(button.dataset.docRequestExample);
+    });
+  }
   function renderChatState(){
+    syncExternalDesktopDocumentRequests();
+    const channel=currentConsultationChannel();
+    if(!channel) return;
     const thread=document.getElementById('thread'), input=document.getElementById('chatInput'), composer=document.querySelector('#pChats .composer');
     const contact=document.querySelector('#pChats .chat-hd .tt small');
+    currentChatStatus=channel.status;
+    document.getElementById('chatUniv').textContent=channel.displayName;
+    document.getElementById('chatUniversityMark').textContent=channel.mark;
+    const chip=document.getElementById('chatSt');
+    chip.textContent=statusLabel[channel.status]||channel.status; chip.className=`stchip ${stMap[channel.status]||'st-wait'} st`;
     composer.style.display='flex'; input.disabled=false;
-    if(currentChatStatus==='대기'){
+    thread.innerHTML=channel.thread;
+    if(channel.status==='대기'){
       contact.textContent='담당자 배정 대기 · 대학이 상담을 시작하면 알려드려요';
       input.placeholder='추가 메시지 남기기';
-      thread.innerHTML=`<div class="day">오늘</div><div class="msg sys"><div class="bub">상담을 신청했어요</div></div><div class="msg me"><div><div class="bub">장학금 관련해서 문의드립니다.</div><div class="meta">보냄 · 아직 읽지 않음</div></div></div>`;
-    }else if(currentChatStatus==='종료'){
+    }else if(channel.status==='종료'){
       contact.textContent='상담이 종료되었습니다';
       composer.style.display='none';
-      thread.innerHTML=`${completedThreadMarkup}<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div><button class="btn btn-primary" style="margin:14px" onclick="reopenConsultation()">다시 상담하기</button>`;
+      thread.insertAdjacentHTML('beforeend','<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div><button class="btn btn-primary" style="margin:14px" onclick="reopenConsultation()">다시 상담하기</button>');
+    }else if(channel.status==='차단'){
+      contact.textContent='이 소속구분의 상담이 제한되었습니다';
+      composer.style.display='none';
     }else{
-      contact.innerHTML='이수진 입학팀 · <span style="color:#1a7f43">●</span> 운영중 · 운영 09:00–18:00 KST (내 시간 07:00–16:00)';
+      contact.innerHTML=`${channel.team} · <span style="color:#1a7f43">●</span> 운영중 · 운영 09:00–18:00 KST (내 시간 07:00–16:00)`;
       input.placeholder='메시지를 입력하세요';
-      thread.innerHTML=activeThreadMarkup;
     }
+    syncDocumentRequestActions();
+    thread.scrollTop=thread.scrollHeight;
   }
-  function setChatHeader(univ, st){
-    currentChatUniversity=univ; currentChatStatus=st;
-    document.getElementById('chatUniv').textContent=univ;
-    const chip=document.getElementById('chatSt');
-    chip.textContent=st; chip.className='stchip '+stMap[st]+' st';
+  function setChatHeader(universityId,affiliationId,statusOverride=''){
+    const channel=getConsultationChannel(universityId,affiliationId);
+    if(!channel) return false;
+    if(statusOverride) channel.status=statusOverride;
+    currentChatKey=consultationKey(universityId,affiliationId);
+    syncConsultationList(channel);
     renderChatState();
+    return true;
   }
-  function selectConv(el, univ, st){
+  function selectConv(el,universityId,affiliationId){
     document.querySelectorAll('.citem').forEach(c=>c.classList.remove('act'));
     el.classList.add('act');
-    setChatHeader(univ, st);
+    setChatHeader(universityId,affiliationId);
     if(window.innerWidth<=760) document.querySelector('.msgr')?.classList.add('show-conversation');
   }
-  function openChatFromFind(univ, st){
-    setChatHeader(univ, st);
+  function showConsultationContextError(){
+    window.alert('선택한 소속구분의 상담 정보를 확인할 수 없어 새 상담을 만들지 않았어요. 대학 탐색에서 다시 선택해 주세요.');
+    document.querySelectorAll('.citem').forEach(item=>item.classList.toggle('act',item.dataset.channelKey==='gumi::undergraduate'));
+    setChatHeader('gumi','undergraduate');
+    showPage('pChats');
+  }
+  function openChatFromFind(universityId,affiliationId){
+    if(!setChatHeader(universityId,affiliationId)){ showConsultationContextError(); return; }
+    const key=consultationKey(universityId,affiliationId);
+    document.querySelectorAll('.citem').forEach(item=>item.classList.toggle('act',item.dataset.channelKey===key));
     showPage('pChats');
     if(window.innerWidth<=760) document.querySelector('.msgr')?.classList.add('show-conversation');
   }
   function showMobileConversationList(){
     document.querySelector('.msgr')?.classList.remove('show-conversation');
   }
-  function reopenConsultation(){ setChatHeader(currentChatUniversity,'대기'); }
+  function reopenConsultation(){
+    const channel=currentConsultationChannel();
+    if(!channel||channel.status!=='종료') return;
+    channel.thread+='<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div><div class="msg sys"><div class="bub">다시 상담을 신청했어요 · 이전 대화 내용을 바탕으로 담당자 배정을 기다리고 있어요</div></div>';
+    channel.status='대기'; channel.preview='상담 재개 요청이 접수되었습니다.';
+    syncConsultationList(channel);
+    renderChatState();
+  }
   function toggleAtt(){ document.getElementById('attMenu').classList.toggle('show'); }
   function closeAtt(){ document.getElementById('attMenu').classList.remove('show'); }
   function openModal(id){ document.getElementById(id).classList.add('show'); }
-  function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-  function openUploadModal(){
+  function closeModal(id){
+    document.getElementById(id).classList.remove('show');
+    if(id==='docPick') resetDesktopDocumentPicker();
+  }
+  const desktopDocumentCategoryLabels={
+    '성적증명서':'성적증명서','어학성적':'어학성적','졸업(예정)증명서':'졸업(예정)증명서','여권':'여권',
+    '가족관계증명서':'가족관계증명서','재정증명서':'재정증명서',apostille:'공증문서','기타':'기타'
+  };
+  function desktopDocumentCategoryLabel(category){ return desktopDocumentCategoryLabels[category]||category; }
+  const desktopDocumentIcons={
+    '성적증명서':'📄','어학성적':'🗣️','졸업(예정)증명서':'🎓','여권':'🛂',
+    '가족관계증명서':'👪','재정증명서':'💳',apostille:'🏷️','기타':'📎'
+  };
+  let desktopEditingDocument=null, pendingDesktopDocumentRequest=null, pendingDesktopDocumentSend=null;
+
+  function syncDesktopCloudLinkField(){
+    const isOther=document.getElementById('desktopUploadCategory').value==='기타';
+    const field=document.getElementById('desktopCloudLinkField');
+    const input=document.getElementById('desktopCloudLink');
+    field.hidden=!isOther;
+    input.disabled=!isOther;
+    if(!isOther) input.value='';
+  }
+  function openUploadModal(requestId=''){
+    desktopEditingDocument=null;
+    pendingDesktopDocumentRequest=requestId?desktopDocumentRequests[requestId]||null:null;
+    const category=document.getElementById('desktopUploadCategory');
+    const request=pendingDesktopDocumentRequest;
+    category.disabled=Boolean(request);
+    if(request) category.value=request.category;
+    document.getElementById('desktopUploadModalTitle').textContent=request?'요청 문서 업로드':'문서 업로드';
+    document.getElementById('desktopUploadSummary').textContent=request?`${request.label} PDF를 올리면 ${currentConsultationChannel()?.displayName||'상담 채널'}에 바로 전송해요.`:'PDF 파일만 올릴 수 있어요. 카테고리에서 기타를 선택하면 클라우드 링크도 첨부할 수 있어요.';
+    document.getElementById('desktopUploadSubmit').textContent=request?'업로드 후 전송':'선택한 카테고리로 업로드';
     document.getElementById('desktopUploadFile').value='';
+    document.getElementById('desktopCloudLink').value='';
+    syncDesktopCloudLinkField();
     openModal('uploadModal');
+  }
+  function openDesktopDocumentEdit(button){
+    const card=button.closest('.dcard');
+    if(!card) return;
+    const category=card.closest('.doc-group')?.dataset.category;
+    if(!category) return;
+    desktopEditingDocument=card;
+    pendingDesktopDocumentRequest=null;
+    const select=document.getElementById('desktopUploadCategory');
+    select.value=category;
+    select.disabled=true;
+    const cloudUrl=card.dataset.cloudUrl||'';
+    document.getElementById('desktopUploadModalTitle').textContent=cloudUrl?'클라우드 링크 수정':'파일 수정';
+    document.getElementById('desktopUploadSummary').textContent='PDF 파일 또는 기타의 클라우드 링크를 새 항목으로 교체합니다. 이미 대학에 전송한 파일은 바뀌지 않아요.';
+    document.getElementById('desktopUploadSubmit').textContent='수정 저장';
+    document.getElementById('desktopUploadFile').value='';
+    document.getElementById('desktopCloudLink').value=cloudUrl;
+    syncDesktopCloudLinkField();
+    openModal('uploadModal');
+  }
+  function setDesktopDocumentCloudLink(card,cloudUrl){
+    card.dataset.cloudUrl=cloudUrl||'';
+    const category=card.closest('.doc-group')?.dataset.category;
+    card.querySelector('.di').textContent=cloudUrl?'🔗':desktopDocumentIcons[category]||'📎';
+    let link=card.querySelector('.doc-open-link');
+    if(!cloudUrl){ link?.remove(); return; }
+    if(!link){
+      link=document.createElement('a');
+      link.className='doc-open-link';
+      link.target='_blank';
+      link.rel='noopener noreferrer';
+      link.textContent='열기';
+      card.insertBefore(link,card.querySelector('.doc-edit'));
+    }
+    link.href=cloudUrl;
+    link.setAttribute('aria-label',`${card.querySelector('.dn').textContent} 열기`);
+  }
+  function createDesktopDocumentCard({documentId,category,fileName,metadata,cloudUrl=''}){
+    const card=document.createElement('div');
+    card.className='dcard';
+    card.dataset.documentId=documentId;
+    card.innerHTML=`<div class="di"></div><div class="db"><div class="dn"></div><div class="dm"></div></div><button class="doc-edit" type="button">수정</button>`;
+    card.querySelector('.di').textContent=desktopDocumentIcons[category]||'📎';
+    card.querySelector('.dn').textContent=fileName;
+    card.querySelector('.dm').textContent=metadata;
+    const edit=card.querySelector('.doc-edit');
+    edit.setAttribute('aria-label',`${fileName} 수정`);
+    edit.addEventListener('click',()=>openDesktopDocumentEdit(edit));
+    setDesktopDocumentCloudLink(card,cloudUrl);
+    return card;
+  }
+  function updateDesktopDocumentPicker(card,category){
+    const documentId=card.dataset.documentId;
+    const fileName=card.querySelector('.dn').textContent;
+    const metadata=card.querySelector('.dm').textContent;
+    const cloudUrl=card.dataset.cloudUrl||'';
+    let picker=document.querySelector(`#docPick [data-document-id="${documentId}"]`);
+    if(!picker){
+      picker=document.createElement('button');
+      picker.type='button';
+      picker.className='pickitem';
+      picker.dataset.documentId=documentId;
+      picker.innerHTML='<span class="di"></span><span><span class="dn"></span><span class="dm"></span></span>';
+      picker.addEventListener('click',()=>sendSelectedDesktopDocument(picker));
+      document.querySelector('#docPick .modal-bd').appendChild(picker);
+    }
+    picker.dataset.fileName=fileName;
+    picker.dataset.category=category;
+    picker.dataset.cloudUrl=cloudUrl;
+    picker.dataset.documentMeta=metadata;
+    picker.querySelector('.di').textContent=desktopDocumentIcons[category]||'📎';
+    picker.querySelector('.dn').textContent=fileName;
+    picker.querySelector('.dm').textContent=cloudUrl?`${desktopDocumentCategoryLabel(category)} · 외부 링크`:`${desktopDocumentCategoryLabel(category)} · ${metadata}`;
   }
   function uploadDesktopDocument(){
     const category=document.getElementById('desktopUploadCategory').value;
     const input=document.getElementById('desktopUploadFile');
     const file=input.files[0];
-    if(!file){ alert('업로드할 파일을 선택해 주세요.'); return; }
-    if(!/\.(pdf|jpe?g|png)$/i.test(file.name)){ alert('PDF/JPG/PNG 파일만 업로드할 수 있어요.'); return; }
-    if(file.size>10*1024*1024){ alert('10MB 이하의 파일만 업로드할 수 있어요.'); return; }
-
-    const list=document.getElementById('desktopDocList');
-    let group=[...list.querySelectorAll('.doc-group')].find(el=>el.dataset.category===category);
-    if(!group){
-      group=document.createElement('div');
-      group.className='doc-group';
-      group.dataset.category=category;
-      const heading=document.createElement('div');
-      heading.className='doc-cat';
-      heading.textContent=category;
-      group.appendChild(heading);
-      list.appendChild(group);
+    const rawCloudLink=document.getElementById('desktopCloudLink').value.trim();
+    let cloudUrl='';
+    if(rawCloudLink){
+      try{
+        const parsed=new URL(rawCloudLink);
+        if(parsed.protocol!=='https:') throw new Error('https only');
+        cloudUrl=parsed.href;
+      }catch(error){
+        alert('HTTPS 형식의 클라우드 링크를 입력해 주세요.');
+        return;
+      }
     }
-    const empty=group.querySelector('.empty-doc');
-    if(empty) empty.remove();
-    const versions=[...group.querySelectorAll('.vch')].map(el=>Number(el.textContent.replace('v',''))||0);
-    const version=Math.max(0,...versions)+1;
-    const icons={'성적증명서':'📄','어학성적':'🗣️','졸업(예정)증명서':'🎓','기타':'📎'};
-    const card=document.createElement('div');
-    card.className='dcard';
-    card.innerHTML=`<div class="di">${icons[category]||'📎'}</div><div class="db"><div class="dn"></div><div class="dm">방금 업로드 · ${formatFileSize(file.size)}</div><div class="sent">전송 전</div></div><span class="vch">v${version}</span>`;
-    card.querySelector('.dn').textContent=file.name;
-    group.appendChild(card);
+    if(category!=='기타'&&cloudUrl){ alert('클라우드 링크는 기타 카테고리에서만 첨부할 수 있어요.'); return; }
+    if(file&&cloudUrl){ alert('PDF 파일과 클라우드 링크 중 하나만 첨부해 주세요.'); return; }
+    if(!file&&!cloudUrl){ alert(category==='기타'?'PDF 파일 또는 클라우드 링크를 입력해 주세요.':'업로드할 PDF 파일을 선택해 주세요.'); return; }
+    if(file&&!/\.pdf$/i.test(file.name)){ alert('PDF 파일만 업로드할 수 있어요.'); return; }
+    if(file&&file.size>10*1024*1024){ alert('10MB 이하의 PDF 파일만 업로드할 수 있어요.'); return; }
 
-    const pick=document.createElement('div');
-    pick.className='pickitem';
-    pick.innerHTML=`<span class="di">${icons[category]||'📎'}</span><div><div class="dn"></div><div class="dm">${category} · v${version} · 방금</div></div>`;
-    pick.querySelector('.dn').textContent=file.name;
-    pick.addEventListener('click',()=>sendDoc(file.name,`${category} · v${version}`));
-    document.querySelector('#docPick .modal-bd').appendChild(pick);
+    const linkHost=cloudUrl?new URL(cloudUrl).hostname:'';
+    const fileName=cloudUrl?`클라우드 링크 · ${linkHost}`:file.name;
+    const metadata=cloudUrl?`외부 클라우드 링크 · ${linkHost}`:`방금 ${desktopEditingDocument?'수정':'업로드'} · ${formatFileSize(file.size)}`;
+    let card=desktopEditingDocument;
+    if(card){
+      card.querySelector('.dn').textContent=fileName;
+      card.querySelector('.dm').textContent=metadata;
+      card.querySelector('.doc-edit').setAttribute('aria-label',`${fileName} 수정`);
+      setDesktopDocumentCloudLink(card,cloudUrl);
+    }else{
+      const list=document.getElementById('desktopDocList');
+      let group=[...list.querySelectorAll('.doc-group')].find(el=>el.dataset.category===category);
+      if(!group){
+        group=document.createElement('div');
+        group.className='doc-group';
+        group.dataset.category=category;
+        const heading=document.createElement('div');
+        heading.className='doc-cat';
+        heading.textContent=desktopDocumentCategoryLabel(category);
+        group.appendChild(heading);
+        list.appendChild(group);
+      }
+      group.querySelector('.empty-doc')?.remove();
+      card=createDesktopDocumentCard({
+        documentId:`desktop-document-${Date.now()}`,
+        category,
+        fileName,
+        metadata,
+        cloudUrl
+      });
+      group.appendChild(card);
+    }
+    updateDesktopDocumentPicker(card,category);
+    const request=pendingDesktopDocumentRequest;
+    if(request&&request.category===category){
+      const requestId=getDesktopDocumentRequestId(request);
+      desktopEditingDocument=null;
+      pendingDesktopDocumentRequest=null;
+      closeModal('uploadModal');
+      openDesktopDocumentPreview({
+        fileName,
+        category,
+        metadata,
+        cloudUrl,
+        requestId,
+        channelKey:request.channelKey
+      });
+      return;
+    }
+    desktopEditingDocument=null;
+    pendingDesktopDocumentRequest=null;
     closeModal('uploadModal');
   }
   function formatFileSize(bytes){
@@ -722,23 +1074,275 @@
     const el=document.getElementById('chatInput');
     if(!el.value.trim()) return;
     const stateMeta=currentChatStatus==='대기'?'보냄 · 아직 읽지 않음':'읽음 · 방금';
-    addMe(`<div class="bub">${el.value.replace(/</g,'&lt;')}</div><div class="meta">${stateMeta}</div>`);
+    addMe(`<div class="bub">${el.value.replace(/</g,'&lt;')}</div><div class="meta">${stateMeta}</div>`,'새 메시지를 보냈습니다.');
     el.value='';
   }
   function sendDoc(name, meta){
     closeModal('docPick');
+    if(currentChatStatus==='차단') return;
     const stateMeta=currentChatStatus==='대기'?'보냄 · 아직 읽지 않음':'읽음 · 방금';
-    addMe(`<div class="bub">📎 문서 보관함에서 전송<div class="doccard"><span class="di">📄</span><div><div class="dn">${name}</div><div class="dm">${meta}</div></div></div></div><div class="meta">${stateMeta}</div>`);
+    addMe(`<div class="bub">📎 문서 보관함에서 전송<div class="doccard"><span class="di">📄</span><div><div class="dn">${name}</div><div class="dm">${meta}</div></div></div></div><div class="meta">${stateMeta}</div>`,'요청 문서를 전송했습니다.');
   }
-  function addMe(inner){
+  function sendSelectedDesktopDocument(element){
+    const requestId=document.getElementById('docPick').dataset.requestId||'';
+    const request=requestId?desktopDocumentRequests[requestId]:null;
+    if(request&&request.category!==element.dataset.category){
+      alert(`${request.label} 유형의 문서를 선택해 주세요.`);
+      return;
+    }
+    openDesktopDocumentPreview({
+      fileName:element.dataset.fileName,
+      category:element.dataset.category,
+      metadata:element.dataset.documentMeta||element.dataset.category,
+      cloudUrl:element.dataset.cloudUrl||'',
+      requestId,
+      channelKey:request?.channelKey||currentChatKey
+    });
+  }
+  function getDesktopDocumentRequestId(request){
+    return Object.entries(desktopDocumentRequests).find(([,value])=>value===request)?.[0]||'';
+  }
+  function readPrototypeStorage(key){
+    try{
+      const value=JSON.parse(window.localStorage.getItem(key)||'[]');
+      return Array.isArray(value)?value:[];
+    }catch(error){ return []; }
+  }
+  function writePrototypeStorage(key,value){
+    try{ window.localStorage.setItem(key,JSON.stringify(value)); }catch(error){}
+  }
+  function escapeDocumentRequestMarkup(value){
+    return String(value??'').replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character]));
+  }
+  function renderDesktopDocumentRequestBox(requestId,request){
+    const title=request.reRequest?'서류 재업로드 요청':'서류 요청';
+    const label=escapeDocumentRequestMarkup(request.label);
+    const exampleButton=request.exampleFile?`<button class="doc-example-action" type="button" data-doc-request-example="${requestId}">제출 예시 보기</button>`:'';
+    const instruction=request.reRequest?'다시 보내 주세요.':'보내 주세요.';
+    return `<div class="msg"><div class="av">GM</div><div><div class="bub document-re-request-box"><b>📄 ${title}</b><span>${label} 문서를 ${instruction}</span>${exampleButton}<button class="doc-request-action" type="button" data-doc-request-choice="${requestId}">업로드 하기</button></div><div class="meta">방금</div></div></div>`;
+  }
+  function normalizeDesktopRequestExampleFile(value){
+    if(!value||typeof value!=='object') return null;
+    const fileName=String(value.fileName||'').trim().slice(0,160);
+    if(!fileName) return null;
+    let previewUrl='';
+    const rawUrl=String(value.previewUrl||value.url||'').trim();
+    if(rawUrl){
+      try{
+        const parsed=new URL(rawUrl);
+        if(parsed.protocol==='https:') previewUrl=parsed.href;
+      }catch(error){}
+    }
+    return {
+      fileName,
+      title:String(value.title||'학교 제공 제출 예시').trim().slice(0,120),
+      description:String(value.description||'학교가 제공한 제출 예시를 확인해 주세요.').trim().slice(0,240),
+      source:String(value.source||'학교 제공').trim().slice(0,120),
+      previewUrl
+    };
+  }
+  function syncExternalDesktopDocumentRequests(){
+    const requests=readPrototypeStorage(documentRequestStorageKey);
+    requests.forEach(event=>{
+      const eventId=String(event?.id||'');
+      if(!/^[A-Za-z0-9_-]{1,120}$/.test(eventId)) return;
+      const channel=Object.values(consultationChannels).find(candidate=>
+        event.studentId==='napat-siriporn' &&
+        event.universityId===candidate.universityId &&
+        event.affiliationId===candidate.affiliationId
+      );
+      if(!channel) return;
+      const requestId=`external-document-request-${eventId}`;
+      if(desktopDocumentRequests[requestId]) return;
+      const category=String(event.category||'기타').slice(0,40);
+      const label=category==='apostille'?desktopDocumentCategoryLabel(category):String(event.label||category).slice(0,120);
+      desktopDocumentRequests[requestId]={
+        channelKey:consultationKey(channel.universityId,channel.affiliationId),
+        category,label,completed:false,reRequest:Boolean(event.reRequest),sourceEventId:eventId,
+        exampleFile:normalizeDesktopRequestExampleFile(event.exampleFile)
+      };
+      channel.thread+=renderDesktopDocumentRequestBox(requestId,desktopDocumentRequests[requestId]);
+      channel.preview=event.reRequest?`${label} 재업로드 요청이 도착했습니다.`:`${label} 요청이 도착했습니다.`;
+      syncConsultationList(channel);
+    });
+  }
+  let pendingDesktopDocumentRequestChoiceId='';
+  function resetDesktopDocumentPicker(){
+    const picker=document.getElementById('docPick');
+    if(!picker) return;
+    picker.dataset.requestId='';
+    document.getElementById('desktopDocPickTitle').textContent='문서 보관함에서 전송';
+    picker.querySelectorAll('.pickitem').forEach(item=>{ item.hidden=false; });
+  }
+  function openDesktopDocumentRequestChoice(requestId){
+    const request=desktopDocumentRequests[requestId];
+    if(!request||request.completed||request.channelKey!==currentChatKey) return;
+    pendingDesktopDocumentRequestChoiceId=requestId;
+    document.getElementById('desktopDocumentRequestChoiceSummary').textContent=`${request.label} 문서를 새 PDF로 올리거나, 문서 보관함의 같은 유형 문서를 선택해 보내세요.`;
+    document.getElementById('desktopRequestedExistingDocumentButton').disabled=!findDesktopDocumentByCategory(request.category);
+    openModal('desktopDocumentRequestChoiceModal');
+  }
+  function openDesktopDocumentRequestExample(requestId){
+    const request=desktopDocumentRequests[requestId];
+    if(!request||request.channelKey!==currentChatKey||!request.exampleFile) return;
+    const example=request.exampleFile;
+    document.getElementById('desktopRequestExampleFileName').textContent=example.fileName;
+    document.getElementById('desktopRequestExampleSource').textContent=example.isPrototype?`시연용 예시 · ${example.source}`:example.source;
+    document.getElementById('desktopRequestExampleDocumentTitle').textContent=example.title;
+    document.getElementById('desktopRequestExampleDescription').textContent=example.description;
+    document.getElementById('desktopRequestExampleNotice').textContent=example.isPrototype?'시연용 예시입니다. 실제 서비스에서는 학교가 제공한 파일을 표시해요.':'학교가 제공한 제출 예시입니다. 학생 문서 보관함에 저장되거나 자동 전송되지 않아요.';
+    const openLink=document.getElementById('desktopRequestExampleOpen');
+    openLink.hidden=!example.previewUrl;
+    if(example.previewUrl) openLink.href=example.previewUrl;
+    openModal('desktopDocumentRequestExampleModal');
+    window.setTimeout(()=>document.getElementById('desktopRequestExampleClose').focus(),0);
+  }
+  function closeDesktopDocumentRequestExample(){
+    closeModal('desktopDocumentRequestExampleModal');
+  }
+  function openDesktopRequestedUpload(){
+    const requestId=pendingDesktopDocumentRequestChoiceId;
+    closeModal('desktopDocumentRequestChoiceModal');
+    if(requestId) openUploadModal(requestId);
+  }
+  function openDesktopRequestedExistingDocumentPicker(){
+    const requestId=pendingDesktopDocumentRequestChoiceId;
+    const request=desktopDocumentRequests[requestId];
+    if(!request) return;
+    const picker=document.getElementById('docPick');
+    const matching=[...picker.querySelectorAll('.pickitem')].filter(item=>item.dataset.category===request.category);
+    if(!matching.length){
+      closeModal('desktopDocumentRequestChoiceModal');
+      openUploadModal(requestId);
+      return;
+    }
+    picker.dataset.requestId=requestId;
+    document.getElementById('desktopDocPickTitle').textContent=`${request.label} 선택`;
+    picker.querySelectorAll('.pickitem').forEach(item=>{ item.hidden=item.dataset.category!==request.category; });
+    closeModal('desktopDocumentRequestChoiceModal');
+    openModal('docPick');
+  }
+  function publishDesktopDocumentUpdate(request,documentToSend){
+    const channel=consultationChannels[request.channelKey];
+    if(!channel) return;
+    const updates=readPrototypeStorage(documentUpdateStorageKey);
+    updates.push({
+      id:`document-update-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+      studentId:'napat-siriporn',universityId:channel.universityId,affiliationId:channel.affiliationId,
+      requestId:request.sourceEventId||'',category:documentToSend.category,fileName:documentToSend.fileName,
+      reRequest:Boolean(request.reRequest),updatedAt:new Date().toISOString()
+    });
+    writePrototypeStorage(documentUpdateStorageKey,updates.slice(-100));
+  }
+  function openDesktopDocumentPreview({fileName,category,metadata='',cloudUrl='',requestId='',channelKey=currentChatKey}){
+    const channel=consultationChannels[channelKey];
+    if(!channel){ alert('전송할 상담 채널을 확인할 수 없어요.'); return; }
+    pendingDesktopDocumentSend={fileName,category,metadata:metadata||category,cloudUrl,requestId,channelKey};
+    const isCloudLink=Boolean(cloudUrl);
+    document.getElementById('desktopPreviewIcon').textContent=isCloudLink?'🔗':'PDF';
+    document.getElementById('desktopPreviewFileName').textContent=fileName;
+    document.getElementById('desktopPreviewMetadata').textContent=metadata||desktopDocumentCategoryLabel(category);
+    document.getElementById('desktopPreviewTarget').textContent=`전송 대상 · ${channel.displayName} ${channel.team}`;
+    document.getElementById('desktopPreviewCategory').textContent=`${desktopDocumentCategoryLabel(category)} PDF 문서`;
+    document.getElementById('desktopPdfPreview').hidden=isCloudLink;
+    const linkPreview=document.getElementById('desktopExternalLinkPreview');
+    linkPreview.hidden=!isCloudLink;
+    if(isCloudLink){
+      const previewLink=document.getElementById('desktopPreviewLink');
+      previewLink.href=cloudUrl;
+      document.getElementById('desktopPreviewLinkHost').textContent=new URL(cloudUrl).hostname;
+    }
+    const sendButton=document.getElementById('desktopPreviewSend');
+    const blocked=channel.status==='차단';
+    sendButton.disabled=blocked;
+    sendButton.textContent=blocked?'상담 제한으로 전송할 수 없어요':'이 문서 전송';
+    closeModal('docPick');
+    openModal('documentPreviewModal');
+    window.setTimeout(()=>sendButton.focus(),0);
+  }
+  function cancelDesktopDocumentPreview(){
+    const shouldReturnToPicker=Boolean(pendingDesktopDocumentSend&&!pendingDesktopDocumentSend.requestId);
+    pendingDesktopDocumentSend=null;
+    closeModal('documentPreviewModal');
+    if(shouldReturnToPicker&&currentChatStatus!=='차단') openModal('docPick');
+  }
+  function confirmDesktopDocumentSend(){
+    const documentToSend=pendingDesktopDocumentSend;
+    if(!documentToSend) return;
+    const channel=currentConsultationChannel();
+    if(!channel||channel.status==='차단'){
+      alert('상담이 제한된 채널에는 문서를 전송할 수 없어요.');
+      return;
+    }
+    if(documentToSend.channelKey!==currentChatKey){
+      alert('상담 채널이 바뀌어 전송하지 않았어요. 문서를 다시 선택해 주세요.');
+      return;
+    }
+    if(documentToSend.requestId) completeDesktopDocumentRequest(documentToSend.requestId,documentToSend);
+    pendingDesktopDocumentSend=null;
+    closeModal('documentPreviewModal');
+    sendDoc(documentToSend.fileName,documentToSend.cloudUrl?`${desktopDocumentCategoryLabel(documentToSend.category)} · 외부 링크`:desktopDocumentCategoryLabel(documentToSend.category));
+  }
+  function findDesktopDocumentByCategory(category){
+    return [...document.querySelectorAll('#desktopDocList .doc-group')]
+      .find(group=>group.dataset.category===category)
+      ?.querySelector('.dcard:not(.empty-doc)')||null;
+  }
+  function completeDesktopDocumentRequest(requestId,documentToSend=null){
+    const request=desktopDocumentRequests[requestId];
+    if(!request) return;
+    request.completed=true;
+    const button=document.querySelector(`[data-doc-request="${requestId}"]`);
+    if(button){ button.disabled=true; button.textContent='전송 완료'; }
+    const channel=consultationChannels[request.channelKey];
+    if(channel){ channel.preview='요청 문서를 전송했습니다.'; }
+    if(request.channelKey===currentChatKey&&channel){
+      syncConsultationList(channel);
+      syncDocumentRequestActions();
+    }
+    if(documentToSend&&request.sourceEventId) publishDesktopDocumentUpdate(request,documentToSend);
+  }
+  function fulfillDesktopDocumentRequest(requestId){
+    const request=desktopDocumentRequests[requestId];
+    if(!request||request.completed||request.channelKey!==currentChatKey) return;
+    const card=findDesktopDocumentByCategory(request.category);
+    if(!card){ openUploadModal(requestId); return; }
+    const cloudUrl=card.dataset.cloudUrl||'';
+    openDesktopDocumentPreview({
+      fileName:card.querySelector('.dn').textContent,
+      category:request.category,
+      metadata:card.querySelector('.dm').textContent,
+      cloudUrl,
+      requestId,
+      channelKey:request.channelKey
+    });
+  }
+  document.getElementById('desktopUploadCategory').addEventListener('change',syncDesktopCloudLinkField);
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&document.getElementById('documentPreviewModal').classList.contains('show')) cancelDesktopDocumentPreview();
+  });
+  function addMe(inner,preview=''){
     const t=document.getElementById('thread');
     const div=document.createElement('div');
     div.className='msg me';
     div.innerHTML=`<div>${inner}</div>`;
     t.appendChild(div);
+    const channel=currentConsultationChannel();
+    if(channel){
+      channel.thread=t.innerHTML;
+      if(preview){ channel.preview=preview; syncConsultationList(channel); }
+    }
     t.scrollTop=99999;
   }
-  document.getElementById('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendMsg(); });
+  let desktopChatComposing=false;
+  const desktopChatInput=document.getElementById('chatInput');
+  desktopChatInput.addEventListener('compositionstart',()=>{ desktopChatComposing=true; });
+  desktopChatInput.addEventListener('compositionend',()=>{ window.setTimeout(()=>{ desktopChatComposing=false; },0); });
+  desktopChatInput.addEventListener('keydown',event=>{
+    if(event.key!=='Enter'||desktopChatComposing||event.isComposing||event.keyCode===229) return;
+    event.preventDefault();
+    sendMsg();
+  });
   function openUniversityDetail(universityId, st){
     let detail=document.getElementById('universityDetail');
     if(!detail){
@@ -755,7 +1359,7 @@
         onAction:(university)=>{
           if(university.consultation?.status!=='open') return;
           closeModal('universityDetail');
-          openChatFromFind(university.name.ko,st);
+          showConsultationContextError();
         }
       }
     );
@@ -791,11 +1395,17 @@
     if(menu&&!menu.contains(event.target)) closeDesktopProfileMenu();
   });
   document.addEventListener('keydown',event=>{ if(event.key==='Escape') closeDesktopProfileMenu(); });
-  function toggleLang(el){
-    const ko = el.innerHTML.includes('<b>한국어</b>');
-    el.innerHTML = ko ? '한국어 / <b>EN</b>' : '<b>한국어</b> / EN';
-  }
+  syncExternalDesktopDocumentRequests();
+  window.addEventListener('storage',event=>{
+    if(event.key===documentRequestStorageKey){
+      syncExternalDesktopDocumentRequests();
+      if(document.getElementById('pChats').classList.contains('show')) renderChatState();
+    }
+    if(event.key===window.UniChatNotices?.storageKey&&document.getElementById('pNotices').classList.contains('show')) renderStudentNotices();
+  });
+  window.addEventListener('unichat:notices-updated',()=>{ if(document.getElementById('pNotices').classList.contains('show')) renderStudentNotices(); });
   if(studentAuthenticated) openRequestedDesktopConsultation();
 </script>
+<script src="language-selector.js"></script>
 </body>
 </html>
