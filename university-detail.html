@@ -58,33 +58,8 @@
               <p id="university-meta">경기 양주 · Seojeong University</p>
             </div>
           </header>
-          <nav class="detail-tabs" role="tablist" aria-label="대학 상세 정보">
-            <button class="on" type="button" role="tab" aria-selected="true" aria-controls="detail-panel-intro" id="detail-tab-intro" data-detail-tab="intro">대학 소개</button>
-            <button type="button" role="tab" aria-selected="false" aria-controls="detail-panel-programs" id="detail-tab-programs" data-detail-tab="programs">학과·지원 과정</button>
-            <button type="button" role="tab" aria-selected="false" aria-controls="detail-panel-benefits" id="detail-tab-benefits" data-detail-tab="benefits">기숙사·장학금</button>
-            <button type="button" role="tab" aria-selected="false" aria-controls="detail-panel-brochure" id="detail-tab-brochure" data-detail-tab="brochure">입학안내 자료</button>
-          </nav>
-          <section class="detail-tab-panel" role="tabpanel" id="detail-panel-intro" aria-labelledby="detail-tab-intro" data-detail-panel="intro">
-            <p id="university-intro">외국인 유학생의 한국 유학 준비를 입학부터 생활 안내까지 상담으로 돕습니다.</p>
-            <div class="detail-tags" id="university-tags"></div>
-            <h2>소개 사진</h2>
-            <div class="detail-gallery-shell">
-              <div class="detail-gallery" id="detail-gallery" aria-label="대학 소개 사진"></div>
-              <div class="detail-gallery-controls" id="detail-gallery-controls" aria-label="소개 사진 이동" hidden>
-                <button type="button" id="detail-gallery-prev" aria-label="이전 사진" aria-controls="detail-gallery">←</button>
-                <button type="button" id="detail-gallery-next" aria-label="다음 사진" aria-controls="detail-gallery">→</button>
-              </div>
-            </div>
-          </section>
-          <section class="detail-tab-panel" role="tabpanel" id="detail-panel-programs" aria-labelledby="detail-tab-programs" data-detail-panel="programs" hidden>
-            <div id="programs-list"></div>
-          </section>
-          <section class="detail-tab-panel" role="tabpanel" id="detail-panel-benefits" aria-labelledby="detail-tab-benefits" data-detail-panel="benefits" hidden>
-            <div id="benefits-list"></div>
-          </section>
-          <section class="detail-tab-panel" role="tabpanel" id="detail-panel-brochure" aria-labelledby="detail-tab-brochure" data-detail-panel="brochure" hidden>
-            <div class="brochure-list" id="brochure-list"></div>
-          </section>
+          <nav class="detail-tabs" id="detail-tabs" role="tablist" aria-label="대학 상세 정보"></nav>
+          <div id="detail-tab-panels"></div>
         </article>
 
         <aside class="detail-aside" aria-label="상담 안내">

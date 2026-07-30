@@ -993,7 +993,7 @@
       <div class="body2 stats-body">
         <section class="home-utilities" aria-label="학교 운영 도구">
           <div class="panelbox home-utility-card" role="button" tabindex="0" onclick="showPage('calendar',null)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('calendar',null)}" style="margin:0"><div class="ph">학교 캘린더 <span style="margin-left:auto;font-size:11px;color:var(--ink2);font-weight:500">상세 보기 ›</span></div><div class="pb"><div class="home-calendar" aria-label="2026년 7월 학교 일정"><span class="weekday">월</span><span class="weekday">화</span><span class="weekday">수</span><span class="weekday">목</span><span class="weekday">금</span><span class="weekday">토</span><span class="weekday">일</span><span class="day"><b>13</b></span><span class="day"><b>14</b></span><span class="day has-event"><b>15</b><small>서류 마감</small></span><span class="day"><b>16</b></span><span class="day has-event"><b>17</b><small>설명회</small></span><span class="day"><b>18</b></span><span class="day"><b>19</b></span></div></div></div>
-          <div class="panelbox home-utility-card" role="button" tabindex="0" onclick="showPage('todos',null)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('todos',null)}" style="margin:0"><div class="ph">To-do list <span class="stchip st-live" id="todoRemainingCount" style="margin-left:6px">3</span><span style="margin-left:auto;font-size:11px;color:var(--ink2);font-weight:500">상세 보기 ›</span></div><div class="pb todo-list"><div class="todo-item"><span>오늘 신규 상담 확인</span></div><div class="todo-item"><span>입학 안내 자료 게시 검토</span></div><div class="todo-item"><span>금주 설명회 안내 발송</span></div></div></div>
+          <div class="panelbox home-utility-card" role="button" tabindex="0" onclick="showPage('todos',null)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showPage('todos',null)}" style="margin:0"><div class="ph">To-do list <span class="stchip st-live" id="todoRemainingCount" style="margin-left:6px">3</span><span style="margin-left:auto;font-size:11px;color:var(--ink2);font-weight:500">상세 보기 ›</span></div><div class="pb todo-list" id="homeTodoList"></div></div>
           <section class="panelbox home-notice-card" style="margin:0" aria-labelledby="homeNoticeTitle"><div class="ph"><span id="homeNoticeTitle">플랫폼 공지사항</span><span class="stchip st-live" id="universityNoticeCount" style="margin-left:6px">0</span><button type="button" onclick="showPage('notices',null)">전체 보기 ›</button></div><div class="pb home-notice-list" id="universityHomeNoticeList" aria-live="polite"></div></section>
         </section>
         <section id="managerHome" data-manager-home>
@@ -1098,8 +1098,8 @@
     <div class="page" id="page-todos">
       <div class="body2 stats-body">
         <nav class="breadcrumb" aria-label="브레드크럼"><button type="button" onclick="showPage('home',document.querySelector('.side a[data-pg=\'home\']'))">홈</button><span>›</span><span>To-do list</span></nav>
-        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px"><div><h1>To-do list</h1><p class="sub" style="margin-bottom:0">내 역할과 관계없이 공통 운영 할 일을 관리합니다.</p></div><button class="btn" style="margin-left:auto" type="button" onclick="showScenarioToast('할 일 추가는 운영 계약 확정 후 제공됩니다.')">할 일 추가</button></div>
-        <div class="panelbox"><div class="ph">진행할 일 <span class="stchip st-live" id="todoDetailRemainingCount" style="margin-left:6px">3</span></div><div class="pb detail-todo"><label class="todo-item"><input type="checkbox" onchange="toggleHomeTodo(this)"><span>오늘 신규 상담 확인</span><small style="margin-left:auto;color:var(--ink2)">오늘</small></label><label class="todo-item"><input type="checkbox" onchange="toggleHomeTodo(this)"><span>입학 안내 자료 게시 검토</span><small style="margin-left:auto;color:var(--ink2)">7/16</small></label><label class="todo-item"><input type="checkbox" onchange="toggleHomeTodo(this)"><span>금주 설명회 안내 발송</span><small style="margin-left:auto;color:var(--ink2)">7/17</small></label></div></div>
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px"><div><h1>To-do list</h1><p class="sub" style="margin-bottom:0">내 역할과 관계없이 공통 운영 할 일을 관리합니다.</p></div><button class="btn" style="margin-left:auto" type="button" onclick="openUniversityTodoCreateModal()">할 일 추가</button></div>
+        <div class="panelbox"><div class="ph">진행할 일 <span class="stchip st-live" id="todoDetailRemainingCount" style="margin-left:6px">3</span></div><div class="pb detail-todo" id="todoDetailList"></div></div>
       </div>
     </div>
 
@@ -1902,11 +1902,81 @@
     for(let page=1;page<=pageCount;page++){ const button=document.createElement('button'); button.type='button'; button.textContent=page; button.classList.toggle('on',page===statsPerformancePage); button.onclick=()=>setStatsPerformancePage(page); pagination.append(button); }
     const next=document.createElement('button'); next.type='button'; next.textContent='›'; next.ariaLabel='다음 페이지'; next.disabled=statsPerformancePage===pageCount; next.onclick=()=>setStatsPerformancePage(statsPerformancePage+1); pagination.append(next);
   }
-  function toggleHomeTodo(input){
-    input.closest('.todo-item')?.classList.toggle('done',input.checked);
-    const remaining=[...document.querySelectorAll('.todo-item input')].filter(item=>!item.checked).length;
-    document.getElementById('todoRemainingCount').textContent=remaining;
-    document.getElementById('todoDetailRemainingCount').textContent=remaining;
+  const universityTodoStorageKey='unichat.prototype.university-todos.v1';
+  const defaultUniversityTodos=[
+    {id:'todo-new-consultation',title:'오늘 신규 상담 확인',due:'오늘',done:false},
+    {id:'todo-admission-materials',title:'입학 안내 자료 게시 검토',due:'7/16',done:false},
+    {id:'todo-info-session',title:'금주 설명회 안내 발송',due:'7/17',done:false}
+  ];
+  function loadUniversityTodos(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(universityTodoStorageKey)||'');
+      if(Array.isArray(saved) && saved.every(item=>item && typeof item.id==='string' && typeof item.title==='string')) return saved.map(item=>({id:item.id,title:item.title.slice(0,120),due:typeof item.due==='string'?item.due:'',done:Boolean(item.done)}));
+    }catch(error){}
+    return defaultUniversityTodos.map(item=>({...item}));
+  }
+  let universityTodos=loadUniversityTodos();
+  function saveUniversityTodos(){
+    try{ localStorage.setItem(universityTodoStorageKey,JSON.stringify(universityTodos)); }catch(error){}
+  }
+  function renderUniversityTodos(){
+    const home=document.getElementById('homeTodoList');
+    const detail=document.getElementById('todoDetailList');
+    const remaining=universityTodos.filter(item=>!item.done).length;
+    const homeCount=document.getElementById('todoRemainingCount');
+    const detailCount=document.getElementById('todoDetailRemainingCount');
+    if(homeCount) homeCount.textContent=remaining;
+    if(detailCount) detailCount.textContent=remaining;
+    if(home){
+      home.replaceChildren();
+      const previewItems=universityTodos.filter(item=>!item.done).slice(0,3);
+      if(!previewItems.length){
+        const empty=document.createElement('p'); empty.className='sub'; empty.style.margin='2px 0'; empty.textContent='진행 중인 할 일이 없습니다.'; home.append(empty);
+      }else previewItems.forEach(item=>{
+        const row=document.createElement('div'); row.className='todo-item';
+        const title=document.createElement('span'); title.textContent=item.title;
+        row.append(title); home.append(row);
+      });
+    }
+    if(detail){
+      detail.replaceChildren();
+      universityTodos.forEach(item=>{
+        const row=document.createElement('label'); row.className=`todo-item${item.done?' done':''}`;
+        const checkbox=document.createElement('input'); checkbox.type='checkbox'; checkbox.checked=item.done; checkbox.setAttribute('aria-label',`${item.title} 완료 처리`); checkbox.onchange=()=>toggleUniversityTodo(item.id,checkbox.checked);
+        const title=document.createElement('span'); title.textContent=item.title;
+        row.append(checkbox,title);
+        if(item.due){ const due=document.createElement('small'); due.style.cssText='margin-left:auto;color:var(--ink2)'; due.textContent=item.due; row.append(due); }
+        detail.append(row);
+      });
+    }
+  }
+  function toggleUniversityTodo(id,done){
+    const todo=universityTodos.find(item=>item.id===id);
+    if(!todo) return;
+    todo.done=done;
+    saveUniversityTodos(); renderUniversityTodos();
+  }
+  function openUniversityTodoCreateModal(){
+    let modal=document.getElementById('universityTodoCreateModal');
+    if(!modal){
+      modal=document.createElement('div'); modal.className='modal-overlay'; modal.id='universityTodoCreateModal';
+      modal.innerHTML='<div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="universityTodoCreateModalTitle" style="width:min(460px,calc(100vw - 32px))"><div class="modal-hd"><b id="universityTodoCreateModalTitle">할 일 추가</b><button type="button" onclick="closeUniversityTodoCreateModal()" aria-label="할 일 추가 창 닫기">✕</button></div><form class="modal-body" onsubmit="createUniversityTodo(event)"><div class="field"><label for="universityTodoTitleInput">할 일</label><input id="universityTodoTitleInput" maxlength="120" required placeholder="할 일을 입력해 주세요."></div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px"><button class="btn" type="button" onclick="closeUniversityTodoCreateModal()">취소</button><button class="btn btn-primary" type="submit">추가</button></div></form></div>';
+      document.body.appendChild(modal);
+    }
+    const input=modal.querySelector('#universityTodoTitleInput');
+    if(input) input.value='';
+    modal.classList.add('show');
+    requestAnimationFrame(()=>input?.focus());
+  }
+  function closeUniversityTodoCreateModal(){ document.getElementById('universityTodoCreateModal')?.classList.remove('show'); }
+  function createUniversityTodo(event){
+    event.preventDefault();
+    const input=document.getElementById('universityTodoTitleInput');
+    const title=input?.value.trim();
+    if(!title) return;
+    universityTodos.unshift({id:`todo-${Date.now()}`,title:title.slice(0,120),due:'',done:false});
+    saveUniversityTodos(); renderUniversityTodos(); closeUniversityTodoCreateModal();
+    showScenarioToast('할 일을 추가했습니다.');
   }
   function changeStatsRange(range){
     const d=statsData[range];
@@ -3674,6 +3744,7 @@
   applyRoleScenario();
   changeConsultationChartView(document.getElementById('consultationChartView').value);
   renderStatsPerformance();
+  renderUniversityTodos();
   updateScenarioSummary();
   hydrateManagedUniversityProfile();
   hydrateManagedConsultationSettings();
@@ -3689,6 +3760,10 @@
       renderReceivedDocumentUpdates();
       const receivedModal=document.getElementById('receivedDocumentListModal');
       if(receivedModal?.classList.contains('show')) renderReceivedDocumentListModal(document.getElementById('receivedDocumentListSearch')?.value||'');
+    }
+    if(event.key===universityTodoStorageKey){
+      universityTodos=loadUniversityTodos();
+      renderUniversityTodos();
     }
     if(event.key===window.UniChatNotices?.storageKey){
       renderUniversityHomeNotices();

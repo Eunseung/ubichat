@@ -17,4 +17,5 @@
 ## 호환·검증
 
 - 기존 `student-desktop.html?view=chats|notices|docs|my` 목적지는 유지한다.
+- 메인 Developer는 `index.html`의 정적 프로필 링크를, 학생 Developer는 `student-session.js`의 동적 프로필 링크 생성을 각각 정리한다. 한쪽의 런타임 삭제로 다른 쪽의 중복을 숨기지 않는다.
 - 로그인·로그아웃, 데스크톱, 620px/760px 이하, Escape·바깥 클릭, 로고 이동을 검증한다.
