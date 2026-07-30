@@ -15,8 +15,6 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px}
-  .ix{font-size:10.5px;color:#fff;background:var(--accent);border-radius:4px;padding:1px 7px;font-family:var(--mono)}
-
   /* 메인 공개 GNB와 동일한 구조 */
   #appHeader{background:rgba(246,248,252,.94);border:0;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
   .student-header-inner{width:min(100% - 48px,1180px);min-height:76px;margin:0 auto;display:flex;align-items:center;gap:12px;position:relative}
@@ -329,7 +327,6 @@
     <!-- 학생 로그인 (초기 화면) -->
     <div class="page show" id="pLogin">
       <div class="authcard">
-        <span class="ix">STUDENT LOGIN</span>
         <h2 style="margin-top:10px">로그인</h2>
         <div class="sub">대학 상담을 이어서 확인하세요</div>
         <div class="field"><label>이메일</label><input type="email" placeholder="you@example.com" value="napat@example.com"></div>
@@ -344,7 +341,6 @@
     <!-- ST-0 가입 -->
     <div class="page" id="pSignup">
       <div class="authcard">
-        <span class="ix">ST-0</span>
         <h2 style="margin-top:10px">회원가입</h2>
         <div class="sub">한국 유학, 대학과 직접 이야기하며 준비하세요</div>
         <div class="field"><label>이메일 <span class="req">*</span></label><div class="verify-email-row"><input id="desktopSignupEmail" type="email" placeholder="you@example.com" value="napat@example.com"><button type="button" onclick="sendDesktopVerificationCode()">인증 코드 발송</button></div><span class="hint">목업 인증 코드는 123456입니다</span></div>
@@ -368,7 +364,6 @@
 
     <!-- ST-1 대학 찾기 -->
     <div class="page" id="pFind">
-      <span class="ix">ST-1</span>
       <h2 class="vt" style="margin-top:8px">대학 찾기</h2>
       <div class="lead">한국 유학을 준비 중이라면, 대학과 직접 채팅으로 물어보세요</div>
       <div class="findbar"><input placeholder="교명 검색 (국문/영문)"></div>
@@ -384,7 +379,6 @@
 
     <!-- ST-2/3 내 상담 (2패널 메신저) -->
     <div class="page" id="pChats">
-      <span class="ix">ST-2 / ST-3</span>
       <h2 class="vt" style="margin-top:8px">내 상담</h2>
       <div class="lead">대학과 소속구분별 대화를 별도 채널로 확인하세요</div>
       <div class="msgr">
@@ -459,7 +453,6 @@
 
     <!-- ST-4 문서 보관함 -->
     <div class="page" id="pDocs">
-      <span class="ix">ST-4</span>
       <h2 class="vt" style="margin-top:8px">문서 보관함</h2>
       <div class="lead">한 번 올려두면 여러 대학 상담에서 재사용할 수 있어요</div>
       <div class="docwrap">
@@ -489,7 +482,6 @@
 
     <!-- ST-6 플랫폼 공지사항 -->
     <div class="page" id="pNotices">
-      <span class="ix">ST-6</span>
       <h2 class="vt" style="margin-top:8px">공지사항</h2>
       <div class="lead">UBIChat 서비스 이용과 학생 포털 운영 안내를 확인하세요.</div>
       <div class="student-notice-alert" id="studentNoticeAlert" hidden aria-live="polite"></div>
@@ -503,7 +495,6 @@
 
     <!-- ST-5 마이 -->
     <div class="page" id="pMy">
-      <span class="ix">ST-5</span>
       <h2 class="vt" style="margin-top:8px">마이페이지</h2>
       <div class="lead">상담 현황과 계정을 관리하세요</div>
       <div class="mygrid">

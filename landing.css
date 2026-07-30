@@ -540,10 +540,15 @@ h1 { max-width: 770px; margin: 19px auto 0; color: var(--navy); font-size: clamp
 .detail-tabs { display: flex; gap: 4px; overflow-x: auto; margin: 25px 0 19px; border-bottom: 1px solid #d9e4f4; }
 .detail-tabs button { flex: 0 0 auto; border: 0; border-bottom: 2px solid transparent; background: none; padding: 9px 11px; color: #52606d; font-size: 13px; font-weight: 800; white-space: nowrap; }
 .detail-tabs button.on { border-bottom-color: var(--blue); color: var(--blue-dark); }
-.detail-tab-panel { color: #4f5d70; font-size: 14px; line-height: 1.75; }
+.detail-tab-panel { overflow-x: auto; color: #4f5d70; font-size: 14px; line-height: 1.75; }
 .detail-tab-panel[hidden] { display: none; }
 .detail-tab-panel > p { margin: 0; }
 .detail-tab-panel h2 { margin: 23px 0 8px; color: var(--navy); font-size: 17px; letter-spacing: -.035em; }
+.detail-tab-panel table { width: 100%; min-width: 620px; margin: 14px 0; border: 1px solid #d9e4f4; border-collapse: separate; border-spacing: 0; border-radius: 10px; color: #4f5d70; font-size: 12px; line-height: 1.55; overflow: hidden; }
+.detail-tab-panel th, .detail-tab-panel td { padding: 10px 11px; border-right: 1px solid #d9e4f4; border-bottom: 1px solid #d9e4f4; text-align: left; vertical-align: top; }
+.detail-tab-panel th { background: #f1f6ff; color: var(--navy); font-weight: 850; white-space: nowrap; }
+.detail-tab-panel th:last-child, .detail-tab-panel td:last-child { border-right: 0; }
+.detail-tab-panel tr:last-child td { border-bottom: 0; }
 .detail-university-info { margin-top: 22px; padding: 17px; border: 1px solid #d9e4f4; border-radius: 14px; background: #f8fbff; }
 .detail-university-info-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
 .detail-university-info h2 { margin: 0; }
@@ -666,7 +671,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid rgba(37,99,235,.34); 
   .student-signup-intro { position: static; text-align: center; }
   .student-signup-intro > p:last-child { margin-right: auto; margin-left: auto; }
   .student-signup-card { justify-self: center; }
-  .detail-grid { grid-template-columns: 1fr; }
+  .detail-grid { grid-template-columns: minmax(0, 1fr); }
+  .detail-panel, .detail-aside { min-width: 0; }
   .detail-aside { order: -1; }
 }
 
@@ -810,7 +816,15 @@ a:focus-visible, button:focus-visible { outline: 3px solid rgba(37,99,235,.34); 
   .detail-cover-copy strong { max-inline-size: 100%; font-size: clamp(22px, 7vw, 28px); line-height: 1.32; }
   .detail-grid { margin-top: -19px; gap: 14px; }
   .detail-panel, .detail-aside { border-radius: 17px; }
-  .detail-panel { padding: 24px; }
+  .detail-panel { min-width: 0; padding: 24px; }
+  .detail-aside { min-width: 0; }
+  .university-profile > div { min-width: 0; }
+  .university-profile h1, .university-profile p,
+  .detail-tab-panel p, .detail-tab-panel li,
+  .detail-fact b { overflow-wrap: anywhere; }
+  .detail-tabs, .detail-tab-panel { max-width: 100%; }
+  .detail-tab-panel table { min-width: 590px; font-size: 11px; }
+  .detail-tab-panel th, .detail-tab-panel td { padding: 9px 10px; }
   .university-profile h1 { font-size: 23px; }
   .detail-university-info { padding: 15px; }
   .detail-university-info-head { display: block; }

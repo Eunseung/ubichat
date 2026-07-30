@@ -48,8 +48,6 @@
   .login-submit:hover{background:#193f91}
   .demo-note{margin:15px 0 0;padding-top:14px;border-top:1px solid var(--line2);color:#7b8794;font-size:11px;text-align:center}
 
-  .ix{font-size:11px;color:#fff;background:var(--accent);border-radius:4px;padding:2px 7px;font-family:var(--mono)}
-
   .admin-top{background:var(--admin);color:#fff;display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 18px;position:sticky;top:0;z-index:10}
   .admin-top .brand{font-weight:800;font-size:14px}
   .admin-top .brand.unichat-brand{gap:10px;color:#fff}
@@ -507,7 +505,7 @@
     <!-- ===== AM-0 대시보드 ===== -->
     <div class="page show" id="page-dash">
       <div class="body2">
-        <h1>대시보드 <span class="ix">AM-0</span></h1>
+        <h1>대시보드</h1>
         <p class="sub">플랫폼 전체 현황과 처리 대기 업무를 한눈에 확인하세요.</p>
 
         <div class="todo">
@@ -581,7 +579,7 @@
     <!-- ===== AM-1 등록 대학 관리 ===== -->
     <div class="page" id="page-universities">
       <div class="body2">
-        <h1>등록 대학 <span class="ix">AM-1</span></h1>
+        <h1>등록 대학</h1>
         <p class="sub">프로토타입의 현재 대학 21개를 모두 공개 상태로 확인합니다. 실서비스의 공개 탐색 상태는 학교가 직접 게시하며, 어드민은 대학 등록·대학 계정 상태만 관리합니다.</p>
 
         <div class="kpis">
@@ -619,7 +617,7 @@
     <!-- ===== AM-2 대학 승인 큐 ===== -->
     <div class="page" id="page-approvals">
       <div class="body2">
-        <h1>대학 승인 <span class="ix">AM-2</span></h1>
+        <h1>대학 승인</h1>
         <p class="sub">신규 전문대학 등록을 검토합니다. 아래 데이터는 현재 등록된 18개 대학과 분리된 <b>전문대학 후보 시나리오</b>이며, 전문대교협·4년제 대학은 포함하지 않습니다.</p>
         <div class="tabs">
           <button class="on" data-approval-state="pending" onclick="selectApprovalStatus('pending',this)">대기<span class="n" id="approvalCountPending">3</span></button>
@@ -641,7 +639,7 @@
     <!-- ===== AM-3 등록 요청 관리 ===== -->
     <div class="page" id="page-requests">
       <div class="body2">
-        <h1>미등록 대학 요청 관리 <span class="ix">AM-3</span></h1>
+        <h1>미등록 대학 요청 관리</h1>
         <p class="sub">학생이 "찾는 대학이 없어요"로 제출한 요청을 교명 기준으로 병합 집계합니다. 요청이 많은 대학부터 등록을 안내하세요.</p>
         <div class="filterbar">
           <input id="requestSearch" placeholder="교명 검색" oninput="renderRequests()">
@@ -665,7 +663,7 @@
       <div class="body2">
         <div class="page-head">
           <div>
-            <h1>콘텐츠 CMS <span class="ix">AM-7</span></h1>
+            <h1>콘텐츠 CMS</h1>
             <p class="sub">콘텐츠 초안부터 검토·공개 중단, 첨부 관리까지의 운영 상태를 관리합니다. 공개 콘텐츠 소비 화면 연동은 이 설계 목업 범위에 포함하지 않습니다.</p>
           </div>
           <div class="page-actions"><button class="btn btn-primary" type="button" onclick="openContentEditor()">새 콘텐츠</button></div>
@@ -709,7 +707,7 @@
       <div class="body2">
         <div class="page-head">
           <div>
-            <h1>공지사항 <span class="ix">AM-8</span></h1>
+            <h1>공지사항</h1>
             <p class="sub">로그인한 학생·학교 구성원에게 전달할 플랫폼 운영 공지를 관리합니다.</p>
           </div>
           <div class="page-actions"><button class="btn btn-primary" type="button" onclick="openPlatformNoticeEditor()">새 공지</button></div>
@@ -744,7 +742,7 @@
 
     <div class="page" id="page-ads">
       <div class="body2">
-        <h1>광고 구좌 관리 <span class="ix">AM-5</span></h1>
+        <h1>광고 구좌 관리</h1>
         <p class="sub">랜딩페이지의 대학 고객사 배너와 기업 제휴 배너를 분리해 관리합니다. 노출 상태와 순서는 공개 랜딩 캐러셀에 반영됩니다.</p>
         <div class="slot-notice"><b>배너 규격</b> · PC 1180 × 220px / 모바일 328 × 160px. 고객사에서 전달한 이미지 경로를 등록하고, 공개 중인 구좌만 캐러셀에 노출합니다.</div>
         <div class="kpis">
@@ -768,7 +766,7 @@
     <!-- ===== AM-6 활동·감사 로그 ===== -->
     <div class="page" id="page-audits">
       <div class="body2">
-        <h1>활동·감사 로그 <span class="ix">AM-6</span></h1>
+        <h1>활동·감사 로그</h1>
         <p class="sub">대학 등록·계정·콘텐츠·광고 변경의 처리 이력을 확인합니다. 행을 선택하면 대상 식별자와 이전·변경값을 볼 수 있습니다.</p>
         <div class="audit">🔒 <div><b>처리자·시각·대상·작업·사유·이전/변경값</b>을 기록합니다. 상담 원문과 학생 문서 원본은 감사 로그에 저장하지 않습니다.</div></div>
         <div class="audit-filter"><input id="auditSearch" type="search" placeholder="대상·처리자·작업·식별자 검색" oninput="renderAuditLogs()"><select id="auditScopeFilter" onchange="renderAuditLogs()"><option value="">영역: 전체</option><option>광고 구좌</option><option>계정</option><option>대학 승인</option><option>공지사항</option></select><select id="auditActorFilter" onchange="renderAuditLogs()"><option value="">처리자: 전체</option><option value="플랫폼 관리자">플랫폼 관리자</option></select></div>
@@ -779,7 +777,7 @@
     <!-- ===== AM-4 계정 관리 ===== -->
     <div class="page" id="page-accounts">
       <div class="body2">
-        <h1>계정 관리 <span class="ix">AM-4</span></h1>
+        <h1>계정 관리</h1>
         <p class="sub">대학·학생 계정 상태를 관리하고, 대학 구성원의 역할과 소속구분 배정을 발급합니다.</p>
         <div class="audit">🔒 <div>계정 관리에서는 학생 문서와 상담 원문을 열람하지 않습니다.</div></div>
         <div class="subtabs">

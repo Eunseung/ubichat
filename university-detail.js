@@ -41,7 +41,7 @@ if (!profile) {
     if (!raw) return '';
     const template = document.createElement('template');
     template.innerHTML = raw;
-    const allowedTags = new Set(['P', 'STRONG', 'B', 'UL', 'OL', 'LI', 'H3', 'H4', 'BR']);
+    const allowedTags = new Set(['P', 'STRONG', 'B', 'UL', 'OL', 'LI', 'H2', 'H3', 'H4', 'BR', 'TABLE', 'THEAD', 'TBODY', 'TR', 'TH', 'TD']);
     template.content.querySelectorAll('*').forEach((node) => {
       if (['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED'].includes(node.tagName)) {
         node.remove();

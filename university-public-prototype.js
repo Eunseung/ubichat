@@ -70,7 +70,7 @@
     ]
   });
   // 저장값이 없거나 올바르지 않을 때 사용하는 구미 공개 탭 기본값입니다.
-  const gumiPublicDetailTabs = Object.freeze([
+  const gumiUndergraduateDetailTabs = Object.freeze([
     {
       id: 'detail-intro',
       title: '상세 소개',
@@ -97,7 +97,7 @@
     },
     {
       id: 'dormitory-intro',
-      title: '기숙사',
+      title: '기숙사 소개',
       content: '<h2>기숙사 (생활관)</h2><p>구미대학교 생활관은 수도권 및 지방 출신 학생들의 편의를 위해 운영되며, 공동생활을 통한 생활 기풍 확립과 면학 분위기 조성을 목표로 합니다.</p><ul><li><strong>정원:</strong> 교내생활관 총 1,058명 (남학생 714명 / 여학생 344명, 학년별 배정)</li><li><strong>선발 방법:</strong> 성적 및 거리순</li><li><strong>문의:</strong> 남 054-440-1470 / 여 054-440-1473</li></ul><h3>관리비 (2026학년도 1학기 기준)</h3><table><thead><tr><th>구분</th><th>4인 1실(구관)</th><th>2인 1실(구관)</th><th>4인 1실(신관)</th><th>2인 1실(신관)</th><th>교외생활관(아파트)</th></tr></thead><tbody><tr><td>합계</td><td>854,000원</td><td>1,084,000원</td><td>994,000원</td><td>1,194,000원</td><td>1,179,000~1,295,000원</td></tr></tbody></table><ul><li><strong>식사:</strong> 1일 2식(조식·석식, 주말 제외), 별도 식비 390,500원/학기</li><li><strong>부대시설:</strong> 세탁실, 샤워실, PC실, 체력단련실, 족구장·농구장 등</li></ul>',
       order: 6,
       enabled: true,
@@ -123,6 +123,15 @@
       kind: 'admission-calendar'
     }
   ]);
+  const gumiAffiliationDetailTabs = Object.freeze(gumiUndergraduateDetailTabs.map((tab) => ({
+    ...tab,
+    content: tab.id === 'admission-process'
+      ? '<p>전공별 입학 요건과 준비 서류는 상담을 통해 안내합니다.</p>'
+      : tab.id === 'dormitory-intro'
+        ? '<p>기숙사 신청 안내와 성적·국가별 장학금 정보를 제공합니다.</p>'
+        : tab.content,
+    title: tab.id === 'dormitory-intro' ? '기숙사' : tab.title
+  })));
   const gumiProfile = Object.freeze({
     headline: '현장 중심의 전문기술 과정을 안내합니다.',
     intro: '현장 중심의 전문기술 과정을 안내합니다. 입학 요건과 전공별 준비 사항을 상담으로 확인할 수 있습니다.',
@@ -130,9 +139,14 @@
     benefits: ['기숙사 신청 안내와 성적·국가별 장학금 정보를 제공합니다.'],
     photos: gumiPhotos,
     brochures: gumiBrochures,
-    tabs: gumiPublicDetailTabs,
-    dormitoryPhotos: gumiDormitoryPhotos,
+    tabs: gumiAffiliationDetailTabs,
+    dormitoryPhotos: [],
     publicInfo: gumiPublicInfo
+  });
+  const gumiUndergraduateProfile = Object.freeze({
+    ...gumiProfile,
+    tabs: gumiUndergraduateDetailTabs,
+    dormitoryPhotos: gumiDormitoryPhotos
   });
   const affiliationFixtures = Object.freeze({
     gumi: [
@@ -142,7 +156,7 @@
         displayName: '구미대학교',
         fields: ['육성형전문기술'],
         visual: gumiVisual,
-        profile: gumiProfile
+        profile: gumiUndergraduateProfile
       },
       {
         id: 'language-center',
