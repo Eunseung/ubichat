@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="UBIChat에서 한국 전문대학을 검색하고 관심 분야별로 탐색하세요.">
+  <title>UBIChat | 전체 대학 탐색</title>
+  <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+  <div class="page">
+    <header class="wrap header public-header" data-public-header>
+      <a class="brand" href="index.html" aria-label="UBIChat 홈">
+        <span class="brand-mark" aria-hidden="true"></span><span>UBIChat</span>
+      </a>
+      <button class="mobile-nav-trigger" type="button" data-mobile-nav-trigger aria-label="주 메뉴 열기" aria-expanded="false">☰</button>
+      <nav class="header-nav" aria-label="주 메뉴">
+        <a href="#explore-title" aria-current="page">대학 탐색</a>
+        <a data-student-nav="chats" href="login.html">상담하기</a>
+        <a href="content.html">콘텐츠</a>
+        <a href="faq.html">FAQ</a>
+        <a data-public-notice href="login.html?returnTo=student-desktop.html%3Fview%3Dnotices">공지사항</a>
+      </nav>
+      <div class="header-actions">
+        <a class="university-service-link" data-university-service href="university-admin.html"><span aria-hidden="true">⌂</span> 학교 서비스</a>
+        <a class="student-login-link" data-student-login href="login.html">로그인/회원가입</a>
+        <div class="profile-menu" data-profile-menu hidden>
+          <button class="profile-trigger" type="button" data-profile-trigger aria-haspopup="menu" aria-expanded="false">
+            <span class="profile-avatar" data-profile-avatar>🇹🇭</span><span data-profile-name>NAPAT</span><span aria-hidden="true">⌄</span>
+          </button>
+          <div class="profile-dropdown" data-profile-dropdown role="menu" hidden>
+            <div class="profile-summary"><strong data-profile-full-name>NAPAT SUKSAI</strong><span data-profile-email>napat@example.com</span></div>
+            <a href="student-desktop.html?view=docs" role="menuitem">문서 보관함</a>
+            <a href="student-desktop.html?view=my" role="menuitem">마이페이지</a>
+            <button type="button" data-student-logout role="menuitem">로그아웃</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap directory-main">
+      <section class="directory-intro" aria-labelledby="directory-page-title">
+        <p class="section-kicker">University exploration</p>
+        <h1 id="directory-page-title">한국 전문대학을<br>탐색해 보세요</h1>
+        <p>대학 소개는 누구나 확인할 수 있으며, 상담 시작 시에만 학생 로그인이 필요합니다.</p>
+      </section>
+
+      <section class="directory-section" aria-labelledby="explore-title">
+        <div class="directory-heading">
+          <div>
+            <p class="section-kicker">All colleges</p>
+            <h2 class="section-title" id="explore-title">지금 상담 가능한 전문대학</h2>
+          </div>
+          <form class="directory-search" id="directory-search-form" action="university-explore.html" method="get" role="search">
+            <span class="sr-only">대학 검색</span>
+            <span aria-hidden="true">⌕</span>
+            <input id="university-search" name="q" type="search" placeholder="대학명, 지역, 분야 검색" autocomplete="off">
+          </form>
+        </div>
+
+        <div class="explore-pills directory-pills" aria-label="관심 분야 선택">
+          <button class="explore-pill active" type="button" data-field="전체">전체 둘러보기</button>
+          <button class="explore-pill" type="button" data-field="요양보호">요양보호</button>
+          <button class="explore-pill" type="button" data-field="육성형전문기술">육성형 전문기술</button>
+          <button class="explore-pill" type="button" data-field="뿌리산업">뿌리산업</button>
+          <button class="explore-pill" type="button" data-field="기타">기타</button>
+        </div>
+        <div class="directory-summary">
+          <p id="directory-description">대학의 응답 정보와 특화 분야를 확인하고, 나에게 맞는 학교를 둘러보세요.</p>
+          <span id="result-count" aria-live="polite"></span>
+        </div>
+
+        <div class="university-grid" id="directory-grid" aria-live="polite"></div>
+        <nav class="pagination" id="pagination" aria-label="대학 목록 페이지"></nav>
+      </section>
+
+      <section class="university-cta directory-cta" id="university" aria-labelledby="university-title">
+        <div>
+          <p>대학 담당자이신가요?</p>
+          <h2 id="university-title">우리 대학을 학생에게 소개해 보세요</h2>
+        </div>
+        <a class="button-secondary" href="university-admin.html?register=1">대학 등록 신청 <span aria-hidden="true">→</span></a>
+      </section>
+    </main>
+
+    <footer class="footer"><div class="wrap footer-inner"><p>© 2026 UBIChat</p><p><a href="index.html">랜딩페이지로 돌아가기</a></p></div></footer>
+  </div>
+  <script src="university-data.js"></script>
+  <script src="university-public-prototype.js"></script>
+  <script src="university-explore.js"></script>
+  <script src="student-session.js"></script>
+  <script src="public-navigation.js"></script>
+  <script src="language-selector.js"></script>
+</body>
+</html>

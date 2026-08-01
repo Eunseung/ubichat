@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>플랫폼 관리자 — 와이어프레임 (AM-0~4)</title>
+<link rel="stylesheet" href="unichat-brand.css">
+<style>
+  :root{
+    --ink:#1f2933; --ink2:#52606d; --line:#cbd2d9; --line2:#e4e7eb;
+    --bg:#eef1f5; --panel:#ffffff; --brand:#1f4ba8; --brand-soft:#eef3fb;
+    --accent:#0b6b5e; --warn:#b42318; --warnbg:#fef3f2;
+    --good:#1a7f43; --goodbg:#e7f6ec; --amber:#9a5b00; --amberbg:#fff4e5;
+    --admin:#1f2d3d; --admin2:#2a3b50;
+    --shadow:0 1px 3px rgba(16,24,40,.08); --r:8px;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+    --sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px}
+  body.drawer-open,body.action-open{overflow:hidden}
+  button,input{font:inherit}
+  .login-view[hidden],.admin-app[hidden]{display:none}
+
+  /* ===== 관리자 로그인 ===== */
+  .login-view{min-height:100vh;display:flex;flex-direction:column;background:
+    radial-gradient(circle at 85% 10%,rgba(31,75,168,.14),transparent 30%),
+    radial-gradient(circle at 10% 90%,rgba(11,107,94,.10),transparent 28%),#f4f7fb}
+  .login-header{width:min(1120px,calc(100% - 48px));margin:0 auto;padding:24px 0;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .login-brand{display:inline-flex;align-items:center;gap:10px;color:var(--admin);font-size:16px;font-weight:800;text-decoration:none}
+  .login-brand .unichat-brand-context{color:var(--ink2);border-color:var(--line)}
+  .back-home{display:inline-flex;align-items:center;gap:6px;color:var(--ink2);font-size:12.5px;font-weight:700;text-decoration:none;padding:8px 11px;border-radius:8px}
+  .back-home:hover{background:#fff;color:var(--brand)}
+  .login-main{flex:1;display:grid;place-items:center;padding:36px 20px 72px}
+  .login-card{width:min(430px,100%);background:#fff;border:1px solid var(--line2);border-radius:18px;padding:32px;box-shadow:0 24px 70px rgba(31,45,61,.14)}
+  .login-symbol{width:48px;height:48px;border-radius:14px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:23px;margin-bottom:20px}
+  .login-card .eyebrow{color:var(--brand);font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.05em;margin:0 0 6px}
+  .login-card h1{font-size:24px;line-height:1.3;margin:0 0 7px;letter-spacing:-.5px}
+  .login-card .login-sub{color:var(--ink2);font-size:13px;margin:0 0 24px}
+  .login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .login-field label{color:var(--ink2);font-size:12px;font-weight:700}
+  .login-field input{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:#fff;color:var(--ink);outline:none}
+  .login-field input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(31,75,168,.12)}
+  .login-options{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 18px;color:var(--ink2);font-size:11.5px}
+  .login-options label{display:flex;align-items:center;gap:6px}
+  .login-options a{color:var(--brand);text-decoration:none;font-weight:700}
+  .login-submit{width:100%;border:0;border-radius:10px;padding:12px 16px;background:var(--brand);color:#fff;font-weight:800;cursor:pointer;box-shadow:0 8px 18px rgba(31,75,168,.20)}
+  .login-submit:hover{background:#193f91}
+  .demo-note{margin:15px 0 0;padding-top:14px;border-top:1px solid var(--line2);color:#7b8794;font-size:11px;text-align:center}
+
+  .admin-top{background:var(--admin);color:#fff;display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 18px;position:sticky;top:0;z-index:10}
+  .admin-top .brand{font-weight:800;font-size:14px}
+  .admin-top .brand.unichat-brand{gap:10px;color:#fff}
+  .admin-top .brand .unichat-brand-name{font-size:15px}
+  .admin-top .brand .unichat-brand-context{border-color:rgba(205,216,228,.35);color:#cdd8e4}
+  .admin-top .path{font-size:12px;color:#9fb0c4;font-family:var(--mono)}
+  .admin-top .right{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12.5px;color:#cdd8e4}
+  .admin-top .ava{width:26px;height:26px;border-radius:50%;background:#3a4d66;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+  .admin-top .home-link{color:#d9e3ef;text-decoration:none;border:1px solid #52657d;border-radius:7px;padding:5px 9px;font-size:11.5px;font-weight:700;white-space:nowrap}
+  .admin-top .home-link:hover{background:#354960;color:#fff}
+  .admin-top .logout{border:0;background:none;color:#9fb0c4;font-size:11.5px;cursor:pointer;padding:5px}
+  .admin-top .logout:hover{color:#fff}
+
+  .shell{display:grid;grid-template-columns:210px 1fr;min-height:calc(100vh - 84px)}
+  .side{background:var(--admin2);color:#cdd8e4;padding:12px 8px}
+  .side .grp{font-size:11px;color:#7e91a8;padding:10px 12px 4px;font-family:var(--mono)}
+  .side a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;color:#cdd8e4;text-decoration:none;font-size:13px;cursor:pointer}
+  .side a.subnav{margin-left:10px;padding-left:14px;font-size:12.5px}
+  .side a.on{background:var(--brand);color:#fff;font-weight:700}
+  .side a .ct{margin-left:auto;background:var(--warn);color:#fff;border-radius:999px;font-size:10px;padding:0 6px}
+
+  .page{display:none}
+  .page.show{display:block}
+  .body2{padding:22px 26px;max-width:1080px}
+  .body2 h1{font-size:21px;margin:0 0 4px}
+  .body2 .sub{color:var(--ink2);font-size:13px;margin:0 0 20px}
+
+  /* 상태 칩 */
+  .chip{font-size:10.5px;border-radius:999px;padding:2px 9px;font-weight:700;white-space:nowrap}
+  .c-wait{background:var(--amberbg);color:var(--amber)}
+  .c-good{background:var(--goodbg);color:var(--good)}
+  .c-rej{background:var(--warnbg);color:var(--warn)}
+  .c-info{background:var(--brand-soft);color:var(--brand)}
+  .c-gray{background:#eef1f5;color:#52606d}
+
+  /* ===== AM-0 대시보드 ===== */
+  .todo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .todocard{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);cursor:pointer}
+  .todocard:hover{border-color:var(--brand)}
+  .todocard .tic{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+  .todocard.a .tic{background:var(--amberbg)}
+  .todocard.b .tic{background:var(--brand-soft)}
+  .todocard b{font-size:24px;font-variant-numeric:tabular-nums}
+  .todocard .tl{flex:1}
+  .todocard .tl small{display:block;font-size:12px;color:var(--ink2);margin-top:1px}
+  .todocard .go{color:#aeb6c4;font-size:20px;font-weight:700}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+  .kpi{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:15px 16px;box-shadow:var(--shadow)}
+  button.kpi{width:100%;text-align:left;font-family:var(--sans);color:var(--ink);cursor:pointer}
+  button.kpi:hover,button.kpi:focus-visible{border-color:var(--brand);outline:none}
+  .kpi .kl{font-size:11.5px;color:var(--ink2)}
+  .kpi b{font-size:23px;font-variant-numeric:tabular-nums;display:block;margin:3px 0 2px}
+  .kpi .kd{font-size:11px;font-weight:700}
+  .kpi .kd.up{color:var(--good)}.kpi .kd.down{color:var(--warn)}
+
+  .grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:16px}
+  .card{background:#fff;border:1px solid var(--line2);border-radius:12px;box-shadow:var(--shadow)}
+  .card .ch{padding:14px 17px;border-bottom:1px solid var(--line2);font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+  .card .ch .cnote{margin-left:auto;font-size:11px;color:var(--ink2);font-weight:500}
+  .card .cb{padding:16px 17px}
+
+  /* 추이 차트 (SVG) */
+  .chart svg{width:100%;height:150px;display:block}
+  .chart .lg{display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--ink2)}
+  .chart .lg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+
+  /* 국가 분포 (막대) */
+  .distrow{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:12.5px}
+  .distrow .fl{width:96px;flex-shrink:0}
+  .distrow .bar{flex:1;height:9px;background:var(--bg);border-radius:999px;overflow:hidden}
+  .distrow .bar i{display:block;height:100%;background:var(--brand);border-radius:999px}
+  .distrow .vv{width:52px;text-align:right;color:var(--ink2);font-variant-numeric:tabular-nums;flex-shrink:0}
+  button.distrow{width:100%;border:0;background:transparent;padding:4px 5px;margin-left:-5px;margin-right:-5px;border-radius:7px;color:var(--ink);font-family:var(--sans);text-align:left;cursor:pointer}
+  button.distrow:hover,button.distrow:focus-visible{background:#f7faff;outline:none}
+  button.distrow:focus-visible{box-shadow:0 0 0 2px rgba(31,75,168,.2)}
+  .distrow .arr{width:12px;color:#aeb6c4;font-size:15px;font-weight:700;text-align:right;flex-shrink:0}
+  .distback{display:none;border:0;background:var(--brand-soft);color:var(--brand);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)}
+  .distback.show{display:inline-flex}
+
+  /* 표 공용 */
+  table.tbl{width:100%;border-collapse:collapse;font-size:13px}
+  table.tbl thead th{background:#f7f9fb;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 12px;font-size:11.5px;color:var(--ink2);text-align:left;font-weight:700}
+  table.tbl td{padding:11px 12px;border-bottom:1px solid var(--line2)}
+  table.tbl tbody tr{cursor:pointer}
+  table.tbl tbody tr:hover{background:#f7faff}
+  table.tbl tbody tr.hidden-university-row{background:#fffaf0}
+  table.tbl tbody tr.hidden-university-row:hover{background:#fff4e5}
+  table.tbl .num{font-variant-numeric:tabular-nums}
+  table.tbl .rank{width:30px;color:var(--ink2);font-weight:700;text-align:center}
+  .slowtag{font-size:10px;color:var(--warn);font-weight:700;margin-left:6px}
+
+  /* ===== AM-2 승인 큐 ===== */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line2);margin-bottom:16px}
+  .tabs button{border:0;background:none;padding:10px 14px;font-size:13px;font-weight:700;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;font-family:var(--sans)}
+  .tabs button.on{color:var(--brand);border-bottom-color:var(--brand)}
+  .tabs button .n{color:var(--warn);margin-left:4px}
+  .approw .flag2{font-size:15px;margin-right:5px}
+  .vmark{font-size:11px;font-weight:700}
+  .vmark.dom{color:var(--good)}.vmark.doc{color:var(--amber)}
+  .aged{color:var(--warn);font-weight:700}
+
+  /* AM-2 상세 (드로어) */
+  .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.4);z-index:100}
+  .drawer-overlay.show{display:block}
+  .drawer{position:fixed;top:0;right:0;height:100vh;width:460px;background:#fff;box-shadow:-8px 0 30px rgba(16,24,40,.2);transform:translateX(100%);transition:transform .22s;display:flex;flex-direction:column;z-index:101}
+  .drawer.show{transform:translateX(0)}
+  .drawer-hd{padding:16px 20px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:10px}
+  .drawer-hd b{font-size:16px}
+  .drawer-hd .x{margin-left:auto;border:none;background:none;font-size:18px;cursor:pointer;color:var(--ink2)}
+  .drawer-bd{flex:1;overflow-y:auto;padding:18px 20px}
+  .drawer-bd h4{font-size:12px;color:var(--ink2);margin:16px 0 8px;text-transform:uppercase;letter-spacing:.4px}
+  .drawer-bd h4:first-child{margin-top:0}
+  .kv{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line2);gap:10px}
+  .kv b{font-weight:600;text-align:right}
+  .kv a{color:var(--brand);text-decoration:none}
+  .vbox{border:1px solid var(--line2);border-radius:9px;padding:12px 14px;font-size:12.5px;margin-bottom:8px}
+  .vbox.ok{background:var(--goodbg);border-color:#bfe6cd}
+  .vbox b{display:flex;align-items:center;gap:7px}
+  .linkreq{background:var(--brand-soft);border-radius:9px;padding:11px 13px;font-size:12.5px;color:var(--brand)}
+  .drawer-ft{padding:14px 20px;border-top:1px solid var(--line2);display:flex;gap:8px}
+  .btn{border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);font-family:var(--sans)}
+  .btn-primary{background:var(--brand);color:#fff;border-color:var(--brand);flex:1}
+  .btn-amber{background:#fff;border-color:var(--amber);color:var(--amber)}
+  .btn-warn{background:#fff;border-color:var(--warn);color:var(--warn)}
+
+  /* AM-4 서브탭 */
+  .subtabs{display:flex;gap:6px;margin-bottom:14px}
+  .subtabs button{font-size:12.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer;color:var(--ink2);font-family:var(--sans);font-weight:700}
+  .subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .subpane{display:none}.subpane.show{display:block}
+  .filterbar{display:flex;gap:8px;margin-bottom:12px}
+  .filterbar input,.filterbar select{border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:12.5px;font-family:var(--sans)}
+  .filterbar input{flex:1;max-width:280px}
+  .rowbtn{font-size:11px;font-weight:700;border-radius:7px;padding:5px 10px;cursor:pointer;border:1px solid var(--line);background:#fff}
+  .rowbtn.warn{border-color:var(--warn);color:var(--warn)}
+
+  .audit{background:var(--amberbg);border:1px solid #f0d9b0;border-radius:10px;padding:12px 15px;font-size:12.5px;color:#7a4f00;margin-bottom:16px;display:flex;gap:9px;align-items:flex-start}
+
+  /* ===== AM-5 광고 구좌 ===== */
+  .slot-notice{background:var(--brand-soft);border:1px solid #c8d7f6;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#254c8e;margin-bottom:16px}
+  .slot-notice b{color:#183b7a}
+  .slot-stack{display:grid;gap:16px}
+  .slot-card .ch{justify-content:space-between}
+  .slot-card .ch .ch-title{display:flex;align-items:center;gap:8px}
+  .slot-card .ch .rowbtn{margin-left:auto}
+  .slot-preview{width:94px;height:34px;border:1px solid var(--line2);border-radius:6px;overflow:hidden;background:linear-gradient(120deg,#e4eaf5,#f8fafc);display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:10px;font-weight:700}
+  .slot-preview img{width:100%;height:100%;object-fit:cover}
+  .slot-preview.corporate-finance{background:linear-gradient(115deg,#0f3c7a,#508fd9);color:#fff}
+  .slot-preview.corporate-housing{background:linear-gradient(115deg,#08735f,#67b9a9);color:#fff}
+  .slot-preview.corporate-telecom{background:linear-gradient(115deg,#5c3a9e,#a08adc);color:#fff}
+  .slot-order{display:flex;gap:4px}
+  .slot-order button{width:27px;height:27px;padding:0;display:grid;place-items:center}
+  .slot-status{cursor:pointer}
+  .slot-actions{display:flex;gap:6px;align-items:center}
+  .slot-actions .rowbtn{white-space:nowrap}
+
+  /* ===== AM-7 콘텐츠 CMS ===== */
+  .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+  .page-head .sub{max-width:700px}
+  .page-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .cms-policy{background:var(--brand-soft);border:1px solid #c8d7f6;border-radius:10px;padding:12px 14px;font-size:12px;color:#254c8e;margin-bottom:16px}
+  .cms-policy b{color:#183b7a}
+  .content-title-cell{min-width:220px}
+  .content-title-cell small{display:block;color:var(--ink2);font-size:11px;margin-top:3px}
+  .content-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .content-actions .rowbtn{white-space:nowrap}
+  .attachment-count{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--ink2);font-weight:700}
+  .attachment-count b{color:var(--brand);font-size:13px}
+  .attachment-panel{margin-top:16px}
+  .attachment-panel[hidden]{display:none}
+  .attachment-panel .ch{justify-content:space-between}
+  .attachment-policy{margin:0 0 12px;font-size:12px;color:var(--ink2)}
+  .attachment-name{display:flex;align-items:center;gap:6px;min-width:200px}
+  .attachment-name a{color:var(--brand);font-weight:700;text-decoration:none}
+  .attachment-name a:hover{text-decoration:underline}
+  .attachment-source{font-size:11px;color:var(--ink2)}
+
+  /* ===== AM-4 대학 구성원 ===== */
+  .member-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+  .member-summary .kpi{margin:0}
+  .role-chip{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;border-radius:999px;padding:2px 9px;font-weight:700;white-space:nowrap;background:var(--brand-soft);color:var(--brand)}
+  .role-chip.owner{background:#e9e4fb;color:#6246a8}
+  .role-chip.member{background:#eef1f5;color:#52606d}
+  .affiliation-list{display:flex;gap:4px;flex-wrap:wrap}
+  .affiliation-list .chip{border:1px solid var(--line2);background:#fff;color:var(--ink2);font-weight:600}
+  .issue-note{font-size:11px;color:var(--ink2);margin:0 0 12px}
+  .action-checks{display:grid;grid-template-columns:1fr 1fr;gap:7px;border:1px solid var(--line2);border-radius:8px;padding:9px}
+  .action-checks label{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink);cursor:pointer}
+  .action-checks input{width:16px;height:16px;margin:0;accent-color:var(--brand)}
+  .action-help{font-size:11px;color:var(--ink2);margin:0 0 7px}
+
+  /* ===== AM-6 활동·감사 로그 ===== */
+  .audit-filter{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+  .audit-filter input,.audit-filter select{border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:12.5px;font-family:var(--sans)}
+  .audit-filter input{min-width:220px;flex:1}
+  .audit-detail{font-size:11px;color:var(--ink2);line-height:1.45;max-width:290px}
+  .audit-row{cursor:pointer}
+  .audit-row:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+  .audit-link{display:block;margin-top:5px;color:var(--brand);font-size:11px;font-weight:800}
+
+  /* 공용 상태 전환 모달·토스트 */
+  .action-overlay{display:none;position:fixed;inset:0;background:rgba(16,24,40,.52);z-index:200;padding:20px;align-items:center;justify-content:center}
+  .action-overlay.show{display:flex}
+  .action-modal{width:min(470px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:14px;box-shadow:0 24px 70px rgba(16,24,40,.28)}
+  .action-modal form{display:flex;flex-direction:column;min-height:0}
+  .action-hd{padding:17px 20px;border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:12px}
+  .action-hd h2{font-size:17px;margin:0}
+  .action-hd button{margin-left:auto;border:0;background:none;color:var(--ink2);font-size:18px;cursor:pointer}
+  .action-bd{padding:18px 20px}
+  .action-description{font-size:12.5px;color:var(--ink2);margin:0 0 15px;white-space:pre-line}
+  .action-field{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
+  .action-field label{font-size:12px;color:var(--ink2);font-weight:700}
+  .action-field input,.action-field select,.action-field textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:#fff;color:var(--ink);font-family:var(--sans)}
+  .action-field textarea{min-height:86px;resize:vertical}
+  .action-field input:focus,.action-field select:focus,.action-field textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(31,75,168,.1)}
+  .action-error{display:none;background:var(--warnbg);color:var(--warn);border:1px solid #f5c5c0;border-radius:7px;padding:8px 10px;font-size:11.5px;margin-bottom:12px}
+  .action-error.show{display:block}
+  .action-ft{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line2)}
+  .toast-area{position:fixed;right:20px;bottom:20px;z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+  .toast{width:min(390px,calc(100vw - 40px));background:var(--admin);color:#fff;border-radius:10px;padding:12px 14px;box-shadow:0 12px 30px rgba(16,24,40,.25);font-size:12.5px;white-space:pre-line;animation:toast-in .18s ease-out}
+  .toast.error{background:var(--warn)}
+  .toast.info{background:var(--brand)}
+  @keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  @media (max-width:860px){
+    .admin-top{position:static;flex-wrap:wrap;padding:10px 12px}
+    .admin-top .path,.admin-top .operator{display:none}
+    .admin-top .right{gap:7px}
+    .shell{grid-template-columns:1fr;min-height:0}
+    .side{display:flex;gap:4px;overflow-x:auto;padding:8px;position:sticky;top:0;z-index:9}
+    .side .grp{display:none}
+    .side a{white-space:nowrap;flex-shrink:0}
+    .body2{max-width:none;padding:18px 16px}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .grid2{grid-template-columns:1fr}
+    .card .cb{overflow-x:auto}
+    table.tbl{min-width:680px}
+    .drawer{width:min(460px,100vw)}
+  }
+  @media (max-width:520px){
+    .login-header{width:calc(100% - 32px);padding:18px 0}
+    .login-brand .unichat-brand-context{display:none}
+    .login-main{padding:20px 16px 48px;place-items:start center}
+    .login-card{padding:25px 22px}
+    .admin-top .brand{font-size:12.5px}
+    .admin-top .right{margin-left:0;width:100%;justify-content:flex-end}
+    .todo,.kpis{grid-template-columns:1fr}
+    .filterbar{flex-direction:column}
+    .filterbar input{max-width:none}
+    .drawer-ft{flex-wrap:wrap}
+    .drawer-ft .btn-primary{flex-basis:100%}
+    .slot-actions{flex-wrap:wrap}
+    .page-head{flex-direction:column;gap:2px}
+    .page-actions{width:100%}
+    .page-actions .btn{flex:1;min-height:42px}
+    .member-summary{grid-template-columns:1fr}
+    .action-checks{grid-template-columns:1fr}
+    .audit-filter{flex-direction:column;align-items:stretch}.audit-filter input{min-width:0}
+    .action-overlay{padding:12px;align-items:flex-end}
+  }
+
+  /* ===== 플랫폼 관리자 모바일 뷰 ===== */
+  @media (max-width:760px){
+    body{overflow-x:hidden;font-size:13.5px}
+    button,.side a{touch-action:manipulation}
+
+    /* 모바일 헤더 + 가로 스크롤 GNB */
+    .admin-top{position:sticky;top:0;z-index:30;min-height:54px;padding:9px 12px;flex-wrap:nowrap;gap:8px;box-shadow:0 1px 0 rgba(255,255,255,.08)}
+    .admin-top .brand{font-size:13px;white-space:nowrap}
+    .admin-top .brand .unichat-brand-name{font-size:14px}
+    .admin-top .brand .unichat-brand-context{font-size:10.5px;padding-left:7px}
+    .admin-top .path,.admin-top .operator{display:none}
+    .admin-top .right{width:auto;margin-left:auto;justify-content:flex-end;gap:5px;min-width:0}
+    .admin-top .home-link{min-height:36px;display:inline-flex;align-items:center;padding:5px 8px;font-size:10.5px}
+    .admin-top .logout{min-height:36px;padding:5px 7px;font-size:10.5px}
+    .admin-top .ava{width:28px;height:28px;flex:0 0 28px}
+    .shell{display:flex;flex-direction:column;min-height:0}
+    .side{order:0;position:sticky;top:54px;z-index:25;display:flex;gap:6px;width:100%;padding:7px 10px;background:var(--admin2);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;box-shadow:0 2px 6px rgba(16,24,40,.12)}
+    .side::-webkit-scrollbar{display:none}
+    .side .grp{display:none}
+    .side a,.side a.subnav{min-height:44px;margin:0;padding:8px 11px;border:1px solid transparent;border-radius:8px;white-space:nowrap;flex:0 0 auto;font-size:12px}
+    .side a.on{border-color:rgba(255,255,255,.14);box-shadow:0 2px 6px rgba(16,24,40,.12)}
+    .side a .ct{margin-left:3px}
+    .page{order:1;width:100%;min-width:0}
+
+    /* 페이지·카드 */
+    .body2{width:100%;max-width:none;padding:16px 12px 28px}
+    .body2 h1{font-size:19px;line-height:1.35}
+    .body2 .sub{font-size:12px;margin-bottom:15px}
+    .todo{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:12px}
+    .todocard{min-width:0;padding:12px;gap:9px;border-radius:10px}
+    .todocard .tic{width:36px;height:36px;font-size:18px}
+    .todocard b{font-size:21px}
+    .todocard .tl small{font-size:10.5px;line-height:1.35}
+    .todocard .go{display:none}
+    .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px}
+    .kpi{min-width:0;padding:12px;border-radius:10px}
+    .kpi b{font-size:20px}
+    .kpi .kl{font-size:10.5px}
+    .kpi .kd{font-size:10px;line-height:1.35}
+    .grid2{grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+    .card{min-width:0;border-radius:10px}
+    .card .ch{padding:12px 13px;font-size:13px;flex-wrap:wrap}
+    .card .ch .cnote{font-size:10px;max-width:55%;text-align:right}
+    .card .cb{padding:13px;overflow:visible}
+    .chart svg{height:132px}
+    .chart .lg{margin-top:5px}
+    .distrow{min-height:38px;gap:7px;margin-bottom:6px;font-size:12px}
+    button.distrow{min-height:44px;padding:5px}
+    .distrow .fl{width:92px}
+    .distrow .vv{width:44px}
+
+    /* 탭·필터는 터치 크기를 확보 */
+    .tabs,.subtabs{width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+    .tabs::-webkit-scrollbar,.subtabs::-webkit-scrollbar{display:none}
+    .tabs button{min-height:44px;padding:9px 12px;white-space:nowrap;flex:0 0 auto;font-size:12px}
+    .subtabs button{min-height:40px;white-space:nowrap;flex:0 0 auto}
+    .filterbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .filterbar input{grid-column:1/-1;width:100%;max-width:none}
+    .filterbar input,.filterbar select{width:100%;min-width:0;min-height:42px;padding:8px 9px}
+    .audit{padding:11px 12px;font-size:11.5px}
+
+    /* 데스크톱 표를 모바일 행 카드로 전환 */
+    table.tbl{display:block;width:100%;min-width:0;border-collapse:separate}
+    table.tbl thead{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    table.tbl tbody{display:grid;gap:10px;padding:10px;background:var(--bg)}
+    table.tbl tbody tr{display:block;min-width:0;background:#fff;border:1px solid var(--line2);border-radius:10px;padding:8px 11px;box-shadow:var(--shadow);cursor:default}
+    table.tbl tbody tr:hover{background:#fff}
+    table.tbl td{display:grid;grid-template-columns:minmax(82px,34%) minmax(0,1fr);align-items:center;gap:9px;width:100%;min-height:36px;padding:7px 0;border-bottom:1px solid var(--line2);text-align:left!important;overflow-wrap:anywhere}
+    table.tbl td:last-child{border-bottom:0}
+    table.tbl td::before{content:attr(data-label);color:var(--ink2);font-size:10.5px;font-weight:700;line-height:1.35}
+    table.tbl td[data-label="대학"],table.tbl td[data-label="대학 후보"],table.tbl td[data-label="요청 대학 후보"],table.tbl td[data-label="학생"]{display:block;min-height:0;padding:4px 0 9px;font-size:13.5px}
+    table.tbl td[data-label="대학"]::before,table.tbl td[data-label="대학 후보"]::before,table.tbl td[data-label="요청 대학 후보"]::before,table.tbl td[data-label="학생"]::before{display:block;margin-bottom:4px;font-size:9.5px;text-transform:uppercase;letter-spacing:.04em}
+    table.tbl td[data-empty]{display:block;text-align:center!important;padding:22px 8px;border:0}
+    table.tbl td[data-empty]::before{display:none}
+    table.tbl .rank{width:100%;text-align:left}
+    table.tbl .rowbtn{width:100%;min-height:42px}
+    #approvalRows tr{cursor:pointer}
+    #approvalRows tr::after{content:"상세 보기 ›";display:block;padding:8px 0 2px;color:var(--brand);font-size:11.5px;font-weight:800;text-align:right}
+    #approvalRows tr.empty-row::after{display:none}
+
+    /* 승인 상세는 전면 시트 */
+    .drawer-overlay{z-index:100;background:rgba(16,24,40,.55)}
+    .drawer{top:0;left:0;right:0;width:100vw;max-width:none;height:100dvh;z-index:101;box-shadow:none}
+    .drawer-hd{min-height:58px;padding:13px 15px;position:sticky;top:0;background:#fff;z-index:2}
+    .drawer-hd b{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .drawer-hd .x{width:44px;height:44px;display:grid;place-items:center;margin-right:-9px}
+    .drawer-bd{padding:15px 15px 24px}
+    .kv{align-items:flex-start;font-size:12.5px}
+    .kv span{flex:0 0 88px}
+    .kv b,.kv a{text-align:right;overflow-wrap:anywhere}
+    .drawer-ft{position:sticky;bottom:0;z-index:2;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .drawer-ft .btn{min-height:44px;padding:9px 8px}
+    .drawer-ft .btn-primary{grid-column:1/-1;grid-row:2;flex-basis:auto}
+
+    /* 공용 액션 모달은 바텀시트 */
+    .action-overlay{padding:0;align-items:flex-end;justify-content:center}
+    .action-modal{display:flex;flex-direction:column;width:100%;max-width:none;max-height:92dvh;overflow:hidden;border-radius:18px 18px 0 0;box-shadow:0 -12px 40px rgba(16,24,40,.28);animation:sheet-in .2s ease-out}
+    .action-modal form{flex:1;min-height:0}
+    .action-hd{flex:0 0 auto;padding:15px 16px}
+    .action-hd h2{font-size:16px}
+    .action-hd button{width:40px;height:40px;margin:-8px -8px -8px auto}
+    .action-bd{flex:1;min-height:0;overflow-y:auto;padding:16px}
+    .action-field input,.action-field select,.action-field textarea{min-height:44px;font-size:16px}
+    .action-ft{flex:0 0 auto;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff}
+    .action-ft .btn{min-height:44px;flex:1}
+    .toast-area{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom))}
+    .toast{width:100%}
+    @keyframes sheet-in{from{transform:translateY(24px);opacity:.7}to{transform:translateY(0);opacity:1}}
+  }
+
+  @media (max-width:420px){
+    .admin-top .ava{display:none}
+    .admin-top .home-link{font-size:10px;padding-inline:6px}
+    .admin-top .logout{padding-inline:4px}
+    .todo{grid-template-columns:1fr}
+    .todocard .go{display:block}
+    .filterbar{grid-template-columns:1fr}
+    .filterbar input{grid-column:auto}
+    .distrow .fl{width:82px}
+  }
+</style>
+</head>
+<body>
+  <div class="login-view" id="loginView">
+    <header class="login-header">
+      <a class="login-brand unichat-brand" href="기업용_배너_포함.html" aria-label="UBIChat 랜딩페이지">
+        <span class="unichat-emblem" aria-hidden="true"></span>
+        <span class="unichat-brand-name">UBIChat</span>
+        <span class="unichat-brand-context">플랫폼 관리자</span>
+      </a>
+      <a class="back-home" href="기업용_배너_포함.html">← 랜딩페이지로 돌아가기</a>
+    </header>
+    <main class="login-main">
+      <section class="login-card" aria-labelledby="loginTitle">
+        <div class="login-symbol" aria-hidden="true">⚙️</div>
+        <p class="eyebrow">PLATFORM ADMIN</p>
+        <h1 id="loginTitle">플랫폼 관리자 로그인</h1>
+        <p class="login-sub">등록 승인과 플랫폼 운영 업무를 시작하세요.</p>
+        <form onsubmit="loginAdmin(event)">
+          <div class="login-field">
+            <label for="adminEmail">이메일</label>
+            <input id="adminEmail" type="email" value="admin@ubichat.kr" autocomplete="username" required>
+          </div>
+          <div class="login-field">
+            <label for="adminPassword">비밀번호</label>
+            <input id="adminPassword" type="password" value="prototype" autocomplete="current-password" required>
+          </div>
+          <div class="login-options">
+            <label><input type="checkbox" checked> 로그인 상태 유지</label>
+            <a href="#" onclick="showLoginNotice();return false">비밀번호 찾기</a>
+          </div>
+          <button class="login-submit" type="submit">로그인</button>
+        </form>
+        <p class="demo-note">목업에서는 입력된 데모 계정으로 바로 로그인할 수 있습니다.</p>
+      </section>
+    </main>
+  </div>
+
+  <div class="admin-app" id="adminApp" hidden>
+  <div class="admin-top">
+    <a class="brand unichat-brand" href="기업용_배너_포함.html" aria-label="UBIChat 랜딩페이지">
+      <span class="unichat-emblem" aria-hidden="true"></span>
+      <span class="unichat-brand-name">UBIChat</span>
+      <span class="unichat-brand-context">플랫폼 관리자</span>
+    </a>
+    <span class="path" id="pathTx">/admin</span>
+    <div class="right">
+      <a class="home-link" href="기업용_배너_포함.html">⌂ 랜딩페이지</a>
+      <span class="operator">플랫폼 관리자 · 운영팀 김하나</span>
+      <div class="ava">김하</div>
+      <button class="logout" type="button" onclick="logoutAdmin()">로그아웃</button>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="side">
+      <div class="grp">운영</div>
+      <a class="on" href="#" data-pg="dash" onclick="showPage('dash', this);return false">📊 대시보드</a>
+      <div class="grp">대학관리</div>
+      <a class="subnav" href="#" data-pg="universities" onclick="openUniversityManagement();return false">등록 대학 <span class="ct" data-registered-university-count>21</span></a>
+      <a class="subnav" href="#" data-pg="approvals" onclick="showPage('approvals', this);return false">승인 <span class="ct" id="approvalSideCount">3</span></a>
+      <a class="subnav" href="#" data-pg="requests" onclick="showPage('requests', this);return false">등록 요청 <span class="ct" id="requestSideCount">5</span></a>
+      <div class="grp">콘텐츠 운영</div>
+      <a href="#" data-pg="contents" onclick="showPage('contents', this);return false">📝 콘텐츠 CMS</a>
+      <a href="#" data-pg="notices" onclick="showPage('notices', this);return false">📢 공지사항</a>
+      <div class="grp">광고 운영</div>
+      <a href="#" data-pg="ads" onclick="showPage('ads', this);return false">🎞️ 광고 구좌</a>
+      <a href="#" data-pg="audits" onclick="showPage('audits', this);return false">🛡️ 활동·감사 로그</a>
+      <div class="grp">계정</div>
+      <a href="#" data-pg="accounts" onclick="showPage('accounts', this);return false">👥 계정 관리</a>
+    </div>
+
+    <!-- ===== AM-0 대시보드 ===== -->
+    <div class="page show" id="page-dash">
+      <div class="body2">
+        <h1>대시보드</h1>
+        <p class="sub">플랫폼 전체 현황과 처리 대기 업무를 한눈에 확인하세요.</p>
+
+        <div class="todo">
+          <div class="todocard a" role="button" tabindex="0" onclick="document.querySelector('.side a[data-pg=approvals]').click()">
+            <div class="tic">🏛️</div>
+            <div class="tl"><b id="approvalTodoCount">3</b><small>등록 검토 대기 대학</small></div>
+            <span class="go">›</span>
+          </div>
+          <div class="todocard b" role="button" tabindex="0" onclick="document.querySelector('.side a[data-pg=requests]').click()">
+            <div class="tic">📮</div>
+            <div class="tl"><b id="requestTodoCount">5</b><small>처리 중인 미등록 대학 요청</small></div>
+            <span class="go">›</span>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <button class="kpi" type="button" onclick="openUniversityManagement()" aria-label="공개 대학 21개 보기">
+            <div class="kl">등록 대학</div><b id="registeredUniversityCount">21</b><span class="kd up">프로토타입 전체 공개 · 목록 보기 → <span id="hiddenUniversityCount" hidden>0</span></span>
+          </button>
+          <div class="kpi"><div class="kl">오늘 접수 상담</div><b>12</b><span class="kd up">새 상담 9 · 재문의 3</span></div>
+          <div class="kpi"><div class="kl">현재 미배정</div><b>8</b><span class="kd down">24시간 이상 3 · 추가 메시지 5</span></div>
+          <div class="kpi"><div class="kl">진행 중 상담</div><b>34</b><span class="kd up">오늘 상담 시작 7</span></div>
+          <div class="kpi"><div class="kl">오늘 종료 상담</div><b>11</b><span class="kd up">재문의 후 종료 2 포함</span></div>
+          <div class="kpi"><div class="kl">중앙값 첫 응답</div><b>48분</b><span class="kd up">전주 대비 6분 단축</span></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card chart">
+            <div class="ch">상담량·가입자 추이 <span class="cnote">최근 7일</span></div>
+            <div class="cb">
+              <svg viewBox="0 0 520 150" preserveAspectRatio="none" aria-label="추이 차트">
+                <line x1="0" y1="120" x2="520" y2="120" stroke="#e4e7eb"/>
+                <line x1="0" y1="80" x2="520" y2="80" stroke="#eef1f5"/>
+                <line x1="0" y1="40" x2="520" y2="40" stroke="#eef1f5"/>
+                <!-- 상담량 area -->
+                <path d="M0,96 L87,84 L173,88 L260,60 L347,66 L433,44 L520,52 L520,120 L0,120 Z" fill="#1f4ba81a"/>
+                <path d="M0,96 L87,84 L173,88 L260,60 L347,66 L433,44 L520,52" fill="none" stroke="#1f4ba8" stroke-width="2.5"/>
+                <!-- 가입자 line -->
+                <path d="M0,110 L87,104 L173,100 L260,92 L347,86 L433,80 L520,70" fill="none" stroke="#0b6b5e" stroke-width="2" stroke-dasharray="4 3"/>
+                <circle cx="520" cy="52" r="3.5" fill="#1f4ba8"/>
+                <circle cx="520" cy="70" r="3.5" fill="#0b6b5e"/>
+              </svg>
+              <div class="lg"><span><i style="background:#1f4ba8"></i>상담량</span><span><i style="background:#0b6b5e"></i>신규 가입</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><button class="distback" id="distBack" type="button" onclick="showCountryDistribution()">← 국가</button><span id="distTitle">국가별 학생 분포</span><span class="cnote" id="distNote">총 102명</span></div>
+            <div class="cb" id="studentDist" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ch">대학별 상담 운영 현황 <span class="cnote">장기 미배정·중앙값 첫 응답 기준</span></div>
+          <div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th class="rank">#</th><th>대학</th><th>공개 탐색 노출</th><th class="num">현재 미배정</th><th class="num">24h+</th><th class="num">중앙값 첫 응답</th><th>상태</th></tr></thead>
+              <tbody>
+                <tr><td class="rank" data-label="순위">1</td><td data-label="대학">성운대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">3</td><td class="num" data-label="24시간 이상">2</td><td class="num" data-label="첫 응답 중앙값">1일 2시간<span class="slowtag">지연</span></td><td data-label="운영 상태"><span class="chip c-wait">관심</span></td></tr>
+                <tr><td class="rank" data-label="순위">2</td><td data-label="대학">연성대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">2</td><td class="num" data-label="24시간 이상">1</td><td class="num" data-label="첫 응답 중앙값">1시간 10분</td><td data-label="운영 상태"><span class="chip c-wait">관심</span></td></tr>
+                <tr><td class="rank" data-label="순위">3</td><td data-label="대학">한양여자대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">1</td><td class="num" data-label="24시간 이상">0</td><td class="num" data-label="첫 응답 중앙값">55분</td><td data-label="운영 상태"><span class="chip c-good">양호</span></td></tr>
+                <tr><td class="rank" data-label="순위">4</td><td data-label="대학">동의과학대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">1</td><td class="num" data-label="24시간 이상">0</td><td class="num" data-label="첫 응답 중앙값">38분</td><td data-label="운영 상태"><span class="chip c-good">양호</span></td></tr>
+                <tr><td class="rank" data-label="순위">5</td><td data-label="대학">서정대학교</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td class="num" data-label="현재 미배정">1</td><td class="num" data-label="24시간 이상">0</td><td class="num" data-label="첫 응답 중앙값">31분</td><td data-label="운영 상태"><span class="chip c-good">양호</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== AM-1 등록 대학 관리 ===== -->
+    <div class="page" id="page-universities">
+      <div class="body2">
+        <h1>등록 대학</h1>
+        <p class="sub">프로토타입의 현재 대학 21개를 모두 공개 상태로 확인합니다. 실서비스의 공개 탐색 상태는 학교가 직접 게시하며, 어드민은 대학 등록·대학 계정 상태만 관리합니다.</p>
+
+        <div class="kpis">
+          <div class="kpi"><div class="kl">등록 대학</div><b data-registered-university-count>21</b><span class="kd up">현재 대학 21개</span></div>
+          <div class="kpi"><div class="kl">공개 탐색 노출</div><b data-published-university-count>21</b><span class="kd up">프로토타입 전체 공개</span></div>
+          <div class="kpi"><div class="kl">공개 탐색 미노출</div><b data-hidden-university-count>0</b><span class="kd up">프로토타입에는 없음</span></div>
+        </div>
+
+        <div class="filterbar">
+          <input id="registeredUniversitySearch" type="search" placeholder="대학명·지역·분야 검색" oninput="renderRegisteredUniversities()">
+          <select id="registeredUniversityPublicationFilter" onchange="renderRegisteredUniversities()">
+            <option value="">공개 탐색: 전체</option>
+            <option value="published">노출 중</option>
+            <option value="hidden">미노출</option>
+          </select>
+          <select id="registeredUniversityAccountFilter" onchange="renderRegisteredUniversities()">
+            <option value="">계정: 전체</option>
+            <option value="active">활성</option>
+            <option value="suspended">일시정지</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="ch">등록 대학 목록 <span class="cnote">공개 탐색 상태는 학교가 직접 게시한 읽기 전용 정보입니다.</span></div>
+          <div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>대학</th><th>지역 · 분야</th><th>학교 게시 상태</th><th>상담 채널</th><th>대학 계정</th><th>미노출 사유</th><th>안내</th></tr></thead>
+              <tbody id="registeredUniversityRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AM-2 대학 승인 큐 ===== -->
+    <div class="page" id="page-approvals">
+      <div class="body2">
+        <h1>대학 승인</h1>
+        <p class="sub">신규 전문대학 등록을 검토합니다. 아래 데이터는 현재 등록된 18개 대학과 분리된 <b>전문대학 후보 시나리오</b>이며, 전문대교협·4년제 대학은 포함하지 않습니다.</p>
+        <div class="tabs">
+          <button class="on" data-approval-state="pending" onclick="selectApprovalStatus('pending',this)">대기<span class="n" id="approvalCountPending">3</span></button>
+          <button data-approval-state="supplement" onclick="selectApprovalStatus('supplement',this)">보완 요청<span class="n" id="approvalCountSupplement">1</span></button>
+          <button data-approval-state="approved" onclick="selectApprovalStatus('approved',this)">승인됨<span class="n" id="approvalCountApproved">0</span></button>
+          <button data-approval-state="rejected" onclick="selectApprovalStatus('rejected',this)">반려됨<span class="n" id="approvalCountRejected">0</span></button>
+        </div>
+        <div class="card">
+          <div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>대학 후보</th><th>신청자</th><th>인증</th><th>연계 요청</th><th>신청일</th><th>경과</th><th>상태</th></tr></thead>
+              <tbody id="approvalRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AM-3 등록 요청 관리 ===== -->
+    <div class="page" id="page-requests">
+      <div class="body2">
+        <h1>미등록 대학 요청 관리</h1>
+        <p class="sub">학생이 "찾는 대학이 없어요"로 제출한 요청을 교명 기준으로 병합 집계합니다. 요청이 많은 대학부터 등록을 안내하세요.</p>
+        <div class="filterbar">
+          <input id="requestSearch" placeholder="교명 검색" oninput="renderRequests()">
+          <select id="requestStatusFilter" onchange="renderRequests()"><option value="">상태: 전체</option><option>미처리</option><option>컨택중</option><option>등록완료</option><option>보류</option></select>
+          <select id="requestSort" onchange="renderRequests()"><option value="count">정렬: 요청 많은 순</option><option value="recent">최근 요청 순</option></select>
+        </div>
+        <div class="card">
+          <div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th class="rank">#</th><th>요청 대학 후보</th><th class="num">요청 수</th><th>최초 / 최근 요청</th><th>상태</th><th>담당</th><th>관리</th></tr></thead>
+              <tbody id="requestRows"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="sub" style="margin-top:12px;font-size:12px">💡 요청 대학이 승인되어 등록되면 자동으로 <b>등록완료</b> 처리되고, 요청한 학생 전원에게 알림이 발송됩니다.</p>
+      </div>
+    </div>
+
+    <!-- ===== AM-5 광고 구좌 관리 ===== -->
+    <div class="page" id="page-contents">
+      <div class="body2">
+        <div class="page-head">
+          <div>
+            <h1>콘텐츠 CMS</h1>
+            <p class="sub">콘텐츠 초안부터 검토·공개 중단, 첨부 관리까지의 운영 상태를 관리합니다. 공개 콘텐츠 소비 화면 연동은 이 설계 목업 범위에 포함하지 않습니다.</p>
+          </div>
+          <div class="page-actions"><button class="btn btn-primary" type="button" onclick="openContentEditor()">새 콘텐츠</button></div>
+        </div>
+        <div class="cms-policy"><b>정책 확정 대기</b> · 콘텐츠 유형·카테고리·검토 권한·예약 시간대·다국어·광고성 표기는 Product Owner 확정 전입니다. 현재는 상태별 운영·첨부 UI를 설계합니다.</div>
+        <div class="tabs" aria-label="콘텐츠 상태 필터">
+          <button class="on" data-content-state="all" onclick="selectContentStatus('all',this)">전체<span class="n" id="contentCountAll">0</span></button>
+          <button data-content-state="draft" onclick="selectContentStatus('draft',this)">초안<span class="n" id="contentCountDraft">0</span></button>
+          <button data-content-state="review" onclick="selectContentStatus('review',this)">검토 중<span class="n" id="contentCountReview">0</span></button>
+          <button data-content-state="scheduled" onclick="selectContentStatus('scheduled',this)">예약됨<span class="n" id="contentCountScheduled">0</span></button>
+          <button data-content-state="published" onclick="selectContentStatus('published',this)">게시 중<span class="n" id="contentCountPublished">0</span></button>
+          <button data-content-state="hidden" onclick="selectContentStatus('hidden',this)">비공개<span class="n" id="contentCountHidden">0</span></button>
+        </div>
+        <div class="filterbar">
+          <input id="contentSearch" type="search" placeholder="제목·요약·작성자 검색" oninput="renderContentRecords()">
+          <select id="contentTypeFilter" onchange="renderContentRecords()"><option value="">유형(예시): 전체</option><option value="guide">안내 (예시)</option><option value="notice">공지 (예시)</option><option value="story">후기 (예시)</option></select>
+        </div>
+        <div class="card">
+          <div class="ch">콘텐츠 목록 <span class="cnote">게시 상태가 아닌 콘텐츠는 공개 화면에 표시되지 않습니다.</span></div>
+          <div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>제목</th><th>유형</th><th>첨부</th><th>작성자</th><th>상태</th><th>최근 변경</th><th>관리</th></tr></thead>
+              <tbody id="contentRows"></tbody>
+            </table>
+          </div>
+        </div>
+        <section class="card attachment-panel" id="contentAttachmentPanel" hidden aria-labelledby="contentAttachmentTitle">
+          <div class="ch"><span id="contentAttachmentTitle">콘텐츠 첨부</span><div class="slot-actions"><button class="rowbtn" type="button" onclick="closeContentAttachmentManager()">닫기</button><button class="rowbtn" type="button" onclick="openContentAttachmentEditor()">첨부 추가</button></div></div>
+          <div class="cb">
+            <p class="attachment-policy" id="contentAttachmentPolicy"></p>
+            <table class="tbl">
+              <thead><tr><th>첨부</th><th>출처·용량</th><th>열람 범위</th><th>관리</th></tr></thead>
+              <tbody id="contentAttachmentRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="page" id="page-notices">
+      <div class="body2">
+        <div class="page-head">
+          <div>
+            <h1>공지사항</h1>
+            <p class="sub">로그인한 학생·학교 구성원에게 전달할 플랫폼 운영 공지를 관리합니다.</p>
+          </div>
+          <div class="page-actions"><button class="btn btn-primary" type="button" onclick="openPlatformNoticeEditor()">새 공지</button></div>
+        </div>
+        <div class="cms-policy"><b>열람 범위</b> · 공개 랜딩과 콘텐츠 페이지에는 노출하지 않습니다. 학생·학교 전체 또는 한 역할만 지정할 수 있으며, 대학 구성원은 공지를 작성할 수 없습니다.</div>
+        <div class="kpis">
+          <div class="kpi"><div class="kl">전체 공지</div><b id="platformNoticeCountAll">0</b><span class="kd up">삭제 없이 상태 관리</span></div>
+          <div class="kpi"><div class="kl">게시 중</div><b id="platformNoticeCountPublished">0</b><span class="kd up">대상 포털 노출</span></div>
+          <div class="kpi"><div class="kl">게시 예정·종료</div><b id="platformNoticeCountInactive">0</b><span class="kd down">현재 미노출</span></div>
+        </div>
+        <div class="tabs" aria-label="공지 상태 필터">
+          <button class="on" data-platform-notice-state="all" onclick="selectPlatformNoticeStatus('all',this)">전체<span class="n" id="platformNoticeTabAll">0</span></button>
+          <button data-platform-notice-state="draft" onclick="selectPlatformNoticeStatus('draft',this)">게시 예정<span class="n" id="platformNoticeTabDraft">0</span></button>
+          <button data-platform-notice-state="published" onclick="selectPlatformNoticeStatus('published',this)">게시 중<span class="n" id="platformNoticeTabPublished">0</span></button>
+          <button data-platform-notice-state="hidden" onclick="selectPlatformNoticeStatus('hidden',this)">종료<span class="n" id="platformNoticeTabHidden">0</span></button>
+        </div>
+        <div class="filterbar">
+          <input id="platformNoticeSearch" type="search" placeholder="제목·요약·작성자 검색" oninput="renderPlatformNotices()">
+          <select id="platformNoticeAudienceFilter" onchange="renderPlatformNotices()"><option value="">대상: 전체</option><option value="all">학생·학교 전체</option><option value="student">학생</option><option value="university">학교</option></select>
+        </div>
+        <div class="card">
+          <div class="ch">공지 목록 <span class="cnote">게시 중인 공지만 지정 대상의 로그인 화면에 표시됩니다.</span></div>
+          <div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>제목</th><th>대상</th><th>중요</th><th>작성자</th><th>상태</th><th>최근 변경</th><th>관리</th></tr></thead>
+              <tbody id="platformNoticeRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-ads">
+      <div class="body2">
+        <h1>광고 구좌 관리</h1>
+        <p class="sub">랜딩페이지의 대학 고객사 배너와 기업 제휴 배너를 분리해 관리합니다. 노출 상태와 순서는 공개 랜딩 캐러셀에 반영됩니다.</p>
+        <div class="slot-notice"><b>배너 규격</b> · PC 1180 × 220px / 모바일 328 × 160px. 고객사에서 전달한 이미지 경로를 등록하고, 공개 중인 구좌만 캐러셀에 노출합니다.</div>
+        <div class="kpis">
+          <div class="kpi"><div class="kl">대학 고객사 구좌</div><b id="universityAdActiveCount">3</b><span class="kd up">활성 구좌 <span id="universityAdTotalCount">3</span>개 중</span></div>
+          <div class="kpi"><div class="kl">기업 제휴 구좌</div><b id="corporateAdActiveCount">3</b><span class="kd up">활성 구좌 <span id="corporateAdTotalCount">3</span>개 중</span></div>
+          <div class="kpi"><div class="kl">랜딩 노출 정책</div><b style="font-size:17px;margin-top:8px">구좌별 분리</b><span class="kd up">대학 배너 · 기업 제휴 배너</span></div>
+        </div>
+        <div class="slot-stack">
+          <section class="card slot-card" aria-labelledby="universityAdHeading">
+            <div class="ch"><div class="ch-title"><span id="universityAdHeading">대학 고객사 배너</span><span class="chip c-info">랜딩 공통</span></div><button class="rowbtn" type="button" onclick="openAdSlotEditor('university')">구좌 추가</button></div>
+            <div class="cb" style="padding:0"><table class="tbl"><thead><tr><th>#</th><th>미리보기</th><th>대학 고객사 · 배너 설명</th><th>이미지 경로</th><th>노출</th><th>순서</th><th>관리</th></tr></thead><tbody id="universityAdRows"></tbody></table></div>
+          </section>
+          <section class="card slot-card" aria-labelledby="corporateAdHeading">
+            <div class="ch"><div class="ch-title"><span id="corporateAdHeading">기업 제휴 배너</span><span class="chip c-info">기업 제휴 배너 포함 안</span></div><button class="rowbtn" type="button" onclick="openAdSlotEditor('corporate')">구좌 추가</button></div>
+            <div class="cb" style="padding:0"><table class="tbl"><thead><tr><th>#</th><th>미리보기</th><th>분야 · 광고주</th><th>배너 설명 · 이미지 경로</th><th>노출</th><th>순서</th><th>관리</th></tr></thead><tbody id="corporateAdRows"></tbody></table></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AM-6 활동·감사 로그 ===== -->
+    <div class="page" id="page-audits">
+      <div class="body2">
+        <h1>활동·감사 로그</h1>
+        <p class="sub">대학 등록·계정·콘텐츠·광고 변경의 처리 이력을 확인합니다. 행을 선택하면 대상 식별자와 이전·변경값을 볼 수 있습니다.</p>
+        <div class="audit">🔒 <div><b>처리자·시각·대상·작업·사유·이전/변경값</b>을 기록합니다. 상담 원문과 학생 문서 원본은 감사 로그에 저장하지 않습니다.</div></div>
+        <div class="audit-filter"><input id="auditSearch" type="search" placeholder="대상·처리자·작업·식별자 검색" oninput="renderAuditLogs()"><select id="auditScopeFilter" onchange="renderAuditLogs()"><option value="">영역: 전체</option><option>광고 구좌</option><option>계정</option><option>대학 승인</option><option>공지사항</option></select><select id="auditActorFilter" onchange="renderAuditLogs()"><option value="">처리자: 전체</option><option value="플랫폼 관리자">플랫폼 관리자</option></select></div>
+        <div class="card"><div class="cb" style="padding:0"><table class="tbl"><thead><tr><th>시각</th><th>처리자</th><th>영역</th><th>작업 · 대상</th><th>결과</th><th>상세</th></tr></thead><tbody id="auditLogRows"></tbody></table></div></div>
+      </div>
+    </div>
+
+    <!-- ===== AM-4 계정 관리 ===== -->
+    <div class="page" id="page-accounts">
+      <div class="body2">
+        <h1>계정 관리</h1>
+        <p class="sub">대학·학생 계정 상태를 관리하고, 대학 구성원의 역할과 소속구분 배정을 발급합니다.</p>
+        <div class="audit">🔒 <div>계정 관리에서는 학생 문서와 상담 원문을 열람하지 않습니다.</div></div>
+        <div class="subtabs">
+          <button class="on" onclick="showSub('uni', this)">대학 계정</button>
+          <button onclick="showSub('members', this)">대학 구성원</button>
+          <button onclick="showSub('stu', this)">학생 계정</button>
+        </div>
+
+        <div class="subpane show" id="sub-uni">
+          <div class="filterbar"><input placeholder="교명·오너 검색"><select><option>상태: 전체</option><option>활성</option><option>일시정지</option><option>등록 해제</option></select><select><option>공개 탐색 노출: 전체</option><option>노출 중</option><option>미노출</option></select></div>
+          <div class="card"><div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>대학</th><th>오너</th><th class="num">멤버</th><th class="num">이번 달 상담</th><th>공개 탐색 노출</th><th>상태</th><th>관리</th></tr></thead>
+              <tbody>
+                <tr><td data-label="대학">🏛️ 서정대학교</td><td data-label="오너">김국제</td><td class="num" data-label="멤버">4</td><td class="num" data-label="이번 달 상담">42</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td data-label="계정 상태"><span class="chip c-good account-status">활성</span></td><td data-label="관리"><button class="rowbtn warn" type="button" onclick="toggleAccount(this,'대학','서정대학교')">일시정지</button></td></tr>
+                <tr><td data-label="대학">🎓 한양여자대학교</td><td data-label="오너">최윤아</td><td class="num" data-label="멤버">3</td><td class="num" data-label="이번 달 상담">35</td><td data-label="공개 탐색 노출"><span class="chip c-good">노출 중</span></td><td data-label="계정 상태"><span class="chip c-good account-status">활성</span></td><td data-label="관리"><button class="rowbtn warn" type="button" onclick="toggleAccount(this,'대학','한양여자대학교')">일시정지</button></td></tr>
+                <tr><td data-label="대학">🏫 연성대학교</td><td data-label="오너">한지훈</td><td class="num" data-label="멤버">2</td><td class="num" data-label="이번 달 상담">29</td><td data-label="공개 탐색 노출"><span class="chip c-gray">미노출</span></td><td data-label="계정 상태"><span class="chip c-wait account-status">일시정지</span></td><td data-label="관리"><button class="rowbtn" type="button" onclick="toggleAccount(this,'대학','연성대학교')">재활성</button></td></tr>
+              </tbody>
+            </table>
+          </div></div>
+        </div>
+
+        <div class="subpane" id="sub-members">
+          <div class="page-head">
+            <div>
+              <h2 style="font-size:16px;margin:0 0 3px">대학 구성원 발급·배정</h2>
+              <p class="issue-note">최고관리자는 대학별 정확히 1명입니다. 소속구분 관리자·멤버는 여러 소속구분에 배정할 수 있습니다.</p>
+            </div>
+            <div class="page-actions"><button class="btn btn-primary" type="button" onclick="openUniversityMemberIssuer()">대학계정 발급</button></div>
+          </div>
+          <div class="member-summary">
+            <div class="kpi"><div class="kl">최고관리자</div><b id="topOwnerCount">0</b><span class="kd up">대학별 1명 보호</span></div>
+            <div class="kpi"><div class="kl">발급 대기</div><b id="pendingInviteCount">0</b><span class="kd down">초대 수락 필요</span></div>
+            <div class="kpi"><div class="kl">복수 소속구분 배정</div><b id="multiAffiliationCount">0</b><span class="kd up">관리자·멤버 기준</span></div>
+          </div>
+          <div class="filterbar">
+            <input id="memberSearch" type="search" placeholder="이름·이메일·대학 검색" oninput="renderUniversityMembers()">
+            <select id="memberRoleFilter" onchange="renderUniversityMembers()"><option value="">역할: 전체</option><option value="top_owner">최고관리자</option><option value="affiliation_manager">소속구분 관리자</option><option value="member">멤버</option></select>
+            <select id="memberStatusFilter" onchange="renderUniversityMembers()"><option value="">상태: 전체</option><option value="active">활성</option><option value="invited">초대 대기</option><option value="suspended">일시정지</option></select>
+          </div>
+          <div class="card"><div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>계정</th><th>대학</th><th>역할</th><th>배정 소속구분</th><th>상태</th><th>발급일</th><th>관리</th></tr></thead>
+              <tbody id="universityMemberRows"></tbody>
+            </table>
+          </div></div>
+        </div>
+
+        <div class="subpane" id="sub-stu">
+          <div class="filterbar"><input placeholder="이메일 검색"><select id="adminCountryFilter" onchange="updateAdminCities()"><option value="">국가: 전체</option><option value="베트남">🇻🇳 베트남</option><option value="태국">🇹🇭 태국</option><option value="중국">🇨🇳 중국</option><option value="우즈베키스탄">🇺🇿 우즈베키스탄</option><option value="몽골">🇲🇳 몽골</option></select><select id="adminCityFilter"><option>도시: 전체</option></select><select><option>상태: 전체</option><option>활성</option><option>정지</option></select></div>
+          <div class="card"><div class="cb" style="padding:0">
+            <table class="tbl">
+              <thead><tr><th>학생</th><th>국가 · 도시</th><th>가입일</th><th class="num">상담 수</th><th>상태</th><th>관리</th></tr></thead>
+              <tbody>
+                <tr><td data-label="학생">nguyenlinh@example.com<div style="font-size:11px;color:var(--ink2)">NGUYEN LINH</div></td><td data-label="국가 · 도시">🇻🇳 베트남 · 하노이</td><td class="num" data-label="가입일">2026-07-10</td><td class="num" data-label="상담 수">4</td><td data-label="계정 상태"><span class="chip c-good account-status">활성</span></td><td data-label="관리"><button class="rowbtn warn" type="button" onclick="toggleAccount(this,'학생','nguyenlinh@example.com')">정지</button></td></tr>
+                <tr><td data-label="학생">napat@example.com<div style="font-size:11px;color:var(--ink2)">NAPAT SUKSAI</div></td><td data-label="국가 · 도시">🇹🇭 태국 · 방콕</td><td class="num" data-label="가입일">2026-07-13</td><td class="num" data-label="상담 수">3</td><td data-label="계정 상태"><span class="chip c-good account-status">활성</span></td><td data-label="관리"><button class="rowbtn warn" type="button" onclick="toggleAccount(this,'학생','napat@example.com')">정지</button></td></tr>
+                <tr><td data-label="학생">wanglei@example.com<div style="font-size:11px;color:var(--ink2)">WANG LEI</div></td><td data-label="국가 · 도시">🇨🇳 중국 · 상하이</td><td class="num" data-label="가입일">2026-06-30</td><td class="num" data-label="상담 수">5</td><td data-label="계정 상태"><span class="chip c-good account-status">활성</span></td><td data-label="관리"><button class="rowbtn warn" type="button" onclick="toggleAccount(this,'학생','wanglei@example.com')">정지</button></td></tr>
+                <tr><td data-label="학생">aziza@example.com<div style="font-size:11px;color:var(--ink2)">AZIZA KARIMOVA</div></td><td data-label="국가 · 도시">🇺🇿 우즈베키스탄 · 타슈켄트</td><td class="num" data-label="가입일">2026-07-08</td><td class="num" data-label="상담 수">2</td><td data-label="계정 상태"><span class="chip c-good account-status">활성</span></td><td data-label="관리"><button class="rowbtn warn" type="button" onclick="toggleAccount(this,'학생','aziza@example.com')">정지</button></td></tr>
+                <tr><td data-label="학생">anudari@example.com<div style="font-size:11px;color:var(--ink2)">ANUDARI BAT</div></td><td data-label="국가 · 도시">🇲🇳 몽골 · 울란바토르</td><td class="num" data-label="가입일">2026-07-05</td><td class="num" data-label="상담 수">1</td><td data-label="계정 상태"><span class="chip c-rej account-status">정지</span></td><td data-label="관리"><button class="rowbtn" type="button" onclick="toggleAccount(this,'학생','anudari@example.com')">해제</button></td></tr>
+              </tbody>
+            </table>
+          </div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AM-2 상세 드로어 -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dwName" aria-hidden="true" inert>
+    <div class="drawer-hd"><span id="dwFlag" style="font-size:18px">🏫</span><b id="dwName">가온보건전문대학</b><button class="x" type="button" onclick="closeDrawer()" aria-label="승인 상세 닫기">✕</button></div>
+    <div class="drawer-bd">
+      <h4>대학 정보</h4>
+      <div class="kv"><span>교명(영문)</span><b id="dwEn">Gaon Health College</b></div>
+      <div class="kv"><span>유형·지역</span><b id="dwType">전문대학 후보 · 경기</b></div>
+      <div class="kv"><span>공식 웹사이트</span><a id="dwSite" href="#" onclick="return false">gaon-health.example ↗</a></div>
+      <div class="kv"><span>신청자</span><b id="dwApplicant">정민호 · 입학지원팀</b></div>
+      <div class="kv"><span>검토 상태</span><b id="dwStatus">대기</b></div>
+
+      <h4>인증 상태</h4>
+      <div id="dwVerify"></div>
+
+      <h4>학생 등록 요청 연계</h4>
+      <div class="linkreq" id="dwLink">📮 이 대학을 요청한 학생 <b>12명</b> — 승인 시 전원에게 등록 알림이 발송됩니다.</div>
+
+      <h4>처리 이력</h4>
+      <div class="vbox" id="dwHistory">신청 접수 · 07-11</div>
+    </div>
+    <div class="drawer-ft">
+      <button class="btn btn-amber" id="supplementButton" onclick="requestSupplement()">보완 요청</button>
+      <button class="btn btn-warn" id="rejectButton" onclick="rejectUni()">반려</button>
+      <button class="btn btn-primary" id="approveButton" onclick="approveUni()">승인</button>
+    </div>
+  </div>
+
+  <!-- 공용 상태 전환 모달 -->
+  <div class="action-overlay" id="actionOverlay" onclick="handleActionOverlay(event)">
+    <section class="action-modal" role="dialog" aria-modal="true" aria-labelledby="actionTitle">
+      <div class="action-hd">
+        <h2 id="actionTitle">상태 변경</h2>
+        <button type="button" onclick="closeActionModal()" aria-label="닫기">✕</button>
+      </div>
+      <form id="actionForm" onsubmit="submitActionModal(event)">
+        <div class="action-bd">
+          <p class="action-description" id="actionDescription"></p>
+          <div class="action-error" id="actionError" role="alert"></div>
+          <div id="actionFields"></div>
+        </div>
+        <div class="action-ft">
+          <button class="btn" type="button" onclick="closeActionModal()">취소</button>
+          <button class="btn btn-primary" id="actionConfirmButton" type="submit">확인</button>
+        </div>
+      </form>
+    </section>
+  </div>
+  <div class="toast-area" id="toastArea" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+<script src="university-data.js"></script>
+<script src="ad-slot-data.js"></script>
+<script src="audit-log-data.js"></script>
+<script src="notice-data.js"></script>
+<script>
+  function showLoginNotice(){
+    const notice=document.querySelector('.demo-note');
+    notice.textContent='비밀번호 재설정 안내를 관리자 이메일로 발송했습니다. (목업)';
+    notice.style.color='var(--brand)';
+  }
+  function loginAdmin(event){
+    event.preventDefault();
+    document.getElementById('loginView').hidden=true;
+    document.getElementById('adminApp').hidden=false;
+    const dashLink=document.querySelector('.side a[data-pg="dash"]');
+    showPage('dash',dashLink);
+    showCountryDistribution();
+    window.scrollTo(0,0);
+  }
+  function logoutAdmin(){
+    closeDrawer();
+    closeActionModal();
+    document.getElementById('adminApp').hidden=true;
+    document.getElementById('loginView').hidden=false;
+    window.scrollTo(0,0);
+    document.getElementById('adminEmail').focus();
+  }
+  function showPage(key, el){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+    document.getElementById('page-'+key).classList.add('show');
+    document.querySelectorAll('.side a').forEach(a=>a.classList.remove('on'));
+    if(el) el.classList.add('on');
+    const paths={dash:'/admin', universities:'/admin/universities', approvals:'/admin/approvals', requests:'/admin/requests', contents:'/admin/contents', notices:'/admin/notices', ads:'/admin/ad-slots', audits:'/admin/audit-logs', accounts:'/admin/accounts'};
+    document.getElementById('pathTx').textContent = paths[key]||'/admin';
+    if(key==='universities') renderRegisteredUniversities();
+    if(key==='contents') renderContentRecords();
+    if(key==='notices') renderPlatformNotices();
+    if(key==='ads') renderAdSlots();
+    if(key==='audits') renderAuditLogs();
+    if(key==='accounts') renderUniversityMembers();
+  }
+  function openUniversityManagement(publicationFilter=''){
+    const filter=document.getElementById('registeredUniversityPublicationFilter');
+    if(filter) filter.value=publicationFilter;
+    showPage('universities',document.querySelector('.side a[data-pg="universities"]'));
+  }
+  document.querySelectorAll('.tabs button, .subtabs button').forEach(()=>{});
+  document.querySelectorAll('.page .tabs button').forEach(b=>{
+    b.addEventListener('click', ()=>{ b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); });
+  });
+  function showSub(key, el){
+    document.querySelectorAll('.subpane').forEach(p=>p.classList.remove('show'));
+    document.getElementById('sub-'+key).classList.add('show');
+    el.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    el.classList.add('on');
+  }
+
+  let actionConfig=null;
+  let actionReturnFocus=null;
+  let drawerReturnFocus=null;
+  function openActionModal(config){
+    actionConfig=config;
+    actionReturnFocus=document.activeElement;
+    document.getElementById('actionTitle').textContent=config.title;
+    document.getElementById('actionDescription').textContent=config.description||'';
+    document.getElementById('actionConfirmButton').textContent=config.confirmLabel||'확인';
+    document.getElementById('actionError').classList.remove('show');
+    document.getElementById('actionError').textContent='';
+    document.getElementById('actionFields').innerHTML=(config.fields||[]).map(field=>{
+      const id='actionField-'+field.name;
+      const required=field.required?' required':'';
+      const value=escapeHtml(field.value||'');
+      if(field.type==='select'){
+        const options=(field.options||[]).map(option=>{
+          const item=typeof option==='string'?{value:option,label:option}:option;
+          return `<option value="${escapeHtml(item.value)}"${item.value===field.value?' selected':''}>${escapeHtml(item.label)}</option>`;
+        }).join('');
+        return `<div class="action-field"><label for="${id}">${escapeHtml(field.label)}</label><select id="${id}" name="${escapeHtml(field.name)}"${required}${field.onchange?` onchange="${escapeHtml(field.onchange)}"`:''}>${options}</select></div>`;
+      }
+      if(field.type==='slot') return `<div class="action-field"><label>${escapeHtml(field.label)}</label>${field.help?`<p class="action-help">${escapeHtml(field.help)}</p>`:''}<div id="${id}"></div></div>`;
+      if(field.type==='textarea'){
+        return `<div class="action-field"><label for="${id}">${escapeHtml(field.label)}</label><textarea id="${id}" name="${escapeHtml(field.name)}" placeholder="${escapeHtml(field.placeholder||'')}"${required}>${value}</textarea></div>`;
+      }
+      return `<div class="action-field"><label for="${id}">${escapeHtml(field.label)}</label><input id="${id}" name="${escapeHtml(field.name)}" type="${escapeHtml(field.type||'text')}" value="${value}" placeholder="${escapeHtml(field.placeholder||'')}"${required}></div>`;
+    }).join('');
+    config.afterRender?.();
+    document.getElementById('actionOverlay').classList.add('show');
+    document.body.classList.add('action-open');
+    const drawer=document.getElementById('drawer');
+    if(drawer.classList.contains('show')){
+      drawer.setAttribute('aria-hidden','true');
+      drawer.setAttribute('inert','');
+    }
+    requestAnimationFrame(()=>document.querySelector('#actionFields input,#actionFields select,#actionFields textarea,#actionConfirmButton')?.focus());
+  }
+  function closeActionModal(){
+    document.getElementById('actionOverlay').classList.remove('show');
+    document.body.classList.remove('action-open');
+    document.getElementById('actionForm').reset();
+    const drawer=document.getElementById('drawer');
+    if(drawer.classList.contains('show')){
+      drawer.setAttribute('aria-hidden','false');
+      drawer.removeAttribute('inert');
+    }
+    const focusTarget=actionReturnFocus;
+    actionReturnFocus=null;
+    actionConfig=null;
+    if(focusTarget && focusTarget.isConnected && (!focusTarget.closest('#drawer') || drawer.classList.contains('show'))) focusTarget.focus();
+  }
+  function handleActionOverlay(event){
+    if(event.target===event.currentTarget) closeActionModal();
+  }
+  function showActionError(message){
+    const error=document.getElementById('actionError');
+    error.textContent=message;
+    error.classList.add('show');
+  }
+  function submitActionModal(event){
+    event.preventDefault();
+    const form=event.currentTarget;
+    if(!form.reportValidity()||!actionConfig) return;
+    const values={};
+    new FormData(form).forEach((value,key)=>{
+      if(Object.prototype.hasOwnProperty.call(values,key)) values[key]=Array.isArray(values[key])?[...values[key],value]:[values[key],value];
+      else values[key]=value;
+    });
+    const result=actionConfig.onSubmit ? actionConfig.onSubmit(values) : true;
+    if(result!==false) closeActionModal();
+  }
+  function showToast(message,type='success'){
+    const toast=document.createElement('div');
+    toast.className='toast '+type;
+    toast.textContent=message;
+    document.getElementById('toastArea').appendChild(toast);
+    setTimeout(()=>toast.remove(),4200);
+  }
+
+  document.addEventListener('keydown',event=>{
+    const action=document.getElementById('actionOverlay');
+    const drawer=document.getElementById('drawer');
+    if(event.key==='Escape'){
+      if(action.classList.contains('show')) closeActionModal();
+      else if(drawer.classList.contains('show')) closeDrawer();
+      return;
+    }
+    if(event.key!=='Tab') return;
+    const scope=action.classList.contains('show') ? action.querySelector('.action-modal') : drawer.classList.contains('show') ? drawer : null;
+    if(!scope) return;
+    const focusable=[...scope.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(el=>!el.hasAttribute('inert'));
+    if(!focusable.length) return;
+    const first=focusable[0],last=focusable[focusable.length-1];
+    if(event.shiftKey && document.activeElement===first){ event.preventDefault(); last.focus(); }
+    else if(!event.shiftKey && document.activeElement===last){ event.preventDefault(); first.focus(); }
+  });
+
+  const studentDistribution=[
+    {key:'vietnam',flag:'🇻🇳',name:'베트남',total:28,cities:[['하노이',12],['호치민',11],['다낭',5]]},
+    {key:'thailand',flag:'🇹🇭',name:'태국',total:24,cities:[['방콕',12],['치앙마이',7],['콘깬',5]]},
+    {key:'china',flag:'🇨🇳',name:'중국',total:20,cities:[['베이징',7],['상하이',7],['칭다오',6]]},
+    {key:'uzbekistan',flag:'🇺🇿',name:'우즈베키스탄',total:17,cities:[['타슈켄트',10],['사마르칸트',4],['부하라',3]]},
+    {key:'mongolia',flag:'🇲🇳',name:'몽골',total:13,cities:[['울란바토르',10],['에르데네트',3]]}
+  ];
+  function showCountryDistribution(){
+    const max=Math.max(...studentDistribution.map(country=>country.total));
+    document.getElementById('distTitle').textContent='국가별 학생 분포';
+    document.getElementById('distNote').textContent='총 102명';
+    document.getElementById('distBack').classList.remove('show');
+    document.getElementById('studentDist').innerHTML=studentDistribution.map(country=>{
+      const width=(country.total/max*100).toFixed(1);
+      return `<button class="distrow" type="button" onclick="showCityDistribution('${country.key}')" aria-label="${country.name} 도시별 분포 보기"><span class="fl">${country.flag} ${country.name}</span><span class="bar" aria-hidden="true"><i style="width:${width}%"></i></span><span class="vv">${country.total}명</span><span class="arr" aria-hidden="true">›</span></button>`;
+    }).join('');
+  }
+  function showCityDistribution(key){
+    const country=studentDistribution.find(item=>item.key===key);
+    if(!country) return;
+    const max=Math.max(...country.cities.map(city=>city[1]));
+    document.getElementById('distTitle').textContent=`${country.flag} ${country.name} 도시별 분포`;
+    document.getElementById('distNote').textContent=`${country.total}명`;
+    document.getElementById('distBack').classList.add('show');
+    document.getElementById('studentDist').innerHTML=country.cities.map(city=>{
+      const width=(city[1]/max*100).toFixed(1);
+      return `<div class="distrow"><span class="fl">${city[0]}</span><span class="bar" aria-hidden="true"><i style="width:${width}%"></i></span><span class="vv">${city[1]}명</span></div>`;
+    }).join('');
+  }
+  function updateAdminCities(){
+    const country=document.getElementById('adminCountryFilter').value;
+    const city=document.getElementById('adminCityFilter');
+    const record=studentDistribution.find(item=>item.name===country);
+    city.innerHTML='<option>도시: 전체</option>'+(record ? record.cities.map(([name])=>`<option>${name}</option>`).join('') : '');
+  }
+  showCountryDistribution();
+
+  const approvalStatusLabels={pending:'대기',supplement:'보완 요청',approved:'승인됨',rejected:'반려됨'};
+  const approvalStatusClasses={pending:'c-wait',supplement:'c-info',approved:'c-good',rejected:'c-rej'};
+  let currentApprovalStatus='pending';
+  let activeUniversityKey=null;
+  let registeredUniversityRecords=window.UniversityDirectory?.listAll?.()||[];
+  let registeredUniversityTotal=registeredUniversityRecords.length;
+  let hiddenUniversityTotal=registeredUniversityRecords.filter(university=>university.publication?.status!=='published').length;
+
+  function refreshRegisteredUniversityRecords(){
+    registeredUniversityRecords=window.UniversityDirectory?.listAll?.()||[];
+    registeredUniversityTotal=registeredUniversityRecords.length;
+    hiddenUniversityTotal=registeredUniversityRecords.filter(university=>university.publication?.status!=='published').length;
+  }
+
+  const approvalCandidates={
+    gaon:{flag:'🏫',name:'가온보건전문대학',en:'Gaon Health College',type:'전문대학 후보 · 경기',site:'gaon-health.example ↗',applicant:'정민호 · 입학지원팀',verifyType:'doc',verifyLabel:'📎 서류 검토',submitted:'07-11',age:'2일',requests:12,status:'pending',
+      verify:'<div class="vbox"><b>📎 서류 증빙 — 검토 필요</b><div style="margin-top:6px;color:var(--ink2)">재직증명서.pdf · 대학직인.pdf 업로드됨 · 도메인 인증 없음</div><button class="btn" type="button" style="margin-top:8px" onclick="showToast(\'첨부 서류 뷰어를 엽니다. (목업)\',\'info\')">첨부 서류 열람</button></div>',history:['07-11 · 신청 접수']},
+    saebit:{flag:'🎓',name:'새빛산업전문대학',en:'Saebit Industry College',type:'전문대학 후보 · 충남',site:'saebit-industry.example ↗',applicant:'이수민 · 국제교류팀',verifyType:'dom',verifyLabel:'✓ 도메인 인증',submitted:'07-12',age:'1일',requests:9,status:'pending',
+      verify:'<div class="vbox ok"><b>✓ 학교 도메인 이메일 인증 완료</b><div style="margin-top:6px;color:var(--good)">admission@saebit-industry.example · 07-12 인증 확인</div></div>',history:['07-12 · 신청 접수','07-12 · 도메인 인증 완료']},
+    hanul:{flag:'🏛️',name:'한울관광전문대학',en:'Hanul Tourism College',type:'전문대학 후보 · 강원',site:'hanul-tourism.example ↗',applicant:'박서준 · 입학처',verifyType:'dom',verifyLabel:'✓ 도메인 인증',submitted:'07-13',age:'3시간',requests:6,status:'pending',
+      verify:'<div class="vbox ok"><b>✓ 학교 도메인 이메일 인증 완료</b><div style="margin-top:6px;color:var(--good)">apply@hanul-tourism.example · 07-13 인증 확인</div></div>',history:['07-13 · 신청 접수','07-13 · 도메인 인증 완료']},
+    pureun:{flag:'🏫',name:'푸른해양전문대학',en:'Pureun Maritime College',type:'전문대학 후보 · 경남',site:'pureun-maritime.example ↗',applicant:'최윤아 · 대외협력팀',verifyType:'doc',verifyLabel:'📎 서류 재검토',submitted:'07-09',age:'4일',requests:4,status:'supplement',
+      verify:'<div class="vbox"><b>📎 보완 서류 대기</b><div style="margin-top:6px;color:var(--ink2)">재직증명서의 발급일과 대학 직인을 다시 확인해야 합니다.</div></div>',history:['07-09 · 신청 접수','07-12 · 보완 요청 · 최신 재직증명서 제출 필요']}
+  };
+
+  const requestData=[
+    {id:'r-gaon',approvalKey:'gaon',name:'가온보건전문대학',region:'경기 · 전문대학 후보',count:12,first:'06-20',recent:'07-14',status:'미처리',assignee:'—',memo:''},
+    {id:'r-saebit',approvalKey:'saebit',name:'새빛산업전문대학',region:'충남 · 전문대학 후보',count:9,first:'06-28',recent:'07-13',status:'컨택중',assignee:'김하나',memo:'등록 신청서 접수 완료'},
+    {id:'r-hanul',approvalKey:'hanul',name:'한울관광전문대학',region:'강원 · 전문대학 후보',count:6,first:'07-02',recent:'07-11',status:'미처리',assignee:'—',memo:''},
+    {id:'r-pureun',approvalKey:'pureun',name:'푸른해양전문대학',region:'경남 · 전문대학 후보',count:4,first:'07-05',recent:'07-10',status:'보류',assignee:'김하나',memo:'보완 서류 회신 대기'},
+    {id:'r-mirae',approvalKey:null,name:'미래조리전문대학',region:'부산 · 전문대학 후보',count:2,first:'07-09',recent:'07-09',status:'보류',assignee:'김하나',memo:'공식 연락처 확인 중'}
+  ];
+
+  function escapeHtml(value){
+    return String(value).replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character]));
+  }
+  function recordAudit(scope,action,target,detail='',context={}){
+    window.UniChatAuditLog?.add?.({actor:'플랫폼 관리자 · 운영팀 김하나',role:'플랫폼 관리자',scope,action,target,detail,result:'성공',...context});
+  }
+  function auditResultChip(result){
+    const label=result||'성공';
+    const tone=label==='성공'?'c-good':label==='실패'?'c-rej':'c-wait';
+    return `<span class="chip ${tone}">${escapeHtml(label)}</span>`;
+  }
+  function renderAuditLogs(){
+    const search=(document.getElementById('auditSearch')?.value||'').trim().toLocaleLowerCase('ko');
+    const scope=document.getElementById('auditScopeFilter')?.value||'';
+    const actor=document.getElementById('auditActorFilter')?.value||'';
+    const records=(window.UniChatAuditLog?.list?.()||[]).filter(item=>{
+      const text=[item.actor,item.role,item.scope,item.action,item.target,item.detail,item.universityId,item.affiliationId,item.contentId,item.previousValue,item.changedValue].join(' ').toLocaleLowerCase('ko');
+      return (!search||text.includes(search))&&(!scope||item.scope===scope)&&(!actor||item.role===actor);
+    });
+    const rows=document.getElementById('auditLogRows');if(!rows)return;
+    rows.innerHTML=records.length?records.map(item=>`<tr class="audit-row" role="button" tabindex="0" onclick="openAuditDetail('${escapeHtml(item.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAuditDetail('${escapeHtml(item.id)}')}" aria-label="${escapeHtml(item.action)} 감사 로그 상세 보기"><td class="num" data-label="시각"><b>${escapeHtml(item.at)}</b></td><td data-label="처리자">${escapeHtml(item.actor)}<div style="font-size:11px;color:var(--ink2)">${escapeHtml(item.role)}</div></td><td data-label="영역"><span class="chip c-info">${escapeHtml(item.scope)}</span></td><td data-label="작업 · 대상"><b>${escapeHtml(item.action)}</b><div style="font-size:11px;color:var(--ink2)">${escapeHtml(item.target)}</div></td><td data-label="결과">${auditResultChip(item.result)}</td><td data-label="상세"><div class="audit-detail">${escapeHtml(item.detail||'—')}</div><span class="audit-link">상세 보기 ›</span></td></tr>`).join(''):'<tr><td colspan="6" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 감사 로그가 없습니다.</td></tr>';
+  }
+  function openAuditDetail(id){
+    const item=(window.UniChatAuditLog?.list?.()||[]).find(record=>record.id===id);
+    if(!item) return;
+    const lines=[
+      `처리자: ${item.actor} (${item.role})`,
+      `시각: ${item.at}`,
+      `영역: ${item.scope}`,
+      `작업: ${item.action}`,
+      `대상: ${item.target}`,
+      `결과: ${item.result||'성공'}`,
+      `사유·메모: ${item.detail||'—'}`,
+      `이전값: ${item.previousValue||'—'}`,
+      `변경값: ${item.changedValue||'—'}`,
+      `universityId: ${item.universityId||'—'}`,
+      `affiliationId: ${item.affiliationId||'—'}`,
+      `contentId: ${item.contentId||'—'}`
+    ];
+    openActionModal({title:'감사 로그 상세',description:lines.join('\n'),confirmLabel:'닫기',fields:[]});
+  }
+
+  let currentPlatformNoticeStatus='all';
+  const platformNoticeStatusClasses={draft:'c-wait',published:'c-good',hidden:'c-gray'};
+  function platformNoticeStatusChip(status){
+    const label=window.UniChatNotices?.statusLabels?.[status]||status;
+    return `<span class="chip ${platformNoticeStatusClasses[status]||'c-gray'}">${escapeHtml(label)}</span>`;
+  }
+  function syncPlatformNoticeCounts(records){
+    const count=status=>records.filter(record=>!status||record.status===status).length;
+    document.getElementById('platformNoticeCountAll').textContent=count('');
+    document.getElementById('platformNoticeCountPublished').textContent=count('published');
+    document.getElementById('platformNoticeCountInactive').textContent=count('draft')+count('hidden');
+    document.getElementById('platformNoticeTabAll').textContent=count('');
+    document.getElementById('platformNoticeTabDraft').textContent=count('draft');
+    document.getElementById('platformNoticeTabPublished').textContent=count('published');
+    document.getElementById('platformNoticeTabHidden').textContent=count('hidden');
+  }
+  function selectPlatformNoticeStatus(status,button){
+    currentPlatformNoticeStatus=status;
+    document.querySelectorAll('[data-platform-notice-state]').forEach(item=>item.classList.remove('on'));
+    button.classList.add('on');
+    renderPlatformNotices();
+  }
+  function platformNoticeActionButtons(notice){
+    const edit=`<button class="rowbtn" type="button" data-notice-id="${escapeHtml(notice.id)}" onclick="openPlatformNoticeEditor(this.dataset.noticeId)">편집</button>`;
+    const state=notice.status==='published'
+      ? `<button class="rowbtn warn" type="button" data-notice-id="${escapeHtml(notice.id)}" onclick="endPlatformNotice(this.dataset.noticeId)">종료</button>`
+      : `<button class="rowbtn" type="button" data-notice-id="${escapeHtml(notice.id)}" onclick="publishPlatformNotice(this.dataset.noticeId)">게시</button>`;
+    return `<div class="content-actions">${edit}${state}</div>`;
+  }
+  function renderPlatformNotices(){
+    const allRecords=(window.UniChatNotices?.list?.()||[]).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));
+    const rows=document.getElementById('platformNoticeRows');
+    if(!rows) return;
+    const search=(document.getElementById('platformNoticeSearch')?.value||'').trim().toLocaleLowerCase('ko');
+    const audience=document.getElementById('platformNoticeAudienceFilter')?.value||'';
+    const records=allRecords.filter(notice=>{
+      const text=[notice.title,notice.summary,notice.author].join(' ').toLocaleLowerCase('ko');
+      return (currentPlatformNoticeStatus==='all'||notice.status===currentPlatformNoticeStatus)&&(!audience||notice.audience===audience)&&(!search||text.includes(search));
+    });
+    rows.innerHTML=records.length?records.map(notice=>`<tr>
+      <td class="content-title-cell" data-label="제목"><b>${escapeHtml(notice.title)}</b><small>${escapeHtml(notice.summary)}</small></td>
+      <td data-label="대상"><span class="chip c-info">${escapeHtml(window.UniChatNotices.audienceLabels[notice.audience]||notice.audience)}</span></td>
+      <td data-label="중요">${notice.important?'<span class="chip c-rej">중요</span>':'—'}</td>
+      <td data-label="작성자">${escapeHtml(notice.author)}</td>
+      <td data-label="상태">${platformNoticeStatusChip(notice.status)}</td>
+      <td class="num" data-label="최근 변경">${escapeHtml(window.UniChatNotices.formatDate(notice.updatedAt))}</td>
+      <td data-label="관리">${platformNoticeActionButtons(notice)}</td>
+    </tr>`).join(''):'<tr><td colspan="7" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 공지사항이 없습니다.</td></tr>';
+    syncPlatformNoticeCounts(allRecords);
+  }
+  function openPlatformNoticeEditor(id=''){
+    const existing=id?window.UniChatNotices?.get?.(id):null;
+    openActionModal({
+      title:existing?'공지 편집':'새 공지',
+      description:'공개 랜딩이 아니라 로그인한 학생·학교 포털에만 표시됩니다.',
+      confirmLabel:existing?'변경 저장':'공지 만들기',
+      fields:[
+        {name:'title',label:'제목',type:'text',required:true,value:existing?.title||'',placeholder:'공지 제목'},
+        {name:'summary',label:'목록 요약',type:'textarea',required:true,value:existing?.summary||'',placeholder:'목록에서 먼저 보여 줄 요약'},
+        {name:'body',label:'본문',type:'textarea',required:true,value:existing?.body||'',placeholder:'공지 본문'},
+        {name:'audience',label:'열람 대상',type:'select',required:true,value:existing?.audience||'all',options:[{value:'all',label:'학생·학교 전체'},{value:'student',label:'학생'},{value:'university',label:'학교'}]},
+        {name:'important',label:'중요 공지',type:'select',required:true,value:String(existing?.important||false),options:[{value:'false',label:'일반'},{value:'true',label:'중요 · 목록 최상단'}]},
+        {name:'status',label:'게시 상태',type:'select',required:true,value:existing?.status||'draft',options:[{value:'draft',label:'게시 예정'},{value:'published',label:'게시 중'},{value:'hidden',label:'종료'}]}
+      ],
+      onSubmit:values=>{
+        const saved=window.UniChatNotices.save({
+          ...existing,
+          title:values.title,
+          summary:values.summary,
+          body:values.body,
+          audience:values.audience,
+          important:values.important==='true',
+          status:values.status,
+          author:existing?.author||'플랫폼 운영팀'
+        });
+        recordAudit('공지사항',existing?'공지 수정':'공지 생성',saved.title,`대상: ${window.UniChatNotices.audienceLabels[saved.audience]} · 상태: ${window.UniChatNotices.statusLabels[saved.status]}`,{contentId:saved.id,previousValue:existing?.status||'—',changedValue:saved.status});
+        renderPlatformNotices();
+        showToast(existing?'공지 변경을 저장했습니다.':'새 공지를 만들었습니다.',saved.status==='published'?'success':'info');
+      }
+    });
+  }
+  function publishPlatformNotice(id){
+    const notice=window.UniChatNotices?.get?.(id);
+    if(!notice) return;
+    openActionModal({
+      title:'공지 게시',
+      description:`${notice.title}\n대상: ${window.UniChatNotices.audienceLabels[notice.audience]}`,
+      confirmLabel:'게시',
+      fields:[],
+      onSubmit:()=>{
+        window.UniChatNotices.setStatus(id,'published');
+        recordAudit('공지사항','공지 게시',notice.title,`대상: ${window.UniChatNotices.audienceLabels[notice.audience]}`,{contentId:id,previousValue:notice.status,changedValue:'published'});
+        renderPlatformNotices();
+        showToast('지정 대상 포털에 공지를 게시했습니다.');
+      }
+    });
+  }
+  function endPlatformNotice(id){
+    const notice=window.UniChatNotices?.get?.(id);
+    if(!notice) return;
+    openActionModal({
+      title:'공지 종료',
+      description:`${notice.title}\n종료하면 학생·학교 화면에서 즉시 숨겨집니다. 기록은 삭제하지 않습니다.`,
+      confirmLabel:'종료',
+      fields:[{name:'reason',label:'종료 메모',type:'textarea',required:true,placeholder:'예: 점검 완료'}],
+      onSubmit:values=>{
+        window.UniChatNotices.setStatus(id,'hidden');
+        recordAudit('공지사항','공지 종료',notice.title,values.reason,{contentId:id,previousValue:notice.status,changedValue:'hidden'});
+        renderPlatformNotices();
+        showToast('공지를 종료했습니다. 대상 포털에서 숨겨집니다.','info');
+      }
+    });
+  }
+
+  const contentStatusLabels={draft:'초안',review:'검토 중',scheduled:'예약됨',published:'게시 중',hidden:'비공개'};
+  const contentStatusClasses={draft:'c-gray',review:'c-wait',scheduled:'c-info',published:'c-good',hidden:'c-rej'};
+  let currentContentStatus='all';
+  let activeContentAttachmentId=null;
+  const MAX_CONTENT_ATTACHMENT_BYTES=100*1024*1024;
+  let contentRecords=[
+    {id:'guide-visa',title:'유학 준비 서류, 언제부터 준비할까요?',summary:'지원 전 확인할 기본 서류와 준비 순서를 안내합니다.',type:'guide',typeLabel:'안내 (예시)',author:'콘텐츠 운영팀',status:'published',updatedAt:'2026-07-29 10:20',relatedUniversityIds:['seojeong'],attachments:[{id:'attachment-visa-guide',source:'link',name:'유학 준비 서류 안내.pdf',url:'https://example.com/ubichat-study-guide.pdf',sizeLabel:'외부 링크'}]},
+    {id:'notice-consultation',title:'대학 상담 시작 전 확인 사항',summary:'상담 채널 이용 방법과 개인정보 보호 안내 초안입니다.',type:'notice',typeLabel:'공지 (예시)',author:'김하나',status:'review',updatedAt:'2026-07-29 09:10',relatedUniversityIds:[],attachments:[{id:'attachment-chat-checklist',source:'link',name:'상담 시작 체크리스트',url:'https://example.com/ubichat-chat-checklist',sizeLabel:'외부 링크'}]},
+    {id:'story-living',title:'한국 생활 준비 체크리스트',summary:'입국 전 생활 준비 항목을 정리한 초안입니다.',type:'story',typeLabel:'후기 (예시)',author:'콘텐츠 운영팀',status:'draft',updatedAt:'2026-07-28 16:40',relatedUniversityIds:['hanyang-womens','gumi'],attachments:[]},
+    {id:'guide-housing',title:'기숙사와 주거 안내',summary:'예약 공개 상태를 보여 주는 설계 예시입니다.',type:'guide',typeLabel:'안내 (예시)',author:'김하나',status:'scheduled',updatedAt:'2026-07-28 11:35',relatedUniversityIds:[],attachments:[]},
+    {id:'notice-policy',title:'이전 운영 안내',summary:'공개를 중단한 콘텐츠 예시입니다.',type:'notice',typeLabel:'공지 (예시)',author:'콘텐츠 운영팀',status:'hidden',updatedAt:'2026-07-21 14:20',relatedUniversityIds:[],attachments:[]}
+  ];
+  function contentStatusChip(status){
+    return `<span class="chip ${contentStatusClasses[status]||'c-gray'}">${contentStatusLabels[status]||'알 수 없음'}</span>`;
+  }
+  function contentAttachments(item){
+    return Array.isArray(item.attachments)?item.attachments:[];
+  }
+  function contentAttachmentCount(item){
+    const count=contentAttachments(item).length;
+    return count?`<span class="attachment-count">📎 <b>${count}</b>개</span>`:'<span class="attachment-count">첨부 없음</span>';
+  }
+  function contentAttachmentAccess(item){
+    return item.status==='published'?'<span class="chip c-good">공개 콘텐츠와 함께 열람</span>':'<span class="chip c-info">관리자 미리보기 전용</span>';
+  }
+  function formatAttachmentSize(bytes){
+    if(!Number.isFinite(bytes)||bytes<=0) return '파일 크기 정보 없음';
+    return bytes>=1024*1024?`${(bytes/(1024*1024)).toFixed(1)}MB`:`${Math.max(1,Math.round(bytes/1024))}KB`;
+  }
+  function syncContentCounts(){
+    const count=(status)=>contentRecords.filter(item=>!status||item.status===status).length;
+    document.getElementById('contentCountAll').textContent=count('');
+    document.getElementById('contentCountDraft').textContent=count('draft');
+    document.getElementById('contentCountReview').textContent=count('review');
+    document.getElementById('contentCountScheduled').textContent=count('scheduled');
+    document.getElementById('contentCountPublished').textContent=count('published');
+    document.getElementById('contentCountHidden').textContent=count('hidden');
+  }
+  function selectContentStatus(status,button){
+    currentContentStatus=status;
+    document.querySelectorAll('[data-content-state]').forEach(item=>item.classList.remove('on'));
+    button.classList.add('on');
+    renderContentRecords();
+  }
+  function contentActionButtons(item){
+    const edit=`<button class="rowbtn" type="button" onclick="openContentEditor('${escapeHtml(item.id)}')">편집</button>`;
+    const attachments=`<button class="rowbtn" type="button" onclick="openContentAttachmentManager('${escapeHtml(item.id)}')">첨부</button>`;
+    if(item.status==='draft'||item.status==='hidden') return `<div class="content-actions">${edit}${attachments}<button class="rowbtn" type="button" onclick="requestContentReview('${escapeHtml(item.id)}')">검토 요청</button></div>`;
+    if(item.status==='published') return `<div class="content-actions">${edit}${attachments}<button class="rowbtn warn" type="button" onclick="hideContent('${escapeHtml(item.id)}')">비공개</button></div>`;
+    if(item.status==='scheduled') return `<div class="content-actions">${edit}${attachments}<button class="rowbtn" type="button" disabled title="예약 시간대 정책 확정 후 활성화">예약 정책 대기</button></div>`;
+    return `<div class="content-actions">${edit}${attachments}<button class="rowbtn" type="button" disabled title="검토 권한 정책 확정 후 게시 전환 가능">게시 정책 대기</button></div>`;
+  }
+  function renderContentRecords(){
+    const search=(document.getElementById('contentSearch')?.value||'').trim().toLocaleLowerCase('ko');
+    const type=document.getElementById('contentTypeFilter')?.value||'';
+    const rows=document.getElementById('contentRows');
+    if(!rows) return;
+    const records=contentRecords.filter(item=>{
+      const text=[item.title,item.summary,item.author].join(' ').toLocaleLowerCase('ko');
+      return (!currentContentStatus||item.status===currentContentStatus)&&(!type||item.type===type)&&(!search||text.includes(search));
+    });
+    rows.innerHTML=records.length?records.map(item=>`<tr>
+      <td class="content-title-cell" data-label="제목"><b>${escapeHtml(item.title)}</b><small>${escapeHtml(item.summary)}</small></td>
+      <td data-label="유형"><span class="chip c-info">${escapeHtml(item.typeLabel)}</span></td>
+      <td data-label="첨부">${contentAttachmentCount(item)}</td>
+      <td data-label="작성자">${escapeHtml(item.author)}</td>
+      <td data-label="상태">${contentStatusChip(item.status)}</td>
+      <td class="num" data-label="최근 변경">${escapeHtml(item.updatedAt)}</td>
+      <td data-label="관리">${contentActionButtons(item)}</td>
+    </tr>`).join(''):'<tr><td colspan="7" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 콘텐츠가 없습니다. 새 콘텐츠 초안을 만들어 보세요.</td></tr>';
+    syncContentCounts();
+  }
+  function openContentEditor(id=''){
+    const existing=id?contentRecords.find(item=>item.id===id):null;
+    openActionModal({
+      title:existing?'콘텐츠 편집':'새 콘텐츠 초안',
+      description:existing?'필수 필드를 수정하면 초안으로 저장됩니다. 공개 콘텐츠 화면에는 자동 반영되지 않습니다.':'저장하면 초안 상태로 추가됩니다. 게시·예약은 편집 정책 확정 뒤 연결합니다.',
+      confirmLabel:existing?'초안 저장':'초안 만들기',
+      fields:[
+        {name:'title',label:'제목',type:'text',required:true,value:existing?.title||'',placeholder:'콘텐츠 제목'},
+        {name:'summary',label:'요약',type:'textarea',required:true,value:existing?.summary||'',placeholder:'목록에 표시할 요약'},
+        {name:'type',label:'유형 (설계 예시)',type:'select',required:true,value:existing?.type||'guide',options:[{value:'guide',label:'안내 (예시)'},{value:'notice',label:'공지 (예시)'},{value:'story',label:'후기 (예시)'}]},
+        {name:'relatedUniversityIds',label:'관련 대학 ID',type:'text',value:(existing?.relatedUniversityIds||[]).join(', '),placeholder:'예: seojeong, gumi'},
+        {name:'body',label:'본문',type:'textarea',required:true,value:existing?.body||existing?.summary||'',placeholder:'콘텐츠 본문'}
+      ],
+      onSubmit:values=>{
+        const typeLabel={guide:'안내 (예시)',notice:'공지 (예시)',story:'후기 (예시)'}[values.type]||'기타 (예시)';
+        const record={
+          id:existing?.id||`content-${Date.now()}`,
+          title:values.title.trim(),summary:values.summary.trim(),body:values.body.trim(),type:values.type,typeLabel,
+          author:existing?.author||'플랫폼 관리자 · 운영팀 김하나',status:'draft',updatedAt:'방금',
+          relatedUniversityIds:values.relatedUniversityIds.split(',').map(item=>item.trim()).filter(Boolean),
+          attachments:contentAttachments(existing)
+        };
+        if(existing) contentRecords=contentRecords.map(item=>item.id===id?record:item);
+        else contentRecords=[record,...contentRecords];
+        renderContentRecords();
+        showToast(`콘텐츠 ${existing?'초안을 저장':'초안을 만들'}었습니다. 검토 요청 전에는 공개되지 않습니다.`,'info');
+      }
+    });
+  }
+  function requestContentReview(id){
+    const item=contentRecords.find(record=>record.id===id);
+    if(!item) return;
+    item.status='review';item.updatedAt='방금';
+    renderContentRecords();
+    showToast(item.title+'을 검토 요청 상태로 옮겼습니다.','info');
+  }
+  function hideContent(id){
+    const item=contentRecords.find(record=>record.id===id);
+    if(!item) return;
+    openActionModal({
+      title:'콘텐츠 비공개',
+      description:`${item.title}의 공개 상태를 중단합니다. 공개 화면에서 숨겨지며, 이 설계 목업에서는 원복할 수 있습니다.`,
+      confirmLabel:'비공개 확정',
+      fields:[{name:'reason',label:'비공개 사유',type:'textarea',required:true,value:'정보 최신화 필요'}],
+      onSubmit:values=>{
+        item.status='hidden';item.updatedAt='방금';
+        renderContentRecords();
+        showToast(item.title+'을 비공개 처리했습니다.','info');
+      }
+    });
+  }
+
+  function openContentAttachmentManager(contentId){
+    const item=contentRecords.find(record=>record.id===contentId);
+    if(!item) return;
+    activeContentAttachmentId=item.id;
+    document.getElementById('contentAttachmentPanel').hidden=false;
+    document.getElementById('contentAttachmentTitle').textContent=`${item.title} · 첨부`;
+    document.getElementById('contentAttachmentPolicy').textContent=item.status==='published'
+      ? '이 콘텐츠는 게시 중입니다. 첨부 교체·삭제는 공개 콘텐츠에 즉시 반영되며 이전 파일은 보관하지 않습니다.'
+      : '게시 전 첨부는 플랫폼 관리자만 미리보기할 수 있습니다. 콘텐츠가 게시되기 전에는 공개 화면에 노출되지 않습니다.';
+    renderContentAttachments();
+    document.getElementById('contentAttachmentPanel').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function closeContentAttachmentManager(){
+    activeContentAttachmentId=null;
+    document.getElementById('contentAttachmentPanel').hidden=true;
+  }
+  function safeAttachmentUrl(value){
+    const url=String(value||'');
+    return /^(https:|blob:)/i.test(url)?url:'';
+  }
+  function renderContentAttachments(){
+    const rows=document.getElementById('contentAttachmentRows');
+    const item=contentRecords.find(record=>record.id===activeContentAttachmentId);
+    if(!rows||!item) return;
+    const attachments=contentAttachments(item);
+    rows.innerHTML=attachments.length?attachments.map(attachment=>{
+      const previewUrl=safeAttachmentUrl(attachment.url);
+      const preview=previewUrl?`<a href="${escapeHtml(previewUrl)}" target="_blank" rel="noopener noreferrer">관리자 미리보기</a>`:'<span>미리보기 불가</span>';
+      const source=attachment.source==='link'?'외부 링크':'파일';
+      return `<tr>
+        <td class="attachment-name" data-label="첨부">📎 <span><b>${escapeHtml(attachment.name)}</b><div>${preview}</div></span></td>
+        <td data-label="출처 · 용량"><span class="attachment-source">${source} · ${escapeHtml(attachment.sizeLabel||'—')}</span></td>
+        <td data-label="열람 범위">${contentAttachmentAccess(item)}</td>
+        <td data-label="관리"><div class="slot-actions"><button class="rowbtn" type="button" onclick="openContentAttachmentEditor('${escapeHtml(attachment.id)}')">교체</button><button class="rowbtn warn" type="button" onclick="removeContentAttachment('${escapeHtml(attachment.id)}')">삭제</button></div></td>
+      </tr>`;
+    }).join(''):'<tr><td colspan="4" data-empty style="text-align:center;color:var(--ink2);padding:28px">첨부가 없습니다. 파일 또는 HTTPS 외부 링크를 추가하세요.</td></tr>';
+  }
+  function refreshContentAttachmentSource(){
+    const source=document.getElementById('actionField-attachmentSource')?.value;
+    const target=document.getElementById('actionField-attachmentInput');
+    if(!target) return;
+    target.innerHTML=source==='file'
+      ? '<input id="contentAttachmentFile" name="contentAttachmentFile" type="file" aria-label="첨부 파일 선택"><p class="action-help">모든 파일 형식을 허용하며, 파일당 최대 100MB입니다.</p>'
+      : '<input id="contentAttachmentLink" name="contentAttachmentLink" type="url" placeholder="https://example.com/file" aria-label="HTTPS 외부 링크"><p class="action-help">HTTPS 외부 링크를 연결할 수 있습니다.</p>';
+  }
+  function openContentAttachmentEditor(attachmentId=''){
+    const item=contentRecords.find(record=>record.id===activeContentAttachmentId);
+    if(!item){showToast('첨부할 콘텐츠를 먼저 선택해 주세요.','error');return;}
+    const existing=attachmentId?contentAttachments(item).find(attachment=>attachment.id===attachmentId):null;
+    openActionModal({
+      title:existing?'콘텐츠 첨부 교체':'콘텐츠 첨부 추가',
+      description:existing?'교체하면 이전 첨부는 즉시 제거되고 보관되지 않습니다. 첨부 작업은 감사 로그에 남기지 않습니다.':'모든 파일 형식을 첨부할 수 있으며 파일당 최대 100MB입니다. 외부 링크는 HTTPS만 허용합니다. 첨부 작업은 감사 로그에 남기지 않습니다.',
+      confirmLabel:existing?'교체 저장':'첨부 추가',
+      fields:[
+        {name:'attachmentSource',label:'첨부 방식',type:'select',required:true,value:existing?.source||'file',options:[{value:'file',label:'파일 첨부'},{value:'link',label:'HTTPS 외부 링크'}],onchange:'refreshContentAttachmentSource()'},
+        {name:'attachmentInput',label:'파일 또는 외부 링크',type:'slot'},
+        {name:'attachmentName',label:'표시 이름',type:'text',value:existing?.name||'',placeholder:'비워두면 파일명 또는 링크 이름을 사용'}
+      ],
+      afterRender:()=>{
+        refreshContentAttachmentSource();
+        const existingLink=existing?.source==='link'?document.getElementById('contentAttachmentLink'):null;
+        if(existingLink) existingLink.value=existing.url||'';
+      },
+      onSubmit:values=>{
+        const source=values.attachmentSource;
+        let name=String(values.attachmentName||'').trim();
+        let url='';let sizeLabel='';
+        if(source==='file'){
+          const file=values.contentAttachmentFile;
+          if(!file||!file.name){showActionError('첨부할 파일을 선택해 주세요.');return false;}
+          if(file.size>MAX_CONTENT_ATTACHMENT_BYTES){showActionError('파일당 최대 100MB까지 첨부할 수 있습니다.');return false;}
+          name=name||file.name;
+          url=URL.createObjectURL(file);
+          sizeLabel=formatAttachmentSize(file.size);
+        }else{
+          const link=String(values.contentAttachmentLink||'').trim();
+          try{
+            const parsed=new URL(link);
+            if(parsed.protocol!=='https:') throw new Error('https');
+            url=parsed.href;
+            name=name||decodeURIComponent(parsed.pathname.split('/').filter(Boolean).pop()||parsed.hostname);
+            sizeLabel='외부 링크';
+          }catch(_){showActionError('HTTPS 형식의 외부 링크를 입력해 주세요.');return false;}
+        }
+        const replacement={id:existing?.id||`attachment-${Date.now()}`,source,name,url,sizeLabel};
+        if(existing?.url?.startsWith('blob:')) URL.revokeObjectURL(existing.url);
+        item.attachments=existing?contentAttachments(item).map(attachment=>attachment.id===existing.id?replacement:attachment):[...contentAttachments(item),replacement];
+        item.updatedAt='방금';
+        renderContentRecords();
+        renderContentAttachments();
+        showToast(`${name} ${existing?'교체':'첨부'}를 저장했습니다.`,'info');
+      }
+    });
+  }
+  function removeContentAttachment(attachmentId){
+    const item=contentRecords.find(record=>record.id===activeContentAttachmentId);
+    const attachment=item&&contentAttachments(item).find(record=>record.id===attachmentId);
+    if(!item||!attachment) return;
+    openActionModal({
+      title:'콘텐츠 첨부 삭제',
+      description:`${attachment.name}을 삭제합니다. 게시 중인 콘텐츠라면 공개 첨부에서도 즉시 사라집니다. 이전 파일은 보관하지 않습니다.`,
+      confirmLabel:'첨부 삭제',
+      fields:[],
+      onSubmit:()=>{
+        if(attachment.url?.startsWith('blob:')) URL.revokeObjectURL(attachment.url);
+        item.attachments=contentAttachments(item).filter(record=>record.id!==attachmentId);
+        item.updatedAt='방금';
+        renderContentRecords();
+        renderContentAttachments();
+        showToast(`${attachment.name} 첨부를 삭제했습니다.`,'info');
+      }
+    });
+  }
+
+  const roleLabels={top_owner:'최고관리자',affiliation_manager:'소속구분 관리자',member:'멤버'};
+  const affiliationOptions={
+    seojeong:['학부 / 학사','언어교육원','대학원'],
+    'hanyang-womens':['학부 / 학사','국제교육원'],
+    gumi:['학부 / 학사','언어교육원','대학원'],
+    yeonsung:['학부 / 학사','국제교육원']
+  };
+  let universityMemberRecords=[
+    {id:'member-seojeong-owner',universityId:'seojeong',name:'김국제',email:'global@seojeong.ac.kr',role:'top_owner',affiliations:['all'],status:'active',issuedAt:'2026-07-11'},
+    {id:'member-seojeong-manager',universityId:'seojeong',name:'이입학',email:'admission@seojeong.ac.kr',role:'affiliation_manager',affiliations:['학부 / 학사','언어교육원'],status:'active',issuedAt:'2026-07-12'},
+    {id:'member-hanyang-owner',universityId:'hanyang-womens',name:'최윤아',email:'global@hywoman.ac.kr',role:'top_owner',affiliations:['all'],status:'active',issuedAt:'2026-07-10'},
+    {id:'member-gumi-manager',universityId:'gumi',name:'박유학',email:'intl@gumi.ac.kr',role:'affiliation_manager',affiliations:['학부 / 학사','대학원'],status:'invited',issuedAt:'2026-07-29'},
+    {id:'member-yeonsung-owner',universityId:'yeonsung',name:'한지훈',email:'owner@yeonsung.ac.kr',role:'top_owner',affiliations:['all'],status:'active',issuedAt:'2026-07-08'},
+    {id:'member-yeonsung',universityId:'yeonsung',name:'오상담',email:'admission@yeonsung.ac.kr',role:'member',affiliations:['국제교육원'],status:'suspended',issuedAt:'2026-07-16'}
+  ];
+  function universityNameFor(id){
+    return registeredUniversityRecords.find(university=>university.id===id)?.name?.ko||'대학 정보 준비 중';
+  }
+  function memberStatusChip(status){
+    const labels={active:'활성',invited:'초대 대기',suspended:'일시정지'};
+    const tones={active:'c-good',invited:'c-wait',suspended:'c-rej'};
+    return `<span class="chip ${tones[status]||'c-gray'}">${labels[status]||'알 수 없음'}</span>`;
+  }
+  function memberRoleChip(role){
+    const css=role==='top_owner'?'owner':role==='member'?'member':'';
+    return `<span class="role-chip ${css}">${escapeHtml(roleLabels[role]||role)}</span>`;
+  }
+  function affiliationChips(affiliations){
+    const labels=affiliations.includes('all')?['모든 소속구분']:affiliations;
+    return `<div class="affiliation-list">${labels.map(label=>`<span class="chip">${escapeHtml(label)}</span>`).join('')}</div>`;
+  }
+  function renderUniversityMembers(){
+    const search=(document.getElementById('memberSearch')?.value||'').trim().toLocaleLowerCase('ko');
+    const role=document.getElementById('memberRoleFilter')?.value||'';
+    const status=document.getElementById('memberStatusFilter')?.value||'';
+    const rows=document.getElementById('universityMemberRows');
+    if(!rows) return;
+    const records=universityMemberRecords.filter(item=>{
+      const text=[item.name,item.email,universityNameFor(item.universityId),roleLabels[item.role],...item.affiliations].join(' ').toLocaleLowerCase('ko');
+      return (!search||text.includes(search))&&(!role||item.role===role)&&(!status||item.status===status);
+    });
+    rows.innerHTML=records.length?records.map(item=>`<tr>
+      <td data-label="계정"><b>${escapeHtml(item.name)}</b><div style="font-size:11px;color:var(--ink2)">${escapeHtml(item.email)}</div></td>
+      <td data-label="대학">${escapeHtml(universityNameFor(item.universityId))}</td>
+      <td data-label="역할">${memberRoleChip(item.role)}</td>
+      <td data-label="배정 소속구분">${affiliationChips(item.affiliations)}</td>
+      <td data-label="상태">${memberStatusChip(item.status)}</td>
+      <td class="num" data-label="발급일">${escapeHtml(item.issuedAt)}</td>
+      <td data-label="관리"><button class="rowbtn" type="button" onclick="openUniversityMemberDetail('${escapeHtml(item.id)}')">상세</button></td>
+    </tr>`).join(''):'<tr><td colspan="7" data-empty style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 대학 구성원이 없습니다.</td></tr>';
+    document.getElementById('topOwnerCount').textContent=universityMemberRecords.filter(item=>item.role==='top_owner'&&item.status==='active').length;
+    document.getElementById('pendingInviteCount').textContent=universityMemberRecords.filter(item=>item.status==='invited').length;
+    document.getElementById('multiAffiliationCount').textContent=universityMemberRecords.filter(item=>item.affiliations.length>1&&!item.affiliations.includes('all')).length;
+  }
+  function openUniversityMemberDetail(id){
+    const member=universityMemberRecords.find(item=>item.id===id);
+    if(!member) return;
+    const lines=[
+      `대학: ${universityNameFor(member.universityId)}`,
+      `계정: ${member.name} · ${member.email}`,
+      `역할: ${roleLabels[member.role]}`,
+      `배정 소속구분: ${member.affiliations.includes('all')?'모든 소속구분':member.affiliations.join(', ')}`,
+      `상태: ${memberStatusChip(member.status).replace(/<[^>]+>/g,'')}`,
+      `발급일: ${member.issuedAt}`,
+      member.role==='top_owner'?'최고관리자는 이관 확정 전 비활성화할 수 없습니다.':'계정 상태 변경은 사유와 감사 기록을 남겨야 합니다.'
+    ];
+    openActionModal({title:'대학 구성원 상세',description:lines.join('\n'),confirmLabel:'닫기',fields:[]});
+  }
+  function refreshUniversityMemberAffiliations(){
+    const universityId=document.getElementById('actionField-universityId')?.value;
+    const role=document.getElementById('actionField-role')?.value;
+    const target=document.getElementById('actionField-affiliationIds');
+    if(!target||!universityId||!role) return;
+    if(role==='top_owner'){
+      target.innerHTML='<div class="vbox ok" style="margin:0"><b>모든 소속구분 자동 배정</b><div style="margin-top:5px">대학별 최고관리자는 정확히 1명만 발급할 수 있습니다.</div><input type="hidden" name="affiliationIds" value="all"></div>';
+      return;
+    }
+    const options=affiliationOptions[universityId]||['학부 / 학사'];
+    target.innerHTML=`<div class="action-checks">${options.map((label,index)=>`<label><input type="checkbox" name="affiliationIds" value="${escapeHtml(label)}"${index===0?' checked':''}>${escapeHtml(label)}</label>`).join('')}</div>`;
+  }
+  function openUniversityMemberIssuer(){
+    const universities=registeredUniversityRecords.filter(university=>university.account?.status!=='suspended');
+    if(!universities.length){showToast('활성 대학이 없어 대학계정을 발급할 수 없습니다.','error');return;}
+    openActionModal({
+      title:'대학계정 발급',
+      description:'대상·역할·배정 범위를 확인한 뒤 초대를 발급합니다. 발급 결과와 부여 권한은 감사 로그에 기록됩니다.',
+      confirmLabel:'초대 발급',
+      fields:[
+        {name:'universityId',label:'대상 대학',type:'select',required:true,value:universities[0].id,options:universities.map(university=>({value:university.id,label:university.name.ko})),onchange:'refreshUniversityMemberAffiliations()'},
+        {name:'name',label:'이름',type:'text',required:true,value:'',placeholder:'담당자 이름'},
+        {name:'email',label:'이메일',type:'email',required:true,value:'',placeholder:'name@university.ac.kr'},
+        {name:'role',label:'역할',type:'select',required:true,value:'affiliation_manager',options:[{value:'top_owner',label:'최고관리자'},{value:'affiliation_manager',label:'소속구분 관리자'},{value:'member',label:'멤버'}],onchange:'refreshUniversityMemberAffiliations()'},
+        {name:'affiliationIds',label:'배정 소속구분',type:'slot',help:'최고관리자는 모든 소속구분에 자동 배정됩니다.'},
+        {name:'reason',label:'발급 사유',type:'textarea',required:true,value:'대학 운영 담당자 초대',placeholder:'운영 사유'}
+      ],
+      afterRender:refreshUniversityMemberAffiliations,
+      onSubmit:values=>{
+        const affiliations=Array.isArray(values.affiliationIds)?values.affiliationIds:values.affiliationIds?[values.affiliationIds]:[];
+        const university=registeredUniversityRecords.find(item=>item.id===values.universityId);
+        if(!university){showActionError('대상 대학을 다시 선택해 주세요.');return false;}
+        if(!affiliations.length){showActionError('최소 한 개의 소속구분을 배정해 주세요.');return false;}
+        if(universityMemberRecords.some(item=>item.email.toLocaleLowerCase('ko')===values.email.trim().toLocaleLowerCase('ko'))){showActionError('이미 발급했거나 초대 중인 이메일입니다.');return false;}
+        if(values.role==='top_owner'&&universityMemberRecords.some(item=>item.universityId===university.id&&item.role==='top_owner'&&item.status!=='suspended')){
+          showActionError('이 대학에는 이미 최고관리자가 있습니다. 이관 정책 확정 전에는 추가 발급할 수 없습니다.');return false;
+        }
+        const member={id:`member-${Date.now()}`,universityId:university.id,name:values.name.trim(),email:values.email.trim(),role:values.role,affiliations,status:'invited',issuedAt:'방금'};
+        universityMemberRecords=[member,...universityMemberRecords];
+        recordAudit('계정','대학계정 초대 발급',member.email,values.reason.trim(),{previousValue:'미발급',changedValue:`${roleLabels[member.role]} · ${affiliations.includes('all')?'모든 소속구분':affiliations.join(', ')}`,universityId:university.id,affiliationId:affiliations.join(', ')});
+        renderUniversityMembers();
+        showToast(`${member.name}님에게 ${roleLabels[member.role]} 초대를 발급했습니다.`);
+      }
+    });
+  }
+  function issueInitialOwnerFromCandidate(candidate,universityId){
+    if(universityMemberRecords.some(item=>item.universityId===universityId&&item.role==='top_owner'&&item.status!=='suspended')) return true;
+    const name=String(candidate.applicant||'대학 신청자').split('·')[0].trim();
+    const member={id:`member-${universityId}-owner`,universityId,name,email:`owner@${universityId}.example`,role:'top_owner',affiliations:['all'],status:'invited',issuedAt:'방금'};
+    universityMemberRecords=[member,...universityMemberRecords];
+    recordAudit('계정','대학 최고관리자 초대 발급',member.email,'등록 승인과 함께 신청자를 최고관리자로 지정',{previousValue:'최고관리자 없음',changedValue:'최고관리자 초대 발급',universityId,affiliationId:'all'});
+    renderUniversityMembers();
+    return true;
+  }
+  function adSlots(type){
+    return window.UniChatAdSlots?.list?.(type)||[];
+  }
+  function adSlotChip(slot){
+    return slot.status==='active'
+      ? '<span class="chip c-good">노출 중</span>'
+      : '<span class="chip c-gray">미노출</span>';
+  }
+  function adSlotPreview(slot,type){
+    if(slot.asset) return `<div class="slot-preview"><img src="${escapeHtml(slot.asset)}" alt=""></div>`;
+    const template=['finance','housing','telecom'].includes(slot.template)?slot.template:'finance';
+    const text=type==='corporate' ? (slot.category||'광고') : '배너 준비';
+    return `<div class="slot-preview ${type==='corporate'?'corporate-'+template:''}">${escapeHtml(text)}</div>`;
+  }
+  function renderAdSlots(){
+    const universitySlots=adSlots('university');
+    const corporateSlots=adSlots('corporate');
+    const renderCount=(type,slots)=>{
+      const active=slots.filter(slot=>slot.status==='active').length;
+      document.getElementById(type+'AdActiveCount').textContent=active;
+      document.getElementById(type+'AdTotalCount').textContent=slots.length;
+    };
+    renderCount('university',universitySlots);
+    renderCount('corporate',corporateSlots);
+    const universityRows=document.getElementById('universityAdRows');
+    const corporateRows=document.getElementById('corporateAdRows');
+    if(universityRows) universityRows.innerHTML=universitySlots.length?universitySlots.map((slot,index)=>`<tr>
+      <td class="num" data-label="순서">${index+1}</td>
+      <td data-label="미리보기">${adSlotPreview(slot,'university')}</td>
+      <td data-label="대학 고객사 · 배너 설명"><b>${escapeHtml(slot.advertiser)}</b><div style="font-size:11px;color:var(--ink2)">${escapeHtml(slot.label)}</div></td>
+      <td data-label="이미지 경로" style="max-width:190px;font-size:11px;color:var(--ink2);word-break:break-all">${slot.asset?escapeHtml(slot.asset):'이미지 미등록'}</td>
+      <td data-label="노출"><button class="rowbtn slot-status" type="button" onclick="toggleAdSlotStatus('university','${slot.id}')">${adSlotChip(slot)}</button></td>
+      <td data-label="순서"><div class="slot-order"><button class="rowbtn" type="button" onclick="moveAdSlot('university','${slot.id}',-1)" ${index===0?'disabled':''} aria-label="위로 이동">↑</button><button class="rowbtn" type="button" onclick="moveAdSlot('university','${slot.id}',1)" ${index===universitySlots.length-1?'disabled':''} aria-label="아래로 이동">↓</button></div></td>
+      <td data-label="관리"><div class="slot-actions"><button class="rowbtn" type="button" onclick="openAdSlotEditor('university','${slot.id}')">수정</button></div></td>
+    </tr>`).join(''):'<tr><td colspan="7" data-empty style="text-align:center;color:var(--ink2);padding:28px">등록된 대학 고객사 구좌가 없습니다.</td></tr>';
+    if(corporateRows) corporateRows.innerHTML=corporateSlots.length?corporateSlots.map((slot,index)=>`<tr>
+      <td class="num" data-label="순서">${index+1}</td>
+      <td data-label="미리보기">${adSlotPreview(slot,'corporate')}</td>
+      <td data-label="분야 · 광고주"><span class="chip c-info">${escapeHtml(slot.category||'기타')}</span><div style="margin-top:5px"><b>${escapeHtml(slot.advertiser)}</b></div></td>
+      <td data-label="배너 설명 · 이미지 경로"><b>${escapeHtml(slot.label)}</b><div style="max-width:190px;margin-top:3px;font-size:11px;color:var(--ink2);word-break:break-all">${slot.asset?escapeHtml(slot.asset):'이미지 미등록 · 가이드 템플릿 노출'}</div></td>
+      <td data-label="노출"><button class="rowbtn slot-status" type="button" onclick="toggleAdSlotStatus('corporate','${slot.id}')">${adSlotChip(slot)}</button></td>
+      <td data-label="순서"><div class="slot-order"><button class="rowbtn" type="button" onclick="moveAdSlot('corporate','${slot.id}',-1)" ${index===0?'disabled':''} aria-label="위로 이동">↑</button><button class="rowbtn" type="button" onclick="moveAdSlot('corporate','${slot.id}',1)" ${index===corporateSlots.length-1?'disabled':''} aria-label="아래로 이동">↓</button></div></td>
+      <td data-label="관리"><div class="slot-actions"><button class="rowbtn" type="button" onclick="openAdSlotEditor('corporate','${slot.id}')">수정</button></div></td>
+    </tr>`).join(''):'<tr><td colspan="7" data-empty style="text-align:center;color:var(--ink2);padding:28px">등록된 기업 제휴 구좌가 없습니다.</td></tr>';
+  }
+  function moveAdSlot(type,id,direction){
+    if(window.UniChatAdSlots?.move?.(type,id,direction)){
+      renderAdSlots();
+      recordAudit('광고 구좌','배너 순서 변경',type==='university'?'대학 고객사 배너':'기업 제휴 배너',(direction<0?'위로':'아래로')+' 한 칸 이동');
+      showToast((type==='university'?'대학 고객사':'기업 제휴')+' 배너 노출 순서를 변경했습니다. 랜딩 캐러셀 순서에도 반영됩니다.','info');
+    }
+  }
+  function toggleAdSlotStatus(type,id){
+    const slot=window.UniChatAdSlots?.get?.(type,id);
+    if(!slot) return;
+    const activating=slot.status!=='active';
+    openActionModal({
+      title:activating?'광고 구좌 노출':'광고 구좌 미노출',
+      description:`${slot.advertiser} 구좌를 ${activating?'랜딩 캐러셀에 노출합니다.':'랜딩 캐러셀에서 숨깁니다.'}\n구좌 삭제 없이 노출 상태만 변경합니다.`,
+      confirmLabel:activating?'노출 확정':'미노출 확정',
+      fields:[],
+      onSubmit:()=>{
+        window.UniChatAdSlots.update(type,id,{status:activating?'active':'inactive'});
+        renderAdSlots();
+        recordAudit('광고 구좌',activating?'배너 노출':'배너 미노출',slot.advertiser,(type==='university'?'대학 고객사':'기업 제휴')+' 캐러셀 구좌 상태 변경');
+        showToast(slot.advertiser+' 배너를 '+(activating?'노출':'미노출')+' 처리했습니다.');
+      }
+    });
+  }
+  function openAdSlotEditor(type,id=''){
+    const isUniversity=type==='university';
+    const existing=id?window.UniChatAdSlots?.get?.(type,id):null;
+    const fields=[
+      {name:'advertiser',label:isUniversity?'대학 고객사명':'광고주명',type:'text',required:true,value:existing?.advertiser||'',placeholder:isUniversity?'예: 삼육보건대학교':'예: 금융 제휴사'},
+      ...(isUniversity?[]:[{name:'category',label:'제휴 분야',type:'select',required:true,value:existing?.category||'금융',options:['금융','주거','통신','생활','기타']}]),
+      {name:'label',label:'배너 설명(대체 텍스트)',type:'text',required:true,value:existing?.label||'',placeholder:isUniversity?'예: ○○대학교 대학 고객사 배너':'예: 금융 고객사 배너 이미지'},
+      {name:'asset',label:'배너 이미지 경로',type:'text',required:isUniversity,value:existing?.asset||'',placeholder:'예: assets/customer-banner.png'},
+      ...(isUniversity?[]:[{name:'template',label:'이미지 미등록 시 가이드 템플릿',type:'select',required:true,value:existing?.template||'finance',options:[{value:'finance',label:'금융 (블루)'},{value:'housing',label:'주거 (그린)'},{value:'telecom',label:'통신 (퍼플)'}]}])
+    ];
+    openActionModal({
+      title:existing?'광고 구좌 수정':'광고 구좌 추가',
+      description:isUniversity?'대학 고객사가 전달한 배너 이미지 경로를 등록합니다. 규격은 PC 1180 × 220px / 모바일 328 × 160px입니다.':'기업 제휴 광고의 분야·배너 설명·이미지 경로를 등록합니다. 이미지가 없으면 분야별 가이드 템플릿이 표시됩니다.',
+      confirmLabel:existing?'수정 저장':'구좌 추가',
+      fields,
+      onSubmit:values=>{
+        try{
+          const patch={advertiser:values.advertiser.trim(),label:values.label.trim(),asset:values.asset.trim()};
+          if(!isUniversity){patch.category=values.category;patch.template=values.template;}
+          if(existing) window.UniChatAdSlots.update(type,id,patch);
+          else window.UniChatAdSlots.add(type,{id:'slot-'+type+'-'+Date.now(),...patch,status:'active'});
+          renderAdSlots();
+          recordAudit('광고 구좌',existing?'배너 구좌 수정':'배너 구좌 추가',patch.advertiser,(type==='university'?'대학 고객사':'기업 제휴')+' 배너 소재 정보 저장');
+          showToast((existing?'수정한':'새')+' 광고 구좌를 저장했습니다. 랜딩 캐러셀에 반영됩니다.');
+        }catch(error){showActionError(error.message||'광고 구좌를 저장하지 못했습니다.');return false;}
+      }
+    });
+  }
+  function publicationStatus(university){
+    return university.publication?.status==='published'?'published':'hidden';
+  }
+  function publicationChip(university){
+    return publicationStatus(university)==='published'
+      ? '<span class="chip c-good">노출 중</span>'
+      : '<span class="chip c-gray">미노출</span>';
+  }
+  function accountChip(university){
+    return university.account?.status==='suspended'
+      ? '<span class="chip c-rej">일시정지</span>'
+      : '<span class="chip c-good">활성</span>';
+  }
+  function consultationChip(university){
+    const status=university.consultation?.status||'offline';
+    if(status==='open') return '<span class="chip c-good">운영 중</span>';
+    if(status==='paused') return '<span class="chip c-rej">일시 중지</span>';
+    return '<span class="chip c-wait">운영시간 외</span>';
+  }
+  function syncUniversityCounts(){
+    registeredUniversityTotal=registeredUniversityRecords.length;
+    hiddenUniversityTotal=registeredUniversityRecords.filter(university=>publicationStatus(university)==='hidden').length;
+    const publishedUniversityTotal=registeredUniversityTotal-hiddenUniversityTotal;
+    document.querySelectorAll('[data-registered-university-count]').forEach(element=>{element.textContent=registeredUniversityTotal;});
+    document.querySelectorAll('[data-published-university-count]').forEach(element=>{element.textContent=publishedUniversityTotal;});
+    document.querySelectorAll('[data-hidden-university-count]').forEach(element=>{element.textContent=hiddenUniversityTotal;});
+    document.getElementById('registeredUniversityCount').textContent=registeredUniversityTotal;
+    document.getElementById('hiddenUniversityCount').textContent=hiddenUniversityTotal;
+  }
+  function renderRegisteredUniversities(){
+    const search=document.getElementById('registeredUniversitySearch')?.value.trim().toLocaleLowerCase('ko')||'';
+    const publicationFilter=document.getElementById('registeredUniversityPublicationFilter')?.value||'';
+    const accountFilter=document.getElementById('registeredUniversityAccountFilter')?.value||'';
+    const records=registeredUniversityRecords
+      .filter(university=>{
+        const searchable=[university.name.ko,university.name.en,university.location.label,...university.fields].join(' ').toLocaleLowerCase('ko');
+        return (!search||searchable.includes(search))&&
+          (!publicationFilter||publicationStatus(university)===publicationFilter)&&
+          (!accountFilter||(university.account?.status||'active')===accountFilter);
+      })
+      .sort((first,second)=>first.name.ko.localeCompare(second.name.ko,'ko'));
+    const rows=document.getElementById('registeredUniversityRows');
+    if(!rows) return;
+    rows.innerHTML=records.length?records.map(university=>{
+      const isPublished=publicationStatus(university)==='published';
+      const reason=isPublished?'—':(university.publication?.reason||'게시 전 준비');
+      return `<tr class="${isPublished?'':'hidden-university-row'}">
+        <td data-label="대학"><b>${escapeHtml(university.name.ko)}</b>${university.isDemo?' <span class="chip c-info">시연</span>':''}<div style="font-size:11px;color:var(--ink2)">${escapeHtml(university.name.en)}</div></td>
+        <td data-label="지역 · 분야">${escapeHtml(university.location.label)}<div style="font-size:11px;color:var(--ink2);margin-top:2px">${university.fields.map(escapeHtml).join(' · ')}</div></td>
+        <td data-label="학교 게시 상태">${publicationChip(university)}</td>
+        <td data-label="상담 채널">${consultationChip(university)}</td>
+        <td data-label="대학 계정">${accountChip(university)}</td>
+        <td data-label="미노출 사유" style="font-size:12px;color:var(--ink2)">${escapeHtml(reason)}</td>
+        <td data-label="안내" style="font-size:12px;color:var(--ink2)">학교 운영 화면에서 관리</td>
+      </tr>`;
+    }).join(''):'<tr><td data-empty colspan="7" style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 등록 대학이 없습니다.</td></tr>';
+    syncUniversityCounts();
+  }
+  function registerApprovedUniversity(candidate){
+    const existing=registeredUniversityRecords.find(university=>university.name.ko===candidate.name);
+    if(existing) return existing.id;
+    const id='approved-'+candidate.name.toLocaleLowerCase('ko').replace(/[^a-z0-9가-힣]+/g,'-');
+    window.UniversityDirectory?.add?.({
+      id,
+      name:{ko:candidate.name,en:candidate.en},
+      location:{label:candidate.type.split('·').pop().trim()},
+      fields:['기타'],
+      visual:{initials:candidate.name.slice(0,2)},
+      profile:{
+        verified:true,
+        headline:'대학 소개를 준비하고 있습니다',
+        intro:'승인된 대학이 공개 대학 소개와 상담 운영 정보를 준비하고 있습니다.',
+        brochure:{title:'모집 브로셔 준비 중',description:'공개 전 자료를 준비하고 있습니다.',href:'#'}
+      },
+      publication:{status:'hidden',reason:'공개 대학 정보 작성 필요'},
+      consultation:{status:'offline',responseLabel:'응답 시간 설정 필요'},
+      account:{status:'active'}
+    });
+    refreshRegisteredUniversityRecords();
+    syncUniversityCounts();
+    return id;
+  }
+  function selectApprovalStatus(status,button){
+    currentApprovalStatus=status;
+    document.querySelectorAll('[data-approval-state]').forEach(item=>item.classList.remove('on'));
+    button.classList.add('on');
+    renderApprovalRows();
+  }
+  function renderApprovalRows(){
+    const rows=Object.entries(approvalCandidates).filter(([,candidate])=>candidate.status===currentApprovalStatus);
+    document.getElementById('approvalRows').innerHTML=rows.length ? rows.map(([key,candidate])=>`
+      <tr role="button" tabindex="0" onclick="openDrawer('${key}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDrawer('${key}')}" aria-label="${candidate.name} 승인 상세 보기">
+        <td class="approw" data-label="대학 후보"><span class="flag2">${candidate.flag}</span><b>${candidate.name}</b><div style="font-size:10.5px;color:var(--ink2)">등록 18개 대학과 별도 후보</div></td>
+        <td data-label="신청자">${candidate.applicant}</td>
+        <td data-label="인증"><span class="vmark ${candidate.verifyType}">${candidate.verifyLabel}</span></td>
+        <td data-label="연계 요청">${candidate.requests ? `<span class="chip c-info">학생 ${candidate.requests}명 요청</span>` : '<span class="chip c-gray">요청 없음</span>'}</td>
+        <td class="num" data-label="신청일">${candidate.submitted}</td>
+        <td class="num ${candidate.age.includes('일') ? 'aged' : ''}" data-label="경과">${candidate.age}</td>
+        <td data-label="검토 상태"><span class="chip ${approvalStatusClasses[candidate.status]}">${approvalStatusLabels[candidate.status]}</span></td>
+      </tr>`).join('') : '<tr class="empty-row"><td data-empty colspan="7" style="text-align:center;color:var(--ink2);padding:28px">해당 상태의 전문대학 후보가 없습니다.</td></tr>';
+    syncWorkflowCounts();
+  }
+  function openDrawer(key){
+    const candidate=approvalCandidates[key];
+    if(!candidate) return;
+    drawerReturnFocus=document.activeElement;
+    activeUniversityKey=key;
+    document.getElementById('dwFlag').textContent=candidate.flag;
+    document.getElementById('dwName').textContent=candidate.name;
+    document.getElementById('dwEn').textContent=candidate.en;
+    document.getElementById('dwType').textContent=candidate.type;
+    document.getElementById('dwSite').textContent=candidate.site;
+    document.getElementById('dwApplicant').textContent=candidate.applicant;
+    document.getElementById('dwStatus').textContent=approvalStatusLabels[candidate.status];
+    document.getElementById('dwVerify').innerHTML=candidate.verify;
+    document.getElementById('dwLink').innerHTML=candidate.requests ? `📮 이 대학을 요청한 학생 <b>${candidate.requests}명</b> — 승인 시 전원에게 등록 알림이 발송됩니다.` : '요청한 학생이 없습니다.';
+    document.getElementById('dwHistory').innerHTML=candidate.history.map(item=>`<div>${escapeHtml(item)}</div>`).join('');
+    const terminal=candidate.status==='approved'||candidate.status==='rejected';
+    const supplementing=candidate.status==='supplement';
+    const supplementButton=document.getElementById('supplementButton');
+    supplementButton.textContent=supplementing?'재제출 접수':'보완 요청';
+    supplementButton.disabled=terminal;
+    supplementButton.style.opacity=terminal?'.45':'1';
+    ['rejectButton','approveButton'].forEach(id=>{
+      document.getElementById(id).disabled=terminal||supplementing;
+      document.getElementById(id).style.opacity=(terminal||supplementing)?'.45':'1';
+    });
+    const drawer=document.getElementById('drawer');
+    drawer.classList.add('show');
+    drawer.setAttribute('aria-hidden','false');
+    drawer.removeAttribute('inert');
+    document.getElementById('drawerOverlay').classList.add('show');
+    document.body.classList.add('drawer-open');
+    requestAnimationFrame(()=>drawer.querySelector('.x')?.focus());
+  }
+  function closeDrawer(){
+    const drawer=document.getElementById('drawer');
+    const wasOpen=drawer.classList.contains('show');
+    drawer.classList.remove('show');
+    drawer.setAttribute('aria-hidden','true');
+    drawer.setAttribute('inert','');
+    document.getElementById('drawerOverlay').classList.remove('show');
+    document.body.classList.remove('drawer-open');
+    activeUniversityKey=null;
+    if(wasOpen && drawerReturnFocus && drawerReturnFocus.isConnected) drawerReturnFocus.focus();
+    drawerReturnFocus=null;
+  }
+  function requestSupplement(){
+    const candidate=approvalCandidates[activeUniversityKey];
+    if(!candidate) return;
+    if(candidate.status==='supplement'){
+      candidate.status='pending';
+      candidate.history.push('07-16 · 보완 자료 재제출 접수 · 재검토 대기');
+      showToast(candidate.name+'의 보완 자료를 재제출 상태로 접수했습니다.\n승인·반려는 재검토 대기에서 처리할 수 있습니다.','info');
+      closeDrawer();
+      renderApprovalRows();
+      return;
+    }
+    openActionModal({
+      title:'보완 요청',
+      description:candidate.name+' 신청자에게 필요한 보완 항목과 사유를 전달합니다.',
+      confirmLabel:'보완 요청 발송',
+      fields:[{name:'reason',label:'보완 항목·사유',type:'textarea',required:true,value:'최신 재직증명서와 대학 직인을 다시 제출해 주세요.'}],
+      onSubmit:values=>{
+        candidate.status='supplement';
+        candidate.history.push(`07-16 · 보완 요청 · ${values.reason.trim()}`);
+        showToast(candidate.name+'에 보완 요청을 발송했습니다.\n신청자는 보완 기간 동안 상태와 요청 사유를 확인할 수 있습니다.','info');
+        closeDrawer();
+        renderApprovalRows();
+      }
+    });
+  }
+  function rejectUni(){
+    const candidate=approvalCandidates[activeUniversityKey];
+    if(!candidate) return;
+    openActionModal({
+      title:'등록 신청 반려',
+      description:'반려 사유는 신청자에게 전달되며, 신청자는 사유를 확인하고 재신청할 수 있습니다.',
+      confirmLabel:'반려 확정',
+      fields:[{name:'reason',label:'반려 사유',type:'textarea',required:true,value:'공식 대학 인증 자료를 확인할 수 없습니다.'}],
+      onSubmit:values=>{
+        candidate.status='rejected';
+        candidate.history.push(`07-16 · 반려 · ${values.reason.trim()}`);
+        showToast(candidate.name+' 등록 신청을 반려했습니다.\n반려 사유가 신청자에게 전달됩니다.','error');
+        closeDrawer();
+        renderApprovalRows();
+      }
+    });
+  }
+  function approveUni(){
+    const candidate=approvalCandidates[activeUniversityKey];
+    if(!candidate) return;
+    const candidateKey=activeUniversityKey;
+    openActionModal({
+      title:'대학 등록 승인',
+      description:candidate.name+'을 승인하면 신청자에게 최고관리자 초대를 발급합니다. 최고관리자 1명이 확보돼야 승인 처리가 완료됩니다.\n연계된 미등록 대학 요청은 등록완료 처리되며 요청 학생에게 알림이 발송됩니다.',
+      confirmLabel:'승인 확정',
+      fields:[],
+      onSubmit:()=>{
+        const universityId=registerApprovedUniversity(candidate);
+        if(!universityId||!issueInitialOwnerFromCandidate(candidate,universityId)){
+          showActionError('최고관리자 계정을 발급하지 못했습니다. 승인 처리를 다시 시도해 주세요.');
+          return false;
+        }
+        candidate.status='approved';
+        candidate.history.push('07-16 · 승인 · 채널 활성화 및 신청자 오너 지정');
+        const linkedRequest=requestData.find(item=>item.approvalKey===candidateKey);
+        if(linkedRequest){
+          linkedRequest.status='등록완료';
+          linkedRequest.assignee='자동 처리';
+          linkedRequest.memo=`승인 연계 완료 · 요청 학생 ${linkedRequest.count}명 알림 발송`;
+        }
+        recordAudit('대학 승인','대학 등록 승인',candidate.name,'신청자 최고관리자 초대 발급 및 등록 승인 완료',{previousValue:'등록 검토 대기',changedValue:'승인됨',universityId});
+        showToast(candidate.name+' 승인 완료\n· 채널 활성화 + 신청자 오너 지정\n· 요청 학생 '+candidate.requests+'명에게 등록 알림 발송');
+        closeDrawer();
+        renderApprovalRows();
+        renderRequests();
+      }
+    });
+  }
+
+  function requestChipClass(status){
+    return {미처리:'c-wait',컨택중:'c-info',등록완료:'c-good',보류:'c-gray'}[status]||'c-gray';
+  }
+  function renderRequests(){
+    const search=document.getElementById('requestSearch').value.trim().toLowerCase();
+    const status=document.getElementById('requestStatusFilter').value;
+    const sort=document.getElementById('requestSort').value;
+    const items=requestData.filter(item=>(!search||item.name.toLowerCase().includes(search))&&(!status||item.status===status));
+    items.sort((a,b)=>sort==='recent' ? b.recent.localeCompare(a.recent) : b.count-a.count);
+    document.getElementById('requestRows').innerHTML=items.length ? items.map((item,index)=>`
+      <tr>
+        <td class="rank" data-label="순위">${index+1}</td>
+        <td data-label="요청 대학 후보"><b>${item.name}</b><div style="font-size:11px;color:var(--ink2)">${item.region}</div></td>
+        <td class="num" data-label="요청 수"><b>${item.count}</b></td>
+        <td class="num" data-label="최초 / 최근 요청">${item.first} / ${item.recent}</td>
+        <td data-label="처리 상태"><span class="chip ${requestChipClass(item.status)}">${item.status}</span></td>
+        <td data-label="담당" style="font-size:12px;color:var(--ink2)">${item.assignee}</td>
+        <td data-label="관리"><button class="rowbtn" type="button" onclick="updateRequest('${item.id}')">${item.status==='등록완료'?'완료 이력':'처리'}</button></td>
+      </tr>`).join('') : '<tr><td data-empty colspan="7" style="text-align:center;color:var(--ink2);padding:28px">조건에 맞는 요청이 없습니다.</td></tr>';
+    syncWorkflowCounts();
+  }
+  function updateRequest(id){
+    const item=requestData.find(record=>record.id===id);
+    if(!item) return;
+    if(item.status==='등록완료'){
+      showToast(item.name+' 등록 완료 이력\n'+(item.memo||'승인 연계로 자동 완료되었습니다.'),'info');
+      return;
+    }
+    openActionModal({
+      title:'미등록 대학 요청 처리',
+      description:item.name+' 요청의 상태·담당자·메모를 변경합니다. 등록 신청과 연결된 요청은 대학 승인 후에만 등록완료 처리할 수 있습니다.',
+      confirmLabel:'변경 저장',
+      fields:[
+        {name:'status',label:'처리 상태',type:'select',required:true,value:item.status,options:['미처리','컨택중','보류','등록완료']},
+        {name:'assignee',label:'담당자',type:'text',value:item.assignee==='—'?'':item.assignee,placeholder:'컨택중·보류 상태의 담당자'},
+        {name:'memo',label:'담당 메모',type:'textarea',value:item.memo,placeholder:'다음 담당자가 맥락을 확인할 수 있도록 기록'}
+      ],
+      onSubmit:values=>{
+        const nextStatus=values.status;
+        if(nextStatus==='등록완료'&&(!item.approvalKey||approvalCandidates[item.approvalKey].status!=='approved')){
+          showActionError('등록완료는 연결된 대학 등록 신청이 승인된 뒤에만 처리할 수 있습니다. 대학 승인 화면에서 먼저 승인해 주세요.');
+          return false;
+        }
+        if((nextStatus==='컨택중'||nextStatus==='보류')&&!values.assignee.trim()){
+          showActionError('컨택중 또는 보류 상태에는 담당자를 입력해 주세요.');
+          return false;
+        }
+        item.status=nextStatus;
+        item.assignee=nextStatus==='미처리'?'—':nextStatus==='등록완료'?'자동 처리':values.assignee.trim();
+        item.memo=values.memo.trim();
+        if(nextStatus==='등록완료'){
+          showToast(item.name+' 요청을 등록완료 처리했습니다.\n요청 학생 '+item.count+'명에게 등록 알림을 발송했습니다.');
+        }else{
+          showToast(item.name+' 요청을 '+nextStatus+' 상태로 저장했습니다.','info');
+        }
+        renderRequests();
+      }
+    });
+  }
+  function syncWorkflowCounts(){
+    const counts={pending:0,supplement:0,approved:0,rejected:0};
+    Object.values(approvalCandidates).forEach(candidate=>counts[candidate.status]+=1);
+    document.getElementById('approvalCountPending').textContent=counts.pending;
+    document.getElementById('approvalCountSupplement').textContent=counts.supplement;
+    document.getElementById('approvalCountApproved').textContent=counts.approved;
+    document.getElementById('approvalCountRejected').textContent=counts.rejected;
+    document.getElementById('approvalSideCount').textContent=counts.pending;
+    document.getElementById('approvalTodoCount').textContent=counts.pending;
+    const openRequests=requestData.filter(item=>item.status!=='등록완료').length;
+    document.getElementById('requestSideCount').textContent=openRequests;
+    document.getElementById('requestTodoCount').textContent=openRequests;
+  }
+  function toggleAccount(button,type,name){
+    const row=button.closest('tr');
+    const status=row.querySelector('.account-status');
+    const suspended=status.textContent!=='활성';
+    const action=suspended?'재활성':'정지';
+    const fields=[{name:'reason',label:action+' 사유',type:'textarea',required:true,value:suspended?'확인 완료 후 이용 재개':'운영 정책 위반 확인'}];
+    if(!suspended) fields.push({name:'period',label:'정지 기간',type:'text',required:true,value:'7일',placeholder:'예: 7일 또는 2026-07-31까지'});
+    openActionModal({
+      title:type+' 계정 '+action,
+      description:name+' 계정의 상태를 변경합니다. 처리자·시각·사유는 감사 로그에 기록됩니다.',
+      confirmLabel:action+' 확정',
+      fields,
+      onSubmit:values=>{
+        if(suspended){
+          status.textContent='활성';
+          status.className='chip c-good account-status';
+          button.textContent=type==='대학'?'일시정지':'정지';
+          button.classList.add('warn');
+        }else{
+          status.textContent=type==='대학'?'일시정지':'정지';
+          status.className='chip c-rej account-status';
+          button.textContent=type==='대학'?'재활성':'해제';
+          button.classList.remove('warn');
+        }
+        if(type==='대학'){
+          const university=registeredUniversityRecords.find(item=>item.name.ko===name);
+          if(university) window.UniversityDirectory?.update?.(university.id,{
+            account:{...university.account,status:suspended?'active':'suspended'}
+          });
+          refreshRegisteredUniversityRecords();
+          renderRegisteredUniversities();
+        }
+        recordAudit('계정',type+' 계정 '+action,name,'사유: '+values.reason.trim()+(values.period?' · 기간: '+values.period.trim():''));
+        showToast(name+' '+action+' 처리 완료\n· 사유: '+values.reason.trim()+(values.period?'\n· 기간: '+values.period.trim():'')+(type==='대학'?'\n· 공개 탐색 상태는 학교 운영 화면에서 직접 관리합니다.':'')+'\n· 처리자와 시각이 감사 로그에 기록되었습니다.',suspended?'success':'error');
+      }
+    });
+  }
+
+  document.querySelectorAll('.todocard').forEach(card=>{
+    card.addEventListener('keydown',event=>{
+      if(event.key==='Enter'||event.key===' '){ event.preventDefault(); card.click(); }
+    });
+  });
+  renderRegisteredUniversities();
+  renderApprovalRows();
+  renderRequests();
+  renderContentRecords();
+  renderPlatformNotices();
+  renderUniversityMembers();
+  renderAdSlots();
+  renderAuditLogs();
+  window.addEventListener('unichat:universities-updated',()=>{
+    refreshRegisteredUniversityRecords();
+    renderRegisteredUniversities();
+  });
+  window.addEventListener('unichat:ad-slots-updated',renderAdSlots);
+  window.addEventListener('unichat:audit-log-updated',renderAuditLogs);
+  window.addEventListener('unichat:notices-updated',renderPlatformNotices);
+  window.addEventListener('storage',event=>{ if(event.key===window.UniChatNotices?.storageKey) renderPlatformNotices(); });
+</script>
+</body>
+</html>

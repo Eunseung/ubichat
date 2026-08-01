@@ -237,7 +237,7 @@
   .fileitem .fn{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .fileitem .fm{font-size:10.5px;color:var(--ink2)}
   .fileitem .fa{font-size:11px;color:var(--brand);text-decoration:none;font-weight:700;flex-shrink:0}
-  .received-documents{display:flex;flex-direction:column;gap:0}.received-doc-item{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:9px 0;border-bottom:1px dashed var(--line2)}.received-doc-item:last-child{border-bottom:0}.received-doc-main{display:grid;grid-template-columns:minmax(0,1fr) 24px auto;align-items:center;gap:7px}.received-doc-name-wrap{min-width:0;display:flex;align-items:center;gap:7px}.received-doc-item .received-doc-name{min-width:0;flex:1;border:0;background:transparent;padding:0;color:var(--ink);font:700 12px var(--sans);text-align:left;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}.received-doc-item .received-doc-preview{width:24px;height:24px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;padding:0;color:var(--brand);font:700 14px/1 var(--sans);cursor:pointer}.received-doc-item .received-doc-preview:hover{background:#eaf1ff}.received-doc-item .received-doc-re-request{border:0;background:none;padding:2px 0;color:var(--brand);font:700 11px var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}.received-doc-meta{display:flex;align-items:center;gap:6px;padding-left:1px;color:var(--ink2);font-size:10.5px;line-height:1.2}.received-doc-empty{padding:9px 0;color:var(--ink2);font-size:11px}
+  .received-documents{display:flex;flex-direction:column;gap:0}.received-doc-item{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:9px 0;border-bottom:1px dashed var(--line2)}.received-doc-item:last-child{border-bottom:0}.received-doc-main{display:grid;grid-template-columns:minmax(0,1fr) 24px auto auto;align-items:center;gap:7px}.received-doc-name-wrap{min-width:0;display:flex;align-items:center;gap:7px}.received-doc-item .received-doc-name{min-width:0;flex:1;border:0;background:transparent;padding:0;color:var(--ink);font:700 12px var(--sans);text-align:left;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}.received-doc-item .received-doc-preview{width:24px;height:24px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;padding:0;color:var(--brand);font:700 14px/1 var(--sans);cursor:pointer}.received-doc-item .received-doc-preview:hover{background:#eaf1ff}.received-doc-item .received-doc-download,.received-doc-item .received-doc-re-request{border:0;background:none;padding:2px 0;color:var(--brand);font:700 11px var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}.received-doc-meta{display:flex;align-items:center;gap:6px;padding-left:1px;color:var(--ink2);font-size:10.5px;line-height:1.2}.received-doc-empty{padding:9px 0;color:var(--ink2);font-size:11px}
   .received-doc-item .document-update-dot{width:7px;height:7px;border-radius:50%;background:#dc2626;box-shadow:0 0 0 3px #fee2e2;flex:0 0 auto}.received-doc-update-notice{display:flex;align-items:center;gap:7px;margin:7px 0 2px;padding:8px 9px;border-radius:8px;background:#fff1f2;color:#b42318;font-size:11px;font-weight:800}.received-doc-update-notice .document-update-dot{width:7px;height:7px;border-radius:50%;background:#dc2626;flex:0 0 auto}
   .student-section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:15px}.student-section-head h4{margin:0}.student-section-head small{font-size:10.5px;color:var(--ink2);font-weight:500;text-transform:none;letter-spacing:0}.student-section-head button{border:0;background:none;padding:0;color:var(--brand);font:700 11px var(--sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
 
@@ -3074,9 +3074,10 @@
     name.onclick=()=>openReceivedDocumentPreview(fileName,meta);
     nameWrap.append(name);
     const preview=document.createElement('button'); preview.type='button'; preview.className='received-doc-preview'; preview.textContent='👁'; preview.title='미리보기'; preview.setAttribute('aria-label',`${documentCategoryLabel(entry.category)} 미리보기`); preview.onclick=()=>openReceivedDocumentPreview(fileName,meta);
+    const download=document.createElement('button'); download.type='button'; download.className='received-doc-download'; download.textContent='다운로드'; download.setAttribute('aria-label',`${documentCategoryLabel(entry.category)} 다운로드`); download.onclick=()=>downloadReceivedDocument(fileName);
     const again=document.createElement('button'); again.type='button'; again.className='received-doc-re-request'; again.textContent='재요청하기'; again.onclick=()=>reRequestReceivedDocument(String(entry.category||''));
     const dateElement=document.createElement('div'); dateElement.className='received-doc-meta'; dateElement.textContent=date;
-    main.append(nameWrap,preview,again);
+    main.append(nameWrap,preview,download,again);
     item.append(main,dateElement);
     return item;
   }
@@ -3747,6 +3748,9 @@
     document.getElementById('receivedDocumentPreviewName').textContent=name;
     document.getElementById('receivedDocumentPreviewMeta').textContent=meta;
     modal.classList.add('show');
+  }
+  function downloadReceivedDocument(fileName){
+    showScenarioToast(`${fileName} 다운로드를 시작했습니다.`);
   }
   function closeReceivedDocumentPreview(){ document.getElementById('receivedDocumentPreviewModal')?.classList.remove('show'); }
   function renderReceivedDocumentListModal(query=''){

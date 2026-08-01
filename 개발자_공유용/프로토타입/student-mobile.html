@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UBIChat 학생 포털 — 모바일</title>
+<script>
+  // 학생 포털은 student-desktop.html 하나의 반응형 화면으로 통합되었습니다.
+  // 기존 모바일 목업 주소도 로그인 반환 경로를 유지한 채 통합 화면으로 보냅니다.
+  window.location.replace(`student-desktop.html${window.location.search}${window.location.hash}`);
+</script>
+<link rel="stylesheet" href="unichat-brand.css">
+<style>
+  :root{
+    --ink:#1b2230;--ink2:#5a6678;--line:#cbd2d9;--line2:#e8ecf1;
+    --bg:#f5f7fa;--panel:#fff;--brand:#1f4ba8;--brand2:#2f6fd6;
+    --accent:#0b6b5e;--warn:#b42318;--soft:#f5f8fc;
+    --bubble-me:#1f4ba8;--bubble-me-tx:#fff;--bubble-you:#eef1f5;--bubble-you-tx:#1b2230;
+    --mono:"JetBrains Mono",monospace;--sans:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#dde3ec;font-family:var(--sans);color:var(--ink);line-height:1.55;font-size:14px}
+  /* 폰 프레임 */
+  .stage{display:flex;justify-content:center;padding:32px 16px 40px}
+  .phone{width:392px;height:760px;background:var(--bg);border-radius:32px;border:10px solid #1b2230;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(16,24,40,.35);position:relative}
+
+  .app-head{background:#fff;border-bottom:1px solid var(--line2);padding:12px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .app-head .unichat-brand-name{font-size:16px}
+  .app-head .lang{margin-left:auto;font-size:11px;border:1px solid #d7e0ee;border-radius:999px;padding:4px 8px;color:var(--ink2);cursor:pointer}
+  .app-head .lang b{color:#1d4ed8;font-size:11px}
+  .mobile-profile-menu{position:relative}
+  .mobile-profile-menu[hidden]{display:none}
+  .mobile-profile-trigger{width:29px;height:29px;border:1px solid #d7e0ee;border-radius:50%;background:#edf3ff;font-size:14px;cursor:pointer}
+  .mobile-profile-dropdown{position:absolute;top:calc(100% + 8px);right:0;z-index:22;width:190px;padding:7px;border:1px solid #dce5f1;border-radius:13px;background:#fff;box-shadow:0 18px 42px rgba(16,34,63,.18)}
+  .mobile-profile-dropdown[hidden]{display:none}
+  .mobile-profile-summary{display:grid;gap:2px;padding:8px 9px 9px;border-bottom:1px solid var(--line2)}
+  .mobile-profile-summary strong{font-size:11.5px;color:#10223f}.mobile-profile-summary span{font-size:10px;color:var(--ink2)}
+  .mobile-profile-dropdown button{display:flex;align-items:center;width:100%;min-height:34px;padding:0 8px;border:0;border-radius:8px;background:transparent;font:700 11.5px var(--sans);color:#344054;text-align:left;cursor:pointer}
+  .mobile-profile-dropdown button:hover{background:#f3f6fb;color:#1d4ed8}
+  .mobile-profile-dropdown .logout{margin-top:3px;border-top:1px solid var(--line2);border-radius:0;color:var(--warn)}
+
+  .app-body{flex:1;overflow-y:auto;position:relative}
+  .view{display:none;min-height:100%;flex-direction:column}
+  .view.show{display:flex}
+  .vpad{padding:14px 16px 90px}
+
+  /* 하단 탭 */
+  .tabbar{position:absolute;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line2);display:flex;z-index:8}
+  .tabbar button{flex:1;border:0;background:none;padding:9px 0 11px;font-size:10.5px;color:var(--ink2);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--sans)}
+  .tabbar button .ico{font-size:19px;line-height:1}
+  .tabbar button.on{color:var(--brand);font-weight:700}
+  .tabbar .bdg{position:relative}
+  .tabbar .bdg::after{content:"2";position:absolute;top:-4px;right:-10px;background:var(--warn);color:#fff;font-size:9px;font-weight:800;border-radius:999px;min-width:15px;height:15px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+  h2.vt{font-size:18px;font-weight:800;letter-spacing:-.4px;margin-bottom:12px}
+  h2.vt small{font-weight:500;font-size:11px;color:var(--ink2);display:block;margin-top:2px}
+
+  /* ST-0 가입 */
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+  .field label{font-size:12px;color:var(--ink2);font-weight:600}
+  .field label .req{color:var(--warn)}
+  .field input,.field select{border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;font-family:var(--sans);background:#fff}
+  .field .hint{font-size:11px;color:#8b96a5}
+  .verify-email-row,.verify-code-row{display:flex;gap:7px}
+  .verify-email-row input,.verify-code-row input{min-width:0;flex:1}
+  .verify-email-row button,.verify-code-row button{border:1px solid var(--brand);border-radius:9px;background:#fff;color:var(--brand);padding:0 11px;font:700 11px var(--sans);cursor:pointer;white-space:nowrap}
+  .verify-panel{border:1px solid var(--line2);border-radius:10px;background:#f8fafc;padding:10px;margin:-4px 0 12px}
+  .auth-status{margin-top:7px;border-radius:7px;padding:7px 9px;font-size:11px;line-height:1.45;background:#eef1f5;color:var(--ink2)}
+  .auth-status.success{background:#e7f6ec;color:#1a7f43}.auth-status.error{background:#fef3f2;color:var(--warn)}.auth-status.pending{background:#fff8e6;color:#8a6100}
+  .verify-panel .text-link{margin-top:7px;font-size:11px}
+  .btn:disabled{cursor:not-allowed;opacity:.45}
+  .consent{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink2);margin:6px 0 14px}
+  .btn{border-radius:10px;padding:12px 16px;font-size:14.5px;font-weight:700;cursor:pointer;border:1px solid transparent;width:100%}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+  .auth-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:-2px 0 14px;font-size:11.5px;color:var(--ink2)}
+  .auth-row label{display:flex;align-items:center;gap:6px}
+  .text-link{border:0;background:none;color:var(--brand);font:inherit;font-weight:700;cursor:pointer;padding:0}
+  .auth-divider{display:flex;align-items:center;gap:10px;color:#9aa4b2;font-size:11px;margin:15px 0}
+  .auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line2);flex:1}
+
+  /* ST-1 대학 찾기 */
+  .search{display:flex;gap:8px;margin-bottom:10px}
+  .search input{flex:1;border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-size:13px;background:#fff}
+  .chips{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .chip{font-size:11.5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;color:var(--ink2);cursor:pointer}
+  .chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .ucard{background:#fff;border:1px solid var(--line2);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:12px;cursor:pointer}
+  .ucard .ulogo{width:46px;height:46px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+  .ucard .ub{flex:1;min-width:0}
+  .ucard .un{font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:6px}
+  /* 대학 카드 상담 상태 도트는 현재 비노출입니다. 필요 시 아래 스타일을 복구합니다.
+  .ucard .un .live{width:7px;height:7px;border-radius:50%;background:#1a7f43;flex-shrink:0}
+  .ucard .un .live.off{background:#aeb6c4}
+  */
+  .ucard .un .live{display:none}
+  .ucard .um{font-size:11.5px;color:var(--ink2);margin-top:1px}
+  .ucard .badges{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+  .rbadge{font-size:10px;border-radius:999px;padding:2px 8px;font-weight:700;background:#e7f6ec;color:#1a7f43}
+  .rbadge.slow{background:#fff4e5;color:#9a5b00}
+  .tbadge{font-size:10px;border-radius:999px;padding:2px 8px;font-weight:600;background:var(--soft);color:var(--brand)}
+  .ucard .cta{align-self:center;flex-shrink:0;font-size:11.5px;font-weight:700;color:var(--brand);border:1px solid var(--brand);border-radius:999px;padding:6px 12px;background:#fff;cursor:pointer;white-space:nowrap}
+  .ucard .cta.cont{background:var(--brand);color:#fff}
+  .nofind{background:linear-gradient(120deg,#eef3fb,#e3ecfa);border:1px dashed #b7c9e8;border-radius:14px;padding:14px 16px;text-align:center;margin-top:6px}
+  .nofind b{font-size:13px;display:block;margin-bottom:3px}
+  .nofind p{font-size:11.5px;color:var(--ink2);margin-bottom:9px}
+  .nofind button{font-size:12px;font-weight:700;color:#fff;background:var(--brand);border:none;border-radius:999px;padding:7px 16px;cursor:pointer}
+
+  /* ST-2 대화 목록 */
+  .citem{background:#fff;border-bottom:1px solid var(--line2);padding:13px 16px;display:flex;gap:11px;cursor:pointer}
+  .citem .ulogo{width:44px;height:44px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .citem .cb{flex:1;min-width:0}
+  .citem .r1{display:flex;justify-content:space-between;gap:6px}
+  .citem .nm{font-weight:700;font-size:13.5px}
+  .citem .tm{font-size:10px;color:#aeb6c4;font-family:var(--mono);white-space:nowrap}
+  .citem .prev{font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .citem .r2{display:flex;align-items:center;gap:6px;margin-top:6px}
+  .stchip{font-size:9.5px;border-radius:999px;padding:2px 8px;font-weight:700}
+  .st-wait{background:#fff4e5;color:#9a5b00}.st-live{background:#e7edf6;color:var(--brand)}.st-done{background:#eef1f5;color:#5a6678}
+  .citem .unread{margin-left:auto;background:var(--warn);color:#fff;font-size:10px;font-weight:800;border-radius:999px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+
+  /* ST-3 채팅방 */
+  #vChat{background:#f7f9fb}
+  .chat-hd{background:#fff;border-bottom:1px solid var(--line2);padding:10px 14px;display:flex;align-items:center;gap:9px;flex-shrink:0}
+  .chat-hd .back{border:none;background:none;font-size:18px;cursor:pointer;color:var(--ink2);padding:2px 4px}
+  .chat-hd .ulogo{width:34px;height:34px;border-radius:10px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .chat-hd .tt b{font-size:13.5px;display:block}
+  .chat-hd .tt small{font-size:10px;color:var(--ink2);display:block;line-height:1.3}
+  .chat-hd .st{margin-left:auto;flex-shrink:0}
+  .thread{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .day{text-align:center;font-size:10.5px;color:var(--ink2)}
+  .msg{display:flex;gap:7px;max-width:86%}
+  .msg .av{width:26px;height:26px;border-radius:50%;background:var(--soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+  .msg .bub{background:var(--bubble-you);color:var(--bubble-you-tx);padding:8px 12px;border-radius:13px 13px 13px 4px;font-size:13px}
+  .msg .meta{font-size:9.5px;color:#aeb6c4;margin-top:3px}
+  .msg.me{align-self:flex-end;flex-direction:row-reverse}
+  .msg.me .bub{background:var(--bubble-me);color:var(--bubble-me-tx);border-radius:13px 13px 4px 13px}
+  .msg.me .meta{text-align:right}
+  .msg.sys{align-self:center;max-width:100%}
+  .msg.sys .bub{background:#e7edf6;color:var(--brand);font-size:11px;border-radius:9px}
+  .doccard{border:1px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 10px;display:flex;gap:8px;align-items:center;margin-top:2px;background:rgba(255,255,255,.12)}
+  .msg:not(.me) .doccard{border-color:var(--line2);background:#fff}
+  .doccard .di{font-size:18px}
+  .doccard .dn{font-size:12px;font-weight:700;line-height:1.3}
+  .doccard .dm{font-size:10px;opacity:.75}
+  .composer{border-top:1px solid var(--line2);background:#fff;padding:9px 12px;display:flex;gap:8px;align-items:center;flex-shrink:0;position:relative}
+  .composer .att{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--ink2);flex-shrink:0;font-size:14px}
+  .composer input{flex:1;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px}
+  .composer .send{width:34px;height:34px;border-radius:50%;background:var(--brand);border:none;color:#fff;cursor:pointer;flex-shrink:0}
+  .attmenu{display:none;position:absolute;bottom:52px;left:10px;background:#fff;border:1px solid var(--line2);border-radius:12px;box-shadow:0 8px 24px rgba(16,24,40,.16);overflow:hidden;z-index:9}
+  .attmenu.show{display:block}
+  .attmenu button{display:flex;align-items:center;gap:9px;width:200px;border:none;background:#fff;padding:11px 14px;font-size:12.5px;cursor:pointer;font-family:var(--sans);text-align:left}
+  .attmenu button:hover{background:var(--soft)}
+  .attmenu button small{display:block;font-size:10px;color:var(--ink2)}
+  .document-re-request-box{border:1px solid #b9cae8;background:#f4f8ff!important;color:#203f70!important}.document-re-request-box b{display:block;font-size:12px}.document-re-request-box span{display:block;margin-top:5px;font-size:11px;line-height:1.5;color:#526b90}.document-re-request-box .doc-request-action{display:block;width:100%;margin-top:8px;border:1px solid #6b8fc7;border-radius:8px;background:#fff;color:#1f4f91;padding:7px;font:800 11px var(--sans)}
+
+  /* ST-4 문서 보관함 */
+  .doc-cat{font-size:11px;color:var(--ink2);font-weight:700;margin:14px 0 7px;text-transform:uppercase;letter-spacing:.4px}
+  .doc-cat:first-of-type{margin-top:0}
+  .dcard{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;gap:11px;align-items:center}
+  .dcard .di{width:38px;height:38px;border-radius:10px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+  .dcard .db{flex:1;min-width:0}
+  .dcard .dn{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dcard .dm{font-size:10.5px;color:var(--ink2);margin-top:1px}
+  .dcard .sent{font-size:10px;color:var(--brand);font-weight:700;margin-top:4px}
+  .dcard .vch{font-size:10px;background:var(--soft);color:var(--brand);border-radius:999px;padding:2px 7px;font-weight:700;flex-shrink:0}
+  .upl{border:1.5px dashed var(--line);border-radius:12px;padding:16px;text-align:center;font-size:12px;color:var(--ink2);cursor:pointer;margin-top:12px;background:#fff}
+  .upl:hover{border-color:var(--brand);color:var(--brand);background:var(--soft)}
+  .upload-summary{background:var(--soft);border-radius:9px;padding:9px 11px;margin-bottom:12px;font-size:11px;color:var(--ink2)}
+
+  /* ST-5 마이 */
+  .prof{background:#fff;border:1px solid var(--line2);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:center;margin-bottom:14px}
+  .prof .pav{width:52px;height:52px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:24px}
+  .prof b{font-size:15px;display:block}
+  .prof small{font-size:11.5px;color:var(--ink2);display:block;margin-top:2px}
+  .stat4{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+  .stat{background:#fff;border:1px solid var(--line2);border-radius:12px;padding:12px 14px}
+  .stat b{font-size:19px;font-variant-numeric:tabular-nums}
+  .stat small{display:block;font-size:10.5px;color:var(--ink2);margin-top:2px}
+  .sect{font-size:11px;color:var(--ink2);font-weight:700;margin:14px 0 7px;text-transform:uppercase;letter-spacing:.4px}
+  .noti{background:#fff;border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin-bottom:14px}
+  .noti .ni{padding:11px 14px;border-bottom:1px solid var(--line2);font-size:12px;display:flex;gap:8px;align-items:flex-start}
+  .noti .ni:last-child{border-bottom:0}
+  .noti .ni small{display:block;font-size:10px;color:#aeb6c4;margin-top:2px}
+  .setrow{background:#fff;border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+  .setrow .si{padding:12px 14px;border-bottom:1px solid var(--line2);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  .setrow .si:last-child{border-bottom:0}
+  .setrow .si small{color:var(--ink2);font-size:12px}
+
+  /* 모달 */
+  .modal-overlay{display:none;position:absolute;inset:0;background:rgba(16,24,40,.45);z-index:20;align-items:flex-end}
+  .modal-overlay.show{display:flex}
+  .sheet{background:#fff;border-radius:18px 18px 0 0;width:100%;max-height:78%;display:flex;flex-direction:column}
+  .sheet-hd{padding:14px 18px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line2)}
+  .sheet-hd b{font-size:14.5px}
+  .sheet-hd button{margin-left:auto;border:none;background:none;font-size:16px;cursor:pointer;color:var(--ink2)}
+  .sheet-bd{padding:14px 18px 20px;overflow-y:auto}
+  .pickitem{display:flex;gap:10px;align-items:center;border:1px solid var(--line2);border-radius:11px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+  .pickitem:hover{background:var(--soft);border-color:var(--brand)}
+  .pickitem .di{font-size:17px}
+  .pickitem .dn{font-size:12.5px;font-weight:700}
+  .pickitem .dm{font-size:10px;color:var(--ink2)}
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="phone">
+      <div class="app-head">
+        <a class="unichat-brand" href="기업용_배너_포함.html" aria-label="UBIChat 홈"><span class="unichat-emblem" aria-hidden="true"></span><span class="unichat-brand-name">UBIChat</span></a>
+        <span class="lang" onclick="toggleLang(this)"><b>한국어</b> / EN</span>
+        <div class="mobile-profile-menu" id="mobileProfileMenu" hidden>
+          <button class="mobile-profile-trigger" id="mobileProfileTrigger" type="button" aria-label="프로필 메뉴" aria-haspopup="menu" aria-expanded="false" onclick="toggleMobileProfileMenu()">🇹🇭</button>
+          <div class="mobile-profile-dropdown" id="mobileProfileDropdown" role="menu" hidden>
+            <div class="mobile-profile-summary"><strong>NAPAT SUKSAI</strong><span>napat@example.com</span></div>
+            <button type="button" role="menuitem" onclick="showView('vDocs');closeMobileProfileMenu()">문서 보관함</button>
+            <button type="button" role="menuitem" onclick="showView('vMy');closeMobileProfileMenu()">마이페이지</button>
+            <button class="logout" type="button" role="menuitem" onclick="logoutMobileStudent()">로그아웃</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-body">
+
+        <!-- 학생 로그인 (초기 화면) -->
+        <div class="view show" id="vLogin">
+          <div class="vpad">
+            <h2 class="vt" style="margin-top:8px">로그인<small>대학 상담을 이어서 확인하세요</small></h2>
+            <div class="field"><label>이메일</label><input type="email" placeholder="you@example.com" value="napat@example.com"></div>
+            <div class="field"><label>비밀번호</label><input type="password" placeholder="비밀번호를 입력하세요" value="password123"></div>
+            <div class="auth-row"><label><input type="checkbox" checked> 로그인 유지</label><button class="text-link" type="button">비밀번호 찾기</button></div>
+            <button class="btn btn-primary" onclick="loginStudent()">로그인</button>
+            <div class="auth-divider">또는</div>
+            <button class="btn btn-ghost" onclick="showView('vSignup')">회원가입</button>
+          </div>
+        </div>
+
+        <!-- ST-0 가입 -->
+        <div class="view" id="vSignup">
+          <div class="vpad">
+            <h2 class="vt" style="margin-top:8px">회원가입<small>한국 유학, 대학과 직접 이야기하며 준비하세요</small></h2>
+            <div class="field"><label>이메일 <span class="req">*</span></label><div class="verify-email-row"><input id="mobileSignupEmail" type="email" placeholder="you@example.com" value="napat@example.com"><button type="button" onclick="sendMobileVerificationCode()">인증 코드 발송</button></div><span class="hint">목업 인증 코드는 123456입니다</span></div>
+            <div class="verify-panel" aria-live="polite">
+              <div class="verify-code-row"><input id="mobileVerificationCode" inputmode="numeric" maxlength="6" placeholder="6자리 인증 코드"><button id="mobileVerifyButton" type="button" onclick="verifyMobileEmail()">인증 확인</button></div>
+              <div class="auth-status" id="mobileAuthStatus">이메일 인증 전입니다. 인증을 완료해야 회원가입할 수 있습니다.</div>
+              <button class="text-link" type="button" onclick="sendMobileVerificationCode()">인증 코드 재발송</button>
+            </div>
+            <div class="field"><label>비밀번호 <span class="req">*</span></label><input type="password" placeholder="8자 이상"></div>
+            <div class="field"><label for="signupCountry">국가 <span class="req">*</span></label><select id="signupCountry" onchange="updateSignupCities()"><option value="베트남">🇻🇳 베트남</option><option value="태국" selected>🇹🇭 태국</option><option value="중국">🇨🇳 중국</option><option value="우즈베키스탄">🇺🇿 우즈베키스탄</option><option value="몽골">🇲🇳 몽골</option></select></div>
+            <div class="field"><label for="signupCity">도시 <span class="req">*</span></label><select id="signupCity"><option>방콕</option><option>치앙마이</option><option>콘깬</option></select><span class="hint">선택한 국가의 도시만 표시됩니다</span></div>
+            <div class="field"><label>고등학교 <span class="req">*</span></label><input placeholder="학교명 검색" value="방콕 제1고등학교"><span class="hint">재학 중 또는 출신 학교</span></div>
+            <div class="field"><label>TOPIK / 한국어 수준 <span style="font-weight:500;color:var(--ink2)">(선택)</span></label><select><option>TOPIK 4급</option><option>TOPIK 1급</option><option>TOPIK 2급</option><option>TOPIK 3급 이상</option><option>미입력</option></select><span class="hint">미입력도 가능하며, 상담 시 대학에 기본 프로필로 표시됩니다.</span></div>
+            <div class="field"><label>이름 (선택)</label><input placeholder="영문 이름 권장" value="NAPAT SUKSAI"></div>
+            <div class="field"><label>희망 전공·입학 시기 (선택)</label><select><option>컴퓨터공학 · 2027년 3월</option></select></div>
+            <label class="consent"><input type="checkbox" checked> 개인정보 수집·이용 및 상담 상대 대학에 국가·도시·TOPIK·고등학교 기본 프로필 제공에 동의합니다 <span class="req">*</span></label>
+            <button class="btn btn-primary" id="mobileSignupSubmit" disabled onclick="completeMobileSignup()">회원가입</button>
+            <div style="text-align:center;margin-top:13px;font-size:11.5px;color:var(--ink2)">이미 계정이 있나요? <button class="text-link" onclick="showView('vLogin')">로그인</button></div>
+          </div>
+        </div>
+
+        <!-- ST-1 대학 찾기 -->
+        <div class="view" id="vFind">
+          <div class="vpad">
+            <h2 class="vt" style="margin-top:8px">대학 찾기</h2>
+            <div class="search"><input placeholder="교명 검색 (국문/영문)"></div>
+            <div class="chips">
+              <span class="chip on" data-field="전체">전체</span><span class="chip" data-field="요양보호">요양보호</span><span class="chip" data-field="육성형전문기술">육성형전문기술</span><span class="chip" data-field="뿌리산업">뿌리산업</span><span class="chip" data-field="기타">기타</span>
+            </div>
+
+            <div id="studentUniversityGridMobile" aria-live="polite"></div>
+
+            <div class="nofind">
+              <b>찾는 대학이 없나요?</b>
+              <p>등록을 요청하면 대학이 등록될 때 알려드려요</p>
+              <button onclick="openSheet('reqSheet')">대학 등록 요청</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ST-2 내 상담 -->
+        <div class="view" id="vChats">
+          <div style="padding:14px 16px 4px"><h2 class="vt" style="margin-top:8px">내 상담</h2></div>
+          <div style="padding-bottom:90px">
+            <div class="citem" onclick="openChat('구미대학교','진행중')">
+              <div class="ulogo">🏛️</div>
+              <div class="cb">
+                <div class="r1"><span class="nm">구미대학교</span><span class="tm">방금</span></div>
+                <div class="prev">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div>
+                <div class="r2"><span class="stchip st-live">진행중</span><span class="unread">2</span></div>
+              </div>
+            </div>
+            <div class="citem" onclick="openChat('한양여자대학교','대기')">
+              <div class="ulogo">🎓</div>
+              <div class="cb">
+                <div class="r1"><span class="nm">한양여자대학교</span><span class="tm">1시간 전</span></div>
+                <div class="prev">장학금 관련해서 문의드립니다</div>
+                <div class="r2"><span class="stchip st-wait">대기</span></div>
+              </div>
+            </div>
+            <div class="citem" onclick="openChat('연성대학교','종료')">
+              <div class="ulogo">🏫</div>
+              <div class="cb">
+                <div class="r1"><span class="nm">연성대학교</span><span class="tm">6월 30일</span></div>
+                <div class="prev">상담이 종료되었습니다.</div>
+                <div class="r2"><span class="stchip st-done">종료</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ST-3 채팅방 -->
+        <div class="view" id="vChat">
+          <div class="chat-hd">
+            <button class="back" onclick="showView('vChats')">‹</button>
+            <div class="ulogo">🏛️</div>
+            <div class="tt">
+              <b id="chatUniv">구미대학교</b>
+              <small>이수진 입학팀 · <span style="color:#1a7f43">●</span> 운영중</small>
+              <small>운영 09:00–18:00 KST · 내 시간 07:00–16:00</small>
+            </div>
+            <span class="stchip st-live st" id="chatSt">진행중</span>
+          </div>
+          <div class="thread" id="thread">
+            <div class="day">오늘</div>
+            <div class="msg sys"><div class="bub">입학 상담이 시작되었어요 · 프로필(🇹🇭 태국 · 방콕 제1고)이 대학에 전달되었습니다</div></div>
+            <div class="msg"><div class="av">GM</div><div><div class="bub">Napat님 안녕하세요! 구미대학교 입학팀입니다. 2027년 3월 학부 입학을 준비하시는군요 😊</div><div class="meta">10:02</div></div></div>
+            <div class="msg me"><div><div class="bub">네! 컴퓨터공학과 지원 조건이 궁금해요. Do you have English materials?</div><div class="meta">읽음 · 10:03</div></div></div>
+            <div class="msg"><div class="av">GM</div><div><div class="bub">물론이죠. 우선 최근 성적증명서를 보내주시면 지원 가능 여부를 확인해드릴게요.</div><div class="meta">10:05</div></div></div>
+            <div class="msg me"><div><div class="bub">📎 문서 보관함에서 전송
+              <div class="doccard"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일 업로드</div></div></div>
+            </div><div class="meta">읽음 · 10:06</div></div></div>
+            <div class="msg"><div class="av">GM</div><div><div class="bub">성적증명서 잘 받았습니다. 확인 후 다시 연락드릴게요!</div><div class="meta">10:08</div></div></div>
+          </div>
+          <div class="composer">
+            <div class="attmenu" id="attMenu">
+              <button onclick="closeAtt()">💾 내 기기에서<small>사진·파일 직접 선택</small></button>
+              <button onclick="closeAtt();openSheet('docPick')">🗂️ 문서 보관함에서<small>올려둔 서류를 바로 전송</small></button>
+            </div>
+            <button class="att" onclick="toggleAtt()">📎</button>
+            <input placeholder="메시지를 입력하세요" id="chatInput">
+            <button class="send" onclick="sendMsg()">➤</button>
+          </div>
+        </div>
+
+        <!-- ST-4 문서 보관함 -->
+        <div class="view" id="vDocs">
+          <div class="vpad">
+            <h2 class="vt" style="margin-top:8px">문서 보관함<small>한 번 올려두면 여러 대학 상담에서 재사용할 수 있어요</small></h2>
+
+            <div id="mobileDocList">
+              <div class="doc-group" data-category="성적증명서">
+                <div class="doc-cat">성적증명서</div>
+                <div class="dcard"><div class="di">📄</div><div class="db"><div class="dn">성적증명서_2026.pdf</div><div class="dm">6월 28일 업로드 · 840KB</div><div class="sent">구미대학교에 전송됨 (v2)</div></div><span class="vch">v2</span></div>
+              </div>
+              <div class="doc-group" data-category="어학성적">
+                <div class="doc-cat">어학성적</div>
+                <div class="dcard"><div class="di">🗣️</div><div class="db"><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">6월 1일 업로드 · 420KB</div><div class="sent">3개 대학에 전송됨</div></div><span class="vch">v1</span></div>
+              </div>
+              <div class="doc-group" data-category="졸업(예정)증명서">
+                <div class="doc-cat">졸업(예정)증명서</div>
+                <div class="dcard empty-doc" style="opacity:.55"><div class="di">🎓</div><div class="db"><div class="dn">아직 업로드하지 않았어요</div><div class="dm">입학 지원 시 필요할 수 있어요</div></div></div>
+              </div>
+            </div>
+
+            <div class="upl" role="button" tabindex="0" onclick="openUploadSheet()" onkeydown="if(event.key==='Enter'||event.key===' ')openUploadSheet()">＋ 문서 업로드<br><small style="font-size:10px;color:#aeb6c4">카테고리를 지정해 PDF/JPG/PNG 파일을 올릴 수 있어요 (10MB 이하)</small></div>
+          </div>
+        </div>
+
+        <!-- ST-5 마이 -->
+        <div class="view" id="vMy">
+          <div class="vpad">
+            <h2 class="vt" style="margin-top:8px">마이페이지</h2>
+            <div class="prof">
+              <div class="pav">🇹🇭</div>
+              <div><b>NAPAT SUKSAI</b><small>태국 · 방콕 제1고등학교</small><small>napat@example.com ✓ 인증됨</small></div>
+            </div>
+            <div class="stat4">
+              <div class="stat"><b>3</b><small>상담 중인 대학</small></div>
+              <div class="stat"><b>2</b><small>진행 중</small></div>
+              <div class="stat"><b>1</b><small>종료</small></div>
+              <div class="stat"><b>4</b><small>보낸 문서</small></div>
+              <div class="stat"><b>1.2h</b><small>평균 응답 시간</small></div>
+            </div>
+            <div class="sect">알림</div>
+            <div class="noti">
+              <div class="ni">💬 <div>구미대학교의 새 메시지가 있어요<small>10분 전</small></div></div>
+              <div class="ni">🏫 <div>요청하신 <b>한양여자대학교</b>가 등록되었어요! 지금 상담을 시작해보세요<small>어제</small></div></div>
+              <div class="ni">📄 <div>연성대학교가 어학성적 서류를 요청했어요<small>2일 전</small></div></div>
+            </div>
+            <div class="sect">설정</div>
+            <div class="setrow">
+              <div class="si">언어 <small>한국어 ›</small></div>
+              <div class="si">이메일 알림 <small>켜짐 ›</small></div>
+              <div class="si">계정 탈퇴 <small style="color:var(--warn)">문서·대화 파기 안내 ›</small></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 하단 탭 -->
+        <div class="tabbar" id="tabbar" style="display:none">
+          <button type="button" onclick="window.location.href='university-explore.html'"><span class="ico">🔍</span>대학 탐색</button>
+          <button data-v="vChats"><span class="ico bdg">💬</span>상담하기</button>
+        </div>
+
+        <!-- 등록 요청 시트 -->
+        <div class="modal-overlay" id="reqSheet" onclick="if(event.target===this) closeSheet('reqSheet')">
+          <div class="sheet">
+            <div class="sheet-hd"><b>대학 등록 요청</b><button onclick="closeSheet('reqSheet')">✕</button></div>
+            <div class="sheet-bd">
+              <div class="field"><label>대학 이름 <span class="req">*</span></label><input placeholder="국문 또는 영문 교명"></div>
+              <div style="background:var(--soft);border-radius:9px;padding:9px 12px;font-size:11.5px;color:var(--brand);margin:-4px 0 12px">💡 이미 <b>12명</b>이 이 대학을 요청했어요 — 요청이 모이면 대학 등록 가능성이 높아져요</div>
+              <div class="field"><label>아는 정보 (선택)</label><input placeholder="지역, 웹사이트 등"></div>
+              <div class="field"><label>요청 이유 (선택)</label><input placeholder="예: 컴퓨터공학 지원 희망"></div>
+              <button class="btn btn-primary" onclick="closeSheet('reqSheet')">요청하기 — 대학이 등록되면 알려드려요</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 문서 선택 시트 -->
+        <div class="modal-overlay" id="docPick" onclick="if(event.target===this) closeSheet('docPick')">
+          <div class="sheet">
+            <div class="sheet-hd"><b>문서 보관함에서 전송</b><button onclick="closeSheet('docPick')">✕</button></div>
+            <div class="sheet-bd">
+              <div class="pickitem" data-file-name="성적증명서_2026.pdf" data-category="성적증명서" data-document-meta="성적증명서 · v2" onclick="sendSelectedMobileDocument(this)"><span class="di">📄</span><div><div class="dn">성적증명서_2026.pdf</div><div class="dm">성적증명서 · v2 · 6월 28일</div></div></div>
+              <div class="pickitem" data-file-name="TOPIK_4급_성적표.pdf" data-category="어학성적" data-document-meta="어학성적 · v1" onclick="sendSelectedMobileDocument(this)"><span class="di">🗣️</span><div><div class="dn">TOPIK_4급_성적표.pdf</div><div class="dm">어학성적 · v1 · 6월 1일</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 문서 업로드 시트 -->
+        <div class="modal-overlay" id="uploadSheet" onclick="if(event.target===this) closeSheet('uploadSheet')">
+          <div class="sheet">
+            <div class="sheet-hd"><b>문서 업로드</b><button onclick="closeSheet('uploadSheet')">✕</button></div>
+            <div class="sheet-bd">
+              <div class="upload-summary">업로드할 문서의 카테고리를 먼저 선택해 주세요. 같은 카테고리에 추가한 문서는 버전별로 보관됩니다.</div>
+              <div class="field"><label for="mobileUploadCategory">카테고리 <span class="req">*</span></label><select id="mobileUploadCategory"><option>성적증명서</option><option>어학성적</option><option>졸업(예정)증명서</option><option>여권</option><option>가족관계증명서</option><option>재정증명서</option><option value="apostille">공증문서</option><option>기타</option></select></div>
+              <div class="field"><label for="mobileUploadFile">PDF 파일 <span class="req">*</span></label><input id="mobileUploadFile" type="file" accept=".pdf,application/pdf"><span class="hint">PDF · 최대 10MB</span></div>
+              <button class="btn btn-primary" onclick="uploadMobileDocument()">선택한 카테고리로 업로드</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-overlay" id="mobileDocumentRequestChoice" onclick="if(event.target===this) closeSheet('mobileDocumentRequestChoice')">
+          <div class="sheet">
+            <div class="sheet-hd"><b>요청 문서 다시 보내기</b><button onclick="closeSheet('mobileDocumentRequestChoice')">✕</button></div>
+            <div class="sheet-bd">
+              <div class="upload-summary" id="mobileDocumentRequestChoiceSummary"></div>
+              <button class="btn btn-primary" style="width:100%" onclick="openMobileRequestedUpload()">새 PDF 업로드</button>
+              <button class="btn" id="mobileRequestedExistingDocumentButton" style="width:100%;margin-top:8px" onclick="openMobileRequestedExistingDocumentPicker()">문서 보관함에서 선택</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script src="university-data.js"></script>
+<script src="student-university-directory.js"></script>
+<script src="student-session.js"></script>
+<script>
+  const signupCities={
+    '베트남':['하노이','호치민','다낭'],
+    '태국':['방콕','치앙마이','콘깬'],
+    '중국':['베이징','상하이','칭다오'],
+    '우즈베키스탄':['타슈켄트','사마르칸트','부하라'],
+    '몽골':['울란바토르','에르데네트']
+  };
+  function updateSignupCities(){
+    const country=document.getElementById('signupCountry').value;
+    const city=document.getElementById('signupCity');
+    city.replaceChildren(...signupCities[country].map(name=>new Option(name,name)));
+  }
+  const protectedViews=new Set(['vChats','vChat','vDocs','vMy']);
+  const mobileQuery=new URLSearchParams(window.location.search);
+  const requestedUniversity=mobileQuery.get('universityId')||mobileQuery.get('university');
+  const requestedView=mobileQuery.get('view');
+  let studentAuthenticated=Boolean(window.UniChatStudentSession?.isSignedIn()), mobileEmailAuthState='unverified';
+  const mobileAuthCopy={
+    unverified:['이메일 인증 전입니다. 인증을 완료해야 회원가입할 수 있습니다.',''],
+    pending:['인증 코드를 발송했습니다. 6자리 코드를 입력해 주세요.','pending'],
+    success:['이메일 인증이 완료되었습니다. 이제 회원가입할 수 있습니다.','success'],
+    failure:['인증 코드가 일치하지 않습니다. 다시 입력하거나 코드를 재발송해 주세요.','error'],
+    expired:['인증 코드가 만료되었습니다. 새 코드를 발송해 주세요.','error']
+  };
+  function renderMobileEmailAuth(){
+    const code=document.getElementById('mobileVerificationCode');
+    const verify=document.getElementById('mobileVerifyButton');
+    const status=document.getElementById('mobileAuthStatus');
+    const submit=document.getElementById('mobileSignupSubmit');
+    const [message,tone]=mobileAuthCopy[mobileEmailAuthState];
+    status.textContent=message; status.className='auth-status'+(tone?' '+tone:'');
+    const canVerify=mobileEmailAuthState==='pending'||mobileEmailAuthState==='failure';
+    code.disabled=!canVerify; verify.disabled=!canVerify;
+    submit.disabled=mobileEmailAuthState!=='success';
+    if(mobileEmailAuthState==='success') code.value='123456';
+    if(mobileEmailAuthState==='expired') code.value='123456';
+  }
+  function setMobileEmailAuthState(state, openSignup=true){
+    studentAuthenticated=false; mobileEmailAuthState=state;
+    renderMobileEmailAuth();
+    if(openSignup) showView('vSignup',true);
+  }
+  function sendMobileVerificationCode(){
+    setMobileEmailAuthState('pending',false);
+    const code=document.getElementById('mobileVerificationCode'); code.value=''; code.focus();
+  }
+  function verifyMobileEmail(){
+    const value=document.getElementById('mobileVerificationCode').value.trim();
+    setMobileEmailAuthState(value==='123456'?'success':'failure',false);
+  }
+  function getMobileConsultationMessage(university){
+    const consultation=university?.consultation||{};
+    const status=String(consultation.status||'').trim().toLowerCase();
+    if(status==='offline') return consultation.offlineMessage||'현재는 상담 운영시간이 아닙니다. 운영시간에 다시 상담을 시작해 주세요.';
+    if(status==='paused') return consultation.pausedMessage||'현재 신규 상담을 일시 중지했습니다. 잠시 후 다시 확인해 주세요.';
+    return '현재 이 대학의 상담을 시작할 수 없습니다. 대학 상세에서 운영 정보를 확인해 주세요.';
+  }
+  function returnToMobileFind(university){
+    const name=university?.name?.ko||'선택한 대학';
+    window.alert(`${name}: ${getMobileConsultationMessage(university)}`);
+    window.history?.replaceState?.({}, '', 'student-mobile.html?view=find');
+    showView('vFind');
+  }
+  function openRequestedMobileConsultation(){
+    if(requestedUniversity){
+      const university=window.UniversityDirectory?.resolve?.(requestedUniversity);
+      const isOpen=university?.publication?.status==='published'&&university?.consultation?.status==='open';
+      if(isOpen){
+        openChat(university.name.ko,'대기');
+        return;
+      }
+      returnToMobileFind(university);
+      return;
+    }
+    showView({docs:'vDocs',my:'vMy',signup:'vSignup'}[requestedView]||'vChats');
+  }
+  function completeMobileSignup(){
+    if(mobileEmailAuthState!=='success'){ setMobileEmailAuthState('unverified',false); return; }
+    studentAuthenticated=true; window.UniChatStudentSession?.signIn(); openRequestedMobileConsultation();
+  }
+  function loginStudent(){ studentAuthenticated=true; window.UniChatStudentSession?.signIn(); openRequestedMobileConsultation(); }
+  function showView(id, bypassAuth=false){
+    if(!bypassAuth&&protectedViews.has(id)&&!studentAuthenticated){
+      id='vSignup'; renderMobileEmailAuth();
+      const status=document.getElementById('mobileAuthStatus');
+      if(mobileEmailAuthState==='unverified') status.textContent='이메일 인증과 회원가입을 완료해야 내 상담과 문서 보관함을 이용할 수 있습니다.';
+    }
+    document.querySelectorAll('.app-body > .view').forEach(v=>v.classList.remove('show'));
+    document.getElementById(id).classList.add('show');
+    document.getElementById('tabbar').style.display = (id==='vChat'||id==='vSignup'||id==='vLogin') ? 'none':'flex';
+    document.getElementById('mobileProfileMenu').hidden=!studentAuthenticated || id==='vSignup'||id==='vLogin';
+    closeMobileProfileMenu();
+    document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.v===id));
+  }
+  document.querySelectorAll('#tabbar button[data-v]').forEach(b=> b.addEventListener('click', ()=> showView(b.dataset.v)) );
+  renderMobileEmailAuth();
+
+  const stMap={'대기':'st-wait','진행중':'st-live','종료':'st-done'};
+  const mobileBaseThreadMarkup=document.getElementById('thread').innerHTML;
+  let activeThreadMarkup=mobileBaseThreadMarkup;
+  const completedThreadMarkup=mobileBaseThreadMarkup.replace('<div class="day">오늘</div>','<div class="day">6월 30일</div>');
+  const documentRequestStorageKey='unichat.prototype.document-requests.v1';
+  const documentUpdateStorageKey='unichat.prototype.document-updates.v1';
+  const mobileDocumentRequests={};
+  const mobileDocumentCategoryLabels={
+    '성적증명서':'성적증명서','어학성적':'어학성적','졸업(예정)증명서':'졸업(예정)증명서','여권':'여권',
+    '가족관계증명서':'가족관계증명서','재정증명서':'재정증명서',apostille:'공증문서','기타':'기타'
+  };
+  function mobileDocumentCategoryLabel(category){ return mobileDocumentCategoryLabels[category]||category; }
+  let pendingMobileDocumentRequest=null, pendingMobileDocumentRequestChoiceId='';
+  let currentChatStatus='진행중', currentChatUniversity='구미대학교';
+  function renderChatState(){
+    syncExternalMobileDocumentRequests();
+    const thread=document.getElementById('thread'), input=document.getElementById('chatInput'), composer=document.querySelector('#vChat .composer');
+    const contact=document.querySelector('#vChat .chat-hd .tt small');
+    composer.style.display='flex'; input.disabled=false;
+    if(currentChatStatus==='대기'){
+      contact.innerHTML='담당자 배정 대기 · 대학이 상담을 시작하면 알려드려요';
+      input.placeholder='추가 메시지 남기기';
+      thread.innerHTML=`<div class="day">오늘</div><div class="msg sys"><div class="bub">상담을 신청했어요</div></div><div class="msg me"><div><div class="bub">장학금 관련해서 문의드립니다.</div><div class="meta">보냄 · 아직 읽지 않음</div></div></div>`;
+    }else if(currentChatStatus==='종료'){
+      contact.innerHTML='상담이 종료되었습니다';
+      composer.style.display='none';
+      thread.innerHTML=`${completedThreadMarkup}<div class="msg sys"><div class="bub">상담이 종료되었습니다.</div></div><button class="btn btn-primary" style="margin:14px" onclick="reopenConsultation()">다시 상담하기</button>`;
+    }else{
+      contact.innerHTML='이수진 입학팀 · <span style="color:#1a7f43">●</span> 운영중';
+      input.placeholder='메시지를 입력하세요';
+      thread.innerHTML=activeThreadMarkup;
+    }
+    document.getElementById('chatUniv').textContent=currentChatUniversity;
+    syncMobileDocumentRequestActions();
+  }
+  function openChat(univ, st){
+    currentChatUniversity=univ; currentChatStatus=st;
+    document.getElementById('chatUniv').textContent=univ;
+    const chip=document.getElementById('chatSt');
+    chip.textContent=st; chip.className='stchip '+stMap[st]+' st';
+    renderChatState(); showView('vChat');
+  }
+  function reopenConsultation(){ openChat(currentChatUniversity,'대기'); }
+  function toggleAtt(){ document.getElementById('attMenu').classList.toggle('show'); }
+  function closeAtt(){ document.getElementById('attMenu').classList.remove('show'); }
+  function openSheet(id){ document.getElementById(id).classList.add('show'); }
+  function closeSheet(id){
+    document.getElementById(id).classList.remove('show');
+    if(id==='docPick') resetMobileDocumentPicker();
+  }
+  function readMobilePrototypeStorage(key){
+    try{
+      const value=JSON.parse(window.localStorage.getItem(key)||'[]');
+      return Array.isArray(value)?value:[];
+    }catch(error){ return []; }
+  }
+  function writeMobilePrototypeStorage(key,value){
+    try{ window.localStorage.setItem(key,JSON.stringify(value)); }catch(error){}
+  }
+  function renderMobileDocumentRequestBox(requestId,request){
+    const label=String(request.label||request.category||'요청 문서').replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character]));
+    return `<div class="msg"><div class="av">GM</div><div><div class="bub document-re-request-box"><b>📄 서류 재업로드 요청</b><span>${label} 문서를 다시 보내 주세요.</span><button class="doc-request-action" type="button" data-mobile-doc-request-choice="${requestId}">업로드 하기</button></div><div class="meta">방금</div></div></div>`;
+  }
+  function syncExternalMobileDocumentRequests(){
+    readMobilePrototypeStorage(documentRequestStorageKey).forEach(event=>{
+      const eventId=String(event?.id||'');
+      if(!event.reRequest||event.studentId!=='napat-siriporn'||event.universityId!=='gumi'||event.affiliationId!=='undergraduate'||!/^[A-Za-z0-9_-]{1,120}$/.test(eventId)) return;
+      const requestId=`mobile-document-request-${eventId}`;
+      if(mobileDocumentRequests[requestId]) return;
+      const category=String(event.category||'기타').slice(0,40);
+      mobileDocumentRequests[requestId]={category,label:category==='apostille'?mobileDocumentCategoryLabel(category):String(event.label||category).slice(0,120),sourceEventId:eventId,completed:false};
+      activeThreadMarkup+=renderMobileDocumentRequestBox(requestId,mobileDocumentRequests[requestId]);
+      currentChatUniversity='구미대학교';
+    });
+  }
+  function syncMobileDocumentRequestActions(){
+    document.querySelectorAll('[data-mobile-doc-request-choice]').forEach(button=>{
+      const request=mobileDocumentRequests[button.dataset.mobileDocRequestChoice];
+      if(!request) return;
+      button.disabled=request.completed;
+      button.textContent=request.completed?'전송 완료':'업로드 하기';
+      button.onclick=()=>openMobileDocumentRequestChoice(button.dataset.mobileDocRequestChoice);
+    });
+  }
+  function resetMobileDocumentPicker(){
+    const picker=document.getElementById('docPick');
+    if(!picker) return;
+    picker.dataset.requestId='';
+    picker.querySelectorAll('.pickitem').forEach(item=>{ item.hidden=false; });
+  }
+  function openMobileDocumentRequestChoice(requestId){
+    const request=mobileDocumentRequests[requestId];
+    if(!request||request.completed) return;
+    pendingMobileDocumentRequestChoiceId=requestId;
+    document.getElementById('mobileDocumentRequestChoiceSummary').textContent=`${request.label} 문서를 새 PDF로 올리거나 문서 보관함의 같은 유형 문서를 선택해 보내세요.`;
+    document.getElementById('mobileRequestedExistingDocumentButton').disabled=!document.querySelector(`#mobileDocList .doc-group[data-category="${request.category}"] .dcard:not(.empty-doc)`);
+    openSheet('mobileDocumentRequestChoice');
+  }
+  function openMobileRequestedUpload(){
+    const requestId=pendingMobileDocumentRequestChoiceId;
+    closeSheet('mobileDocumentRequestChoice');
+    if(requestId) openUploadSheet(requestId);
+  }
+  function openMobileRequestedExistingDocumentPicker(){
+    const requestId=pendingMobileDocumentRequestChoiceId;
+    const request=mobileDocumentRequests[requestId];
+    if(!request) return;
+    const picker=document.getElementById('docPick');
+    const matches=[...picker.querySelectorAll('.pickitem')].filter(item=>item.dataset.category===request.category);
+    if(!matches.length){ openMobileRequestedUpload(); return; }
+    picker.dataset.requestId=requestId;
+    picker.querySelectorAll('.pickitem').forEach(item=>{ item.hidden=item.dataset.category!==request.category; });
+    closeSheet('mobileDocumentRequestChoice');
+    openSheet('docPick');
+  }
+  function openUploadSheet(requestId=''){
+    pendingMobileDocumentRequest=requestId?mobileDocumentRequests[requestId]||null:null;
+    const category=document.getElementById('mobileUploadCategory');
+    category.disabled=Boolean(pendingMobileDocumentRequest);
+    if(pendingMobileDocumentRequest) category.value=pendingMobileDocumentRequest.category;
+    document.querySelector('#uploadSheet .sheet-hd b').textContent=pendingMobileDocumentRequest?'요청 문서 업로드':'문서 업로드';
+    document.querySelector('#uploadSheet .upload-summary').textContent=pendingMobileDocumentRequest?`${pendingMobileDocumentRequest.label} PDF를 올리면 요청한 상담 채널로 바로 전송해요.`:'업로드할 문서의 카테고리를 먼저 선택해 주세요. 같은 카테고리에 추가한 문서는 버전별로 보관됩니다.';
+    document.getElementById('mobileUploadFile').value='';
+    openSheet('uploadSheet');
+  }
+  function uploadMobileDocument(){
+    const category=document.getElementById('mobileUploadCategory').value;
+    const input=document.getElementById('mobileUploadFile');
+    const file=input.files[0];
+    if(!file){ alert('업로드할 파일을 선택해 주세요.'); return; }
+    if(!/\.pdf$/i.test(file.name)){ alert('PDF 파일만 업로드할 수 있어요.'); return; }
+    if(file.size>10*1024*1024){ alert('10MB 이하의 파일만 업로드할 수 있어요.'); return; }
+
+    const list=document.getElementById('mobileDocList');
+    let group=[...list.querySelectorAll('.doc-group')].find(el=>el.dataset.category===category);
+    if(!group){
+      group=document.createElement('div');
+      group.className='doc-group';
+      group.dataset.category=category;
+      const heading=document.createElement('div');
+      heading.className='doc-cat';
+      heading.textContent=mobileDocumentCategoryLabel(category);
+      group.appendChild(heading);
+      list.appendChild(group);
+    }
+    const empty=group.querySelector('.empty-doc');
+    if(empty) empty.remove();
+    const versions=[...group.querySelectorAll('.vch')].map(el=>Number(el.textContent.replace('v',''))||0);
+    const version=Math.max(0,...versions)+1;
+    const icons={'성적증명서':'📄','어학성적':'🗣️','졸업(예정)증명서':'🎓','여권':'🛂','가족관계증명서':'👪','재정증명서':'💳',apostille:'🏷️','기타':'📎'};
+    const card=document.createElement('div');
+    card.className='dcard';
+    card.innerHTML=`<div class="di">${icons[category]||'📎'}</div><div class="db"><div class="dn"></div><div class="dm">방금 업로드 · ${formatFileSize(file.size)}</div><div class="sent">전송 전</div></div><span class="vch">v${version}</span>`;
+    card.querySelector('.dn').textContent=file.name;
+    group.appendChild(card);
+
+    const pick=document.createElement('div');
+    pick.className='pickitem';
+    pick.dataset.fileName=file.name;
+    pick.dataset.category=category;
+    pick.dataset.documentMeta=`${mobileDocumentCategoryLabel(category)} · v${version}`;
+    pick.innerHTML=`<span class="di">${icons[category]||'📎'}</span><div><div class="dn"></div><div class="dm">${mobileDocumentCategoryLabel(category)} · v${version} · 방금</div></div>`;
+    pick.querySelector('.dn').textContent=file.name;
+    pick.addEventListener('click',()=>sendSelectedMobileDocument(pick));
+    document.querySelector('#docPick .sheet-bd').appendChild(pick);
+    const request=pendingMobileDocumentRequest;
+    pendingMobileDocumentRequest=null;
+    closeSheet('uploadSheet');
+    if(request){
+      completeMobileDocumentRequest(request,file.name);
+      sendDoc(file.name,`${mobileDocumentCategoryLabel(category)} · v${version}`);
+    }
+  }
+  function formatFileSize(bytes){
+    if(bytes<1024) return `${bytes}B`;
+    if(bytes<1024*1024) return `${Math.ceil(bytes/1024)}KB`;
+    return `${(bytes/1024/1024).toFixed(1)}MB`;
+  }
+
+  function sendMsg(){
+    const el=document.getElementById('chatInput');
+    if(!el.value.trim()) return;
+    const stateMeta=currentChatStatus==='대기'?'보냄 · 아직 읽지 않음':'읽음 · 방금';
+    addMe(`<div class="bub">${el.value.replace(/</g,'&lt;')}</div><div class="meta">${stateMeta}</div>`);
+    el.value='';
+  }
+  function sendDoc(name, meta){
+    closeSheet('docPick');
+    const stateMeta=currentChatStatus==='대기'?'보냄 · 아직 읽지 않음':'읽음 · 방금';
+    addMe(`<div class="bub">📎 문서 보관함에서 전송<div class="doccard"><span class="di">📄</span><div><div class="dn">${name}</div><div class="dm">${meta}</div></div></div></div><div class="meta">${stateMeta}</div>`);
+  }
+  function publishMobileDocumentUpdate(request,fileName){
+    const updates=readMobilePrototypeStorage(documentUpdateStorageKey);
+    updates.push({
+      id:`document-update-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+      studentId:'napat-siriporn',universityId:'gumi',affiliationId:'undergraduate',requestId:request.sourceEventId,
+      category:request.category,fileName,reRequest:true,updatedAt:new Date().toISOString()
+    });
+    writeMobilePrototypeStorage(documentUpdateStorageKey,updates.slice(-100));
+  }
+  function completeMobileDocumentRequest(request,fileName){
+    request.completed=true;
+    publishMobileDocumentUpdate(request,fileName);
+    syncMobileDocumentRequestActions();
+  }
+  function sendSelectedMobileDocument(element){
+    const requestId=document.getElementById('docPick').dataset.requestId||'';
+    const request=requestId?mobileDocumentRequests[requestId]:null;
+    if(request&&request.category!==element.dataset.category){
+      alert(`${request.label} 유형의 문서를 선택해 주세요.`);
+      return;
+    }
+    if(request) completeMobileDocumentRequest(request,element.dataset.fileName);
+    sendDoc(element.dataset.fileName,element.dataset.documentMeta||element.dataset.category);
+  }
+  function addMe(inner){
+    const t=document.getElementById('thread');
+    const div=document.createElement('div');
+    div.className='msg me';
+    div.innerHTML=`<div>${inner}</div>`;
+    t.appendChild(div);
+    t.scrollTop=99999;
+  }
+  document.getElementById('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendMsg(); });
+  function openUniversityDetail(universityId, st){
+    let detail=document.getElementById('universityDetail');
+    if(!detail){
+      detail=document.createElement('div'); detail.className='modal-overlay'; detail.id='universityDetail';
+      detail.innerHTML=`<div class="sheet"><div class="sheet-hd"><b>대학 상세</b><button onclick="closeSheet('universityDetail')">✕</button></div><div class="sheet-bd" id="universityDetailBody"></div></div>`;
+      document.querySelector('.phone').appendChild(detail);
+    }
+    const action=st==='진행중'?'대화 이어하기':'상담하기';
+    const rendered=window.UniChatStudentUniversityDirectory?.renderDetail(
+      document.getElementById('universityDetailBody'), universityId,
+      {
+        compact:true,
+        actionClass:'btn btn-primary',
+        actionStyle:'width:100%;margin-top:8px',
+        actionLabel:action,
+        onAction:(university)=>{
+          if(university.consultation?.status!=='open') return;
+          closeSheet('universityDetail');
+          openChat(university.name.ko,st);
+        }
+      }
+    );
+    if(rendered) openSheet('universityDetail');
+  }
+  window.UniChatStudentUniversityDirectory?.mount({
+    container:document.getElementById('studentUniversityGridMobile'),
+    layout:'mobile',
+    searchInput:document.querySelector('#vFind .search input'),
+    chips:[...document.querySelectorAll('#vFind .chips .chip')],
+    getConversationStatus:(university)=>university.id==='seojeong'?'진행중':'대기',
+    onSelect:(university,status)=>openUniversityDetail(university.id,status)
+  });
+  function closeMobileProfileMenu(){
+    const dropdown=document.getElementById('mobileProfileDropdown');
+    dropdown.hidden=true;
+    document.getElementById('mobileProfileTrigger').setAttribute('aria-expanded','false');
+  }
+  function toggleMobileProfileMenu(){
+    const dropdown=document.getElementById('mobileProfileDropdown');
+    const open=dropdown.hidden;
+    dropdown.hidden=!open;
+    document.getElementById('mobileProfileTrigger').setAttribute('aria-expanded',open?'true':'false');
+  }
+  function logoutMobileStudent(){
+    window.UniChatStudentSession?.signOut();
+    studentAuthenticated=false;
+    closeMobileProfileMenu();
+    window.location.href='기업용_배너_포함.html';
+  }
+  document.addEventListener('click',event=>{
+    const menu=document.getElementById('mobileProfileMenu');
+    if(menu&&!menu.contains(event.target)) closeMobileProfileMenu();
+  });
+  document.addEventListener('keydown',event=>{ if(event.key==='Escape') closeMobileProfileMenu(); });
+  syncExternalMobileDocumentRequests();
+  window.addEventListener('storage',event=>{
+    if(event.key!==documentRequestStorageKey) return;
+    syncExternalMobileDocumentRequests();
+    if(document.getElementById('vChat').classList.contains('show')) renderChatState();
+  });
+  function toggleLang(el){
+    const ko = el.innerHTML.includes('<b>한국어</b>');
+    el.innerHTML = ko ? '한국어 / <b>EN</b>' : '<b>한국어</b> / EN';
+  }
+  if(studentAuthenticated) openRequestedMobileConsultation();
+</script>
+</body>
+</html>
